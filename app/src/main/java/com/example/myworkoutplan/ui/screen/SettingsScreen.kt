@@ -17,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myworkoutplan.ui.components.DataStoreManager
-import com.example.myworkoutplan.ui.components.DynamicColorOption
-import com.example.myworkoutplan.ui.components.SettingsViewModel
-import com.example.myworkoutplan.ui.components.SettingsViewModelFactory
-import com.example.myworkoutplan.ui.components.ThemeOptions
+import com.example.myworkoutplan.ui.data.DataStoreManager
+import com.example.myworkoutplan.ui.theme.DynamicColorOption
+import com.example.myworkoutplan.ui.settings.SettingsViewModel
+import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
+import com.example.myworkoutplan.ui.settings.ThemeOptions
 
 
 @Composable

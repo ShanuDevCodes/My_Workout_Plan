@@ -1,10 +1,12 @@
-package com.example.myworkoutplan.ui.components
+package com.example.myworkoutplan.ui.settings
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myworkoutplan.ui.data.DataStoreManager
+import com.example.myworkoutplan.ui.theme.DynamicColorOption
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 

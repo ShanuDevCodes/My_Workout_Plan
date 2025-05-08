@@ -9,9 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.myworkoutplan.ui.Day
-import com.example.myworkoutplan.ui.Home
-import com.example.myworkoutplan.ui.Plans
 import com.example.myworkoutplan.ui.screen.DayScreen
 import com.example.myworkoutplan.ui.screen.HomeScreen
 import com.example.myworkoutplan.ui.screen.PlansScreen

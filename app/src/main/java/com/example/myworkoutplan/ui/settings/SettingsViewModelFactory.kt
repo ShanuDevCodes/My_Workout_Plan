@@ -1,7 +1,8 @@
-package com.example.myworkoutplan.ui.components
+package com.example.myworkoutplan.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.myworkoutplan.ui.data.DataStoreManager
 
 class SettingsViewModelFactory(private val dataStore: DataStoreManager) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

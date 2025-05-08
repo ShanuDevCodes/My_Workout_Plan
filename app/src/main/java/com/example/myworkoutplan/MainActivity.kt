@@ -37,9 +37,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.ui.components.BubblePopAnimation
-import com.example.myworkoutplan.ui.components.DataStoreManager
-import com.example.myworkoutplan.ui.components.SettingsViewModel
-import com.example.myworkoutplan.ui.components.SettingsViewModelFactory
+import com.example.myworkoutplan.ui.data.DataStoreManager
+import com.example.myworkoutplan.ui.settings.SettingsViewModel
+import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
 import com.example.myworkoutplan.ui.screen.HomeScreen
 import com.example.myworkoutplan.ui.screen.PlansScreen
 import com.example.myworkoutplan.ui.screen.SettingsScreen
