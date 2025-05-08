@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(private val dataStore: DataStoreManager) : ViewModel() {
@@ -15,19 +16,24 @@ class SettingsViewModel(private val dataStore: DataStoreManager) : ViewModel() {
     var dynamicColorOption by mutableStateOf(DynamicColorOption.ENABLED)
         private set
 
+    var isSettingsLoaded by mutableStateOf(false)
+        private set
+
+    fun initSettings(theme: ThemeOptions, dynamic: DynamicColorOption) {
+        selectedTheme = theme
+        dynamicColorOption = dynamic
+        isSettingsLoaded = true
+    }
     init {
         viewModelScope.launch {
-            dataStore.themeFlow.collect { savedTheme ->
-                selectedTheme = ThemeOptions.valueOf(savedTheme)
-            }
-        }
-        viewModelScope.launch {
-            dataStore.dynamicColorFlow.collect { savedOption ->
-                dynamicColorOption = DynamicColorOption.valueOf(savedOption)
-            }
+            val theme = dataStore.themeFlow.first()
+            val dynamic = dataStore.dynamicColorFlow.first()
+            initSettings(
+                theme = ThemeOptions.valueOf(theme),
+                dynamic = DynamicColorOption.valueOf(dynamic)
+            )
         }
     }
-
     fun setThemeOption(theme: ThemeOptions) {
         selectedTheme = theme
         viewModelScope.launch {

@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myworkoutplan.ui.components.BubblePopAnimation
 import com.example.myworkoutplan.ui.components.DataStoreManager
 import com.example.myworkoutplan.ui.components.DynamicColorOption
 import com.example.myworkoutplan.ui.components.SettingsViewModel
@@ -63,102 +67,107 @@ class MainActivity : ComponentActivity() {
             val settingsViewModel: SettingsViewModel = viewModel(
                 factory = SettingsViewModelFactory(dataStore)
             )
-            MyWorkoutPlanTheme(
-                themeOption = settingsViewModel.selectedTheme ,
-                dynamicColorOption = settingsViewModel.dynamicColorOption
-            ) {
-                val items = listOf(
-                    BottomNavigationItem(
-                        title = "Home",
-                        selectedIcon = Icons.Filled.Home,
-                        unselectedIcon = Icons.Outlined.Home
-                    ),
-                    BottomNavigationItem(
-                        title = "Plans",
-                        selectedIcon = Icons.Filled.Menu,
-                        unselectedIcon = Icons.Outlined.Menu
-                    ),
-                    BottomNavigationItem(
-                        title = "Settings",
-                        selectedIcon = Icons.Filled.Settings,
-                        unselectedIcon = Icons.Outlined.Settings
-                    ),
-                )
-                var selectedItemIndex by rememberSaveable {
-                    mutableStateOf(0)
-                }
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color.Transparent
+            BubblePopAnimation(visible = settingsViewModel.isSettingsLoaded) {
+                MyWorkoutPlanTheme(
+                    themeOption = settingsViewModel.selectedTheme,
+                    dynamicColorOption = settingsViewModel.dynamicColorOption
                 ) {
-                    Scaffold(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        contentWindowInsets = WindowInsets.systemBars,
-                        topBar = {
-                            CenterAlignedTopAppBar(
-                                title = {
-                                    Text(
-                                        when (selectedItemIndex) {
-                                            0 -> "Today's Workout Plan"
-                                            1 -> "Plans"
-                                            2 -> "Settings"
-                                            else -> ""
-                                        },
-                                        color = MaterialTheme.colorScheme.secondary,
-                                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
-                                    )
-                                },
-                                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                                    containerColor = Color.Transparent // Make top bar transparent
-                                )
-                            )
-                        },
-                        bottomBar = {
-                            NavigationBar(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer
-                            ) {
-                                items.forEachIndexed { index, item ->
-                                    NavigationBarItem(
-                                        selected = selectedItemIndex == index,
-                                        onClick = {
-                                            selectedItemIndex = index
-                                            // navController.navigate(item.title)
-                                        },
-                                        label = {
-                                            Text(
-                                                text = item.title,
-                                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                                                )
-                                        },
-                                        icon = {
-                                            BadgedBox(
-                                                badge = {
-
-                                                }
-                                            ) {
-                                                Icon(
-                                                    imageVector = if(index == selectedItemIndex){
-                                                        item.selectedIcon
-                                                    }else item.unselectedIcon,
-                                                    contentDescription = item.title,
-                                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                                )
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                        },
+                    val items = listOf(
+                        BottomNavigationItem(
+                            title = "Home",
+                            selectedIcon = Icons.Filled.Home,
+                            unselectedIcon = Icons.Outlined.Home
+                        ),
+                        BottomNavigationItem(
+                            title = "Plans",
+                            selectedIcon = Icons.Filled.Menu,
+                            unselectedIcon = Icons.Outlined.Menu
+                        ),
+                        BottomNavigationItem(
+                            title = "Settings",
+                            selectedIcon = Icons.Filled.Settings,
+                            unselectedIcon = Icons.Outlined.Settings
+                        ),
+                    )
+                    var selectedItemIndex by rememberSaveable {
+                        mutableStateOf(0)
+                    }
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = Color.Transparent
                     ) {
-                            innerPadding ->
-                        Box(modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)) {
-                            // Use innerPadding to avoid content clipping under bottom nav
-                            when (selectedItemIndex) {
-                                0 -> HomeScreen()
-                                1 -> PlansScreen()
-                                2 -> SettingsScreen()
+                        Scaffold(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            contentWindowInsets = WindowInsets.systemBars,
+                            topBar = {
+                                CenterAlignedTopAppBar(
+                                    title = {
+                                        Text(
+                                            when (selectedItemIndex) {
+                                                0 -> "Today's Workout Plan"
+                                                1 -> "Plans"
+                                                2 -> "Settings"
+                                                else -> ""
+                                            },
+                                            color = MaterialTheme.colorScheme.secondary,
+                                            style = MaterialTheme.typography.headlineMedium.copy(
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        )
+                                    },
+                                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                        containerColor = Color.Transparent // Make top bar transparent
+                                    )
+                                )
+                            },
+                            bottomBar = {
+                                NavigationBar(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                ) {
+                                    items.forEachIndexed { index, item ->
+                                        NavigationBarItem(
+                                            selected = selectedItemIndex == index,
+                                            onClick = {
+                                                selectedItemIndex = index
+                                                // navController.navigate(item.title)
+                                            },
+                                            label = {
+                                                Text(
+                                                    text = item.title,
+                                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            },
+                                            icon = {
+                                                BadgedBox(
+                                                    badge = {
+
+                                                    }
+                                                ) {
+                                                    Icon(
+                                                        imageVector = if (index == selectedItemIndex) {
+                                                            item.selectedIcon
+                                                        } else item.unselectedIcon,
+                                                        contentDescription = item.title,
+                                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                                    )
+                                                }
+                                            }
+                                        )
+                                    }
+                                }
+                            },
+                        ) { innerPadding ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(innerPadding)
+                            ) {
+                                // Use innerPadding to avoid content clipping under bottom nav
+                                when (selectedItemIndex) {
+                                    0 -> HomeScreen()
+                                    1 -> PlansScreen()
+                                    2 -> SettingsScreen()
+                                }
                             }
                         }
                     }

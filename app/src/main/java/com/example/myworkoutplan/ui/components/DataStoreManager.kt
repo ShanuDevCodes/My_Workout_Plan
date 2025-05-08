@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 private val Context.dataStore by preferencesDataStore(name = "settings")
 
@@ -33,5 +34,15 @@ class DataStoreManager(private val context: Context) {
         context.dataStore.edit { preferences ->
             preferences[DYNAMIC_COLOR_KEY] = option.name
         }
+    }
+
+    suspend fun getSavedTheme(): ThemeOptions {
+        val saved = themeFlow.first()
+        return ThemeOptions.valueOf(saved)
+    }
+
+    suspend fun getSavedDynamicColor(): DynamicColorOption {
+        val saved = dynamicColorFlow.first()
+        return DynamicColorOption.valueOf(saved)
     }
 }
