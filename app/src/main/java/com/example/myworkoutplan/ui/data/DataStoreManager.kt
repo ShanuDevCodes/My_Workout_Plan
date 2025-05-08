@@ -38,14 +38,4 @@ class DataStoreManager(private val context: Context) {
             preferences[DYNAMIC_COLOR_KEY] = option.name
         }
     }
-
-    suspend fun getSavedTheme(): ThemeOptions {
-        val saved = themeFlow.first()
-        return ThemeOptions.valueOf(saved)
-    }
-
-    suspend fun getSavedDynamicColor(): DynamicColorOption {
-        val saved = dynamicColorFlow.first()
-        return DynamicColorOption.valueOf(saved)
-    }
 }

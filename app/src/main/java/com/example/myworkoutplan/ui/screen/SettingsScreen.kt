@@ -44,7 +44,7 @@ fun SettingsScreen() {
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
             )
 
-            ThemeOptions.values().forEach { option ->
+            ThemeOptions.entries.forEach { option ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(vertical = 4.dp)
@@ -67,7 +67,7 @@ fun SettingsScreen() {
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
             )
 
-            DynamicColorOption.values().forEach { option ->
+            DynamicColorOption.entries.forEach { option ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(vertical = 4.dp)
