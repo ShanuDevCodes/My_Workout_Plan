@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.myworkoutplan.ui.components.DayCards
 import com.example.myworkoutplan.ui.components.PlansCards
 import com.example.myworkoutplan.ui.components.pushWorkout
 

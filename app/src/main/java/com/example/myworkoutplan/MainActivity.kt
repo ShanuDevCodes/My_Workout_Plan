@@ -4,9 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,10 +38,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.ui.components.BubblePopAnimation
 import com.example.myworkoutplan.ui.components.DataStoreManager
-import com.example.myworkoutplan.ui.components.DynamicColorOption
 import com.example.myworkoutplan.ui.components.SettingsViewModel
 import com.example.myworkoutplan.ui.components.SettingsViewModelFactory
-import com.example.myworkoutplan.ui.components.ThemeOptions
 import com.example.myworkoutplan.ui.screen.HomeScreen
 import com.example.myworkoutplan.ui.screen.PlansScreen
 import com.example.myworkoutplan.ui.screen.SettingsScreen
