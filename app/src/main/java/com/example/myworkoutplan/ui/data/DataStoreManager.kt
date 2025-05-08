@@ -4,10 +4,9 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.myworkoutplan.ui.theme.DynamicColorOption
 import com.example.myworkoutplan.ui.settings.ThemeOptions
+import com.example.myworkoutplan.ui.theme.DynamicColorOption
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 private val Context.dataStore by preferencesDataStore(name = "settings")
