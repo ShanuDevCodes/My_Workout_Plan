@@ -1,18 +1,12 @@
 package com.example.myworkoutplan.ui.screen
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -26,20 +20,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.ui.components.DynamicColorOption
+import com.example.myworkoutplan.ui.components.SettingsViewModel
 import com.example.myworkoutplan.ui.components.ThemeOptions
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import com.example.myworkoutplan.ui.components.DataStoreManager
+import com.example.myworkoutplan.ui.components.SettingsViewModelFactory
 
 
 @Composable
-fun SettingsScreen(
-    selectedThemeOption: ThemeOptions,
-    onThemeChange: (ThemeOptions) -> Unit,
-    selectedDynamicColorOption: DynamicColorOption,
-    onDynamicColorChange: (DynamicColorOption) -> Unit
-) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)
+fun SettingsScreen() {
+    // Use remember to store only the factory and ViewModel
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val viewModelFactory = remember { SettingsViewModelFactory(DataStoreManager(context)) }
+    val settingsViewModel: SettingsViewModel = viewModel(factory = viewModelFactory)
+
+    val selectedThemeOption = settingsViewModel.selectedTheme
+    val selectedDynamicColorOption = settingsViewModel.dynamicColorOption
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
         Column {
             Text(
@@ -54,7 +58,7 @@ fun SettingsScreen(
                 ) {
                     RadioButton(
                         selected = selectedThemeOption == option,
-                        onClick = { onThemeChange(option) }
+                        onClick = { settingsViewModel.setThemeOption(option) }
                     )
                     Text(
                         text = option.name.replace("_", " ").lowercase()
@@ -77,24 +81,11 @@ fun SettingsScreen(
                 ) {
                     RadioButton(
                         selected = selectedDynamicColorOption == option,
-                        onClick = { onDynamicColorChange(option) }
+                        onClick = { settingsViewModel.updateDynamicColorOption(option) }
                     )
                     Text(text = option.name.lowercase().replaceFirstChar { it.uppercase() })
                 }
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Preview(){
-    var selectedTheme by rememberSaveable { mutableStateOf(ThemeOptions.SYSTEM_DEFAULT) }
-    var dynamicColorOption by rememberSaveable { mutableStateOf(DynamicColorOption.ENABLED) }
-    SettingsScreen(
-        selectedThemeOption = selectedTheme,
-        onThemeChange = { selectedTheme = it },
-        selectedDynamicColorOption = dynamicColorOption,
-        onDynamicColorChange = { dynamicColorOption = it }
-    )
 }

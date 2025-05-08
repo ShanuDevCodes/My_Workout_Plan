@@ -62,4 +62,7 @@ dependencies {
 
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
 }

@@ -35,7 +35,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myworkoutplan.ui.components.DataStoreManager
 import com.example.myworkoutplan.ui.components.DynamicColorOption
+import com.example.myworkoutplan.ui.components.SettingsViewModel
+import com.example.myworkoutplan.ui.components.SettingsViewModelFactory
 import com.example.myworkoutplan.ui.components.ThemeOptions
 import com.example.myworkoutplan.ui.screen.HomeScreen
 import com.example.myworkoutplan.ui.screen.PlansScreen
@@ -55,11 +59,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var selectedTheme by rememberSaveable { mutableStateOf(ThemeOptions.SYSTEM_DEFAULT) }
-            var dynamicColorOption by rememberSaveable { mutableStateOf(DynamicColorOption.ENABLED) }
+            val dataStore = DataStoreManager(applicationContext)
+            val settingsViewModel: SettingsViewModel = viewModel(
+                factory = SettingsViewModelFactory(dataStore)
+            )
             MyWorkoutPlanTheme(
-                themeOption = selectedTheme,
-                dynamicColorOption = dynamicColorOption
+                themeOption = settingsViewModel.selectedTheme ,
+                dynamicColorOption = settingsViewModel.dynamicColorOption
             ) {
                 val items = listOf(
                     BottomNavigationItem(
@@ -152,12 +158,7 @@ class MainActivity : ComponentActivity() {
                             when (selectedItemIndex) {
                                 0 -> HomeScreen()
                                 1 -> PlansScreen()
-                                2 -> SettingsScreen(
-                                    selectedThemeOption = selectedTheme,
-                                    onThemeChange = { selectedTheme = it },
-                                    selectedDynamicColorOption = dynamicColorOption,
-                                    onDynamicColorChange = { dynamicColorOption = it }
-                                )
+                                2 -> SettingsScreen()
                             }
                         }
                     }
