@@ -1,5 +1,7 @@
 package com.example.myworkoutplan.ui.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +22,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
+import com.example.myworkoutplan.ui.navigation.AppNavHost
+import com.example.myworkoutplan.ui.navigation.Day
+import com.example.myworkoutplan.ui.screen.DayScreen
+import java.time.DayOfWeek
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DayCards(workout: String, icon: Int){
     Card(

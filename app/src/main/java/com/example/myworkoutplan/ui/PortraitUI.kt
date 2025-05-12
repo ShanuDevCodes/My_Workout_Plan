@@ -1,5 +1,7 @@
 package com.example.myworkoutplan.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,13 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myworkoutplan.ui.navigation.NavigationViewModel
 import com.example.myworkoutplan.ui.screen.HomeScreen
 import com.example.myworkoutplan.ui.screen.PlansScreen
 import com.example.myworkoutplan.ui.screen.SettingsScreen
 import androidx.compose.runtime.getValue
+import androidx.navigation.NavHostController
 import com.example.myworkoutplan.ui.components.items
+import com.example.myworkoutplan.ui.navigation.NavigationViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PortraitUI(viewModel: NavigationViewModel = viewModel()){
@@ -102,7 +106,6 @@ fun PortraitUI(viewModel: NavigationViewModel = viewModel()){
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                // Use innerPadding to avoid content clipping under bottom nav
                 when (selectedItemIndex) {
                     0 -> HomeScreen()
                     1 -> PlansScreen()

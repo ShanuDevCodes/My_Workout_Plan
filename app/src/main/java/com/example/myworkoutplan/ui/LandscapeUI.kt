@@ -1,5 +1,7 @@
 package com.example.myworkoutplan.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -28,8 +30,11 @@ import com.example.myworkoutplan.ui.screen.HomeScreen
 import com.example.myworkoutplan.ui.screen.PlansScreen
 import com.example.myworkoutplan.ui.screen.SettingsScreen
 import androidx.compose.runtime.getValue
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.ui.components.items
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LandscapeUI(viewModel: NavigationViewModel = viewModel()) {

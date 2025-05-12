@@ -1,18 +1,21 @@
 package com.example.myworkoutplan
 
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.ui.LandscapeUI
 import com.example.myworkoutplan.ui.PortraitUI
 import com.example.myworkoutplan.ui.components.BubblePopAnimation
 import com.example.myworkoutplan.ui.data.DataStoreManager
+import com.example.myworkoutplan.ui.navigation.AppNavHost
 import com.example.myworkoutplan.ui.settings.SettingsViewModel
 import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
 import com.example.myworkoutplan.ui.theme.MyWorkoutPlanTheme
@@ -25,6 +28,7 @@ data class BottomNavigationItem(
 )
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
