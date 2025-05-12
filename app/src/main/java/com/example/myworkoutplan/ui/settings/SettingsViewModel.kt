@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkoutplan.ui.data.DataStoreManager
 import com.example.myworkoutplan.ui.theme.DynamicColorOption
+import com.example.myworkoutplan.ui.theme.ThemeOptions
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 

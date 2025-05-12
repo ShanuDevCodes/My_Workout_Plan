@@ -9,7 +9,7 @@ import com.example.myworkoutplan.R
 import com.example.myworkoutplan.ui.components.DayCards
 
 @Composable
-fun PlansScreen(){
+fun PlansScreen() {
     val plans = listOf(
         "Push Day" to R.drawable.push_day,
         "Pull Day" to R.drawable.pull_day,

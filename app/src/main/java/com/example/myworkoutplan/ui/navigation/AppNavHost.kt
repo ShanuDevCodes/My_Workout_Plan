@@ -1,5 +1,17 @@
 package com.example.myworkoutplan.ui.navigation
 
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.example.myworkoutplan.ui.components.legWorkout
+import com.example.myworkoutplan.ui.components.pullWorkout
+import com.example.myworkoutplan.ui.components.pushWorkout
+import com.example.myworkoutplan.ui.screen.DayScreen
+import com.example.myworkoutplan.ui.screen.PlansScreen
+
 //import androidx.compose.animation.AnimatedContentTransitionScope
 //import androidx.compose.animation.core.FastOutSlowInEasing
 //import androidx.compose.animation.core.tween

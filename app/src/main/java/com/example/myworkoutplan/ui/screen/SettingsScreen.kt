@@ -21,7 +21,7 @@ import com.example.myworkoutplan.ui.data.DataStoreManager
 import com.example.myworkoutplan.ui.theme.DynamicColorOption
 import com.example.myworkoutplan.ui.settings.SettingsViewModel
 import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
-import com.example.myworkoutplan.ui.settings.ThemeOptions
+import com.example.myworkoutplan.ui.theme.ThemeOptions
 
 
 @Composable

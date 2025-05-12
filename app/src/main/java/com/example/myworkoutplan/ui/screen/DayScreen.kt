@@ -12,28 +12,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.ui.components.PlansCards
+import com.example.myworkoutplan.ui.components.pullWorkout
 import com.example.myworkoutplan.ui.components.pushWorkout
 
 @Composable
-fun DayScreen(){
-    Box(modifier = Modifier
-    ) {
-        Column (modifier = Modifier
-        ){
+fun DayScreen(dayTitle: String, workoutList: List<Pair<String, Int>>) {
+    Box {
+        Column {
             LazyColumn {
-                item{
+                item {
                     Text(
-                        "Push Day",
+                        dayTitle,
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(16.dp)
                     )
                 }
-                items(pushWorkout) { (item, icon) ->
-                    PlansCards(
-                        item,
-                        icon
-                    )
+                items(workoutList) { (item, icon) ->
+                    PlansCards(item, icon)
                 }
             }
         }
