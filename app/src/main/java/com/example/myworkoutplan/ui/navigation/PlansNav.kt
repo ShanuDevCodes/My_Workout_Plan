@@ -16,7 +16,6 @@ import com.example.myworkoutplan.ui.components.legWorkout
 import com.example.myworkoutplan.ui.components.pullWorkout
 import com.example.myworkoutplan.ui.components.pushWorkout
 import com.example.myworkoutplan.ui.screen.DayScreen
-import com.example.myworkoutplan.ui.screen.HomeScreen
 import com.example.myworkoutplan.ui.screen.PlansScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
