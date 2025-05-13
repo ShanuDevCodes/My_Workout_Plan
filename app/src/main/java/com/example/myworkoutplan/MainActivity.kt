@@ -10,12 +10,10 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.ui.LandscapeUI
 import com.example.myworkoutplan.ui.PortraitUI
 import com.example.myworkoutplan.ui.components.BubblePopAnimation
 import com.example.myworkoutplan.ui.data.DataStoreManager
-import com.example.myworkoutplan.ui.navigation.AppNavHost
 import com.example.myworkoutplan.ui.settings.SettingsViewModel
 import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
 import com.example.myworkoutplan.ui.theme.MyWorkoutPlanTheme

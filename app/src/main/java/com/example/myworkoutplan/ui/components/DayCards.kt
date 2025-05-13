@@ -22,22 +22,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
-import com.example.myworkoutplan.ui.navigation.AppNavHost
-import com.example.myworkoutplan.ui.navigation.Day
-import com.example.myworkoutplan.ui.screen.DayScreen
-import java.time.DayOfWeek
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DayCards(workout: String, icon: Int){
+fun DayCards(workout: String, icon: Int,onClick: () -> Unit){
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 4.dp),
-        onClick = {}
+        onClick = onClick
     ){
         Row(
             modifier = Modifier

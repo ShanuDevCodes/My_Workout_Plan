@@ -12,8 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.ui.components.PlansCards
-import com.example.myworkoutplan.ui.components.pullWorkout
-import com.example.myworkoutplan.ui.components.pushWorkout
 
 @Composable
 fun DayScreen(dayTitle: String, workoutList: List<Pair<String, Int>>) {

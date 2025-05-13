@@ -41,6 +41,7 @@ fun SettingsScreen() {
         Column {
             Text(
                 "Choose Theme",
+                color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
             )
 
@@ -64,6 +65,7 @@ fun SettingsScreen() {
 
             Text(
                 "Use Dynamic Colors",
+                color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
             )
 

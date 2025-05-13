@@ -21,18 +21,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myworkoutplan.ui.navigation.NavigationViewModel
-import com.example.myworkoutplan.ui.screen.HomeScreen
-import com.example.myworkoutplan.ui.screen.PlansScreen
-import com.example.myworkoutplan.ui.screen.SettingsScreen
-import androidx.compose.runtime.getValue
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.ui.components.items
+import com.example.myworkoutplan.ui.navigation.NavigationViewModel
+import com.example.myworkoutplan.ui.navigation.PlansNavigator
+import com.example.myworkoutplan.ui.screen.HomeScreen
+import com.example.myworkoutplan.ui.screen.SettingsScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +39,8 @@ fun LandscapeUI(viewModel: NavigationViewModel = viewModel()) {
     val selectedItemIndex by viewModel.selectedItemIndex.collectAsState()
 
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         color = Color.Transparent
     ) {
         Row {
@@ -107,7 +106,7 @@ fun LandscapeUI(viewModel: NavigationViewModel = viewModel()) {
                 ) {
                     when (selectedItemIndex) {
                         0 -> HomeScreen()
-                        1 -> PlansScreen()
+                        1 -> PlansNavigator()
                         2 -> SettingsScreen()
                     }
                 }
