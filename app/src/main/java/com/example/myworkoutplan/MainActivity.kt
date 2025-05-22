@@ -18,13 +18,6 @@ import com.example.myworkoutplan.ui.settings.SettingsViewModel
 import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
 import com.example.myworkoutplan.ui.theme.MyWorkoutPlanTheme
 
-data class BottomNavigationItem(
-    val title: String,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
-
-)
-
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
