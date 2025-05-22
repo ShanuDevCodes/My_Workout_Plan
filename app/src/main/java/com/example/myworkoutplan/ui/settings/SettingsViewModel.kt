@@ -1,51 +1,52 @@
 package com.example.myworkoutplan.ui.settings
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkoutplan.ui.data.DataStoreManager
 import com.example.myworkoutplan.ui.theme.DynamicColorOption
 import com.example.myworkoutplan.ui.theme.ThemeOptions
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(private val dataStore: DataStoreManager) : ViewModel() {
 
-    var selectedTheme by mutableStateOf(ThemeOptions.SYSTEM_DEFAULT)
-        private set
+    private val _selectedTheme = mutableStateOf(ThemeOptions.SYSTEM_DEFAULT)
+    val selectedTheme: ThemeOptions get() = _selectedTheme.value
 
-    var dynamicColorOption by mutableStateOf(DynamicColorOption.ENABLED)
-        private set
+    private val _dynamicColorOption = mutableStateOf(DynamicColorOption.ENABLED)
+    val dynamicColorOption: DynamicColorOption get() = _dynamicColorOption.value
 
-    var isSettingsLoaded by mutableStateOf(false)
-        private set
+    private val _isSettingsLoaded = mutableStateOf(false)
+    val isSettingsLoaded: Boolean get() = _isSettingsLoaded.value
 
-    fun initSettings(theme: ThemeOptions, dynamic: DynamicColorOption) {
-        selectedTheme = theme
-        dynamicColorOption = dynamic
-        isSettingsLoaded = true
-    }
     init {
         viewModelScope.launch {
-            val theme = dataStore.themeFlow.first()
-            val dynamic = dataStore.dynamicColorFlow.first()
-            initSettings(
-                theme = ThemeOptions.valueOf(theme),
-                dynamic = DynamicColorOption.valueOf(dynamic)
-            )
+            dataStore.themeFlow.collect { theme ->
+                _selectedTheme.value = ThemeOptions.valueOf(theme)
+                checkIfReady()
+            }
+        }
+        viewModelScope.launch {
+            dataStore.dynamicColorFlow.collect { dynamic ->
+                _dynamicColorOption.value = DynamicColorOption.valueOf(dynamic)
+                checkIfReady()
+            }
         }
     }
+
+    private fun checkIfReady() {
+        if (_selectedTheme.value != null && _dynamicColorOption.value != null) {
+            _isSettingsLoaded.value = true
+        }
+    }
+
     fun setThemeOption(theme: ThemeOptions) {
-        selectedTheme = theme
         viewModelScope.launch {
             dataStore.saveThemeOption(theme)
         }
     }
 
     fun updateDynamicColorOption(option: DynamicColorOption) {
-        dynamicColorOption = option
         viewModelScope.launch {
             dataStore.saveDynamicColorOption(option)
         }

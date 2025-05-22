@@ -7,9 +7,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.ui.LandscapeUI
 import com.example.myworkoutplan.ui.PortraitUI
 import com.example.myworkoutplan.ui.components.BubblePopAnimation
@@ -28,17 +32,25 @@ class MainActivity : ComponentActivity() {
             val settingsViewModel: SettingsViewModel = viewModel(
                 factory = SettingsViewModelFactory(dataStore)
             )
+
+            val selectedTheme by remember { derivedStateOf { settingsViewModel.selectedTheme } }
+            val dynamicColorOption by remember { derivedStateOf { settingsViewModel.dynamicColorOption } }
+            val isLoaded by remember { derivedStateOf { settingsViewModel.isSettingsLoaded } }
+
             val configuration = LocalConfiguration.current
             val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-            BubblePopAnimation(visible = settingsViewModel.isSettingsLoaded) {
+            val rootNavController = rememberNavController()
+            val navBackStackEntry by rootNavController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
+            BubblePopAnimation(visible = isLoaded) {
                 MyWorkoutPlanTheme(
-                    themeOption = settingsViewModel.selectedTheme,
-                    dynamicColorOption = settingsViewModel.dynamicColorOption
+                    themeOption = selectedTheme,
+                    dynamicColorOption = dynamicColorOption
                 ) {
                     if (isPortrait) {
-                        PortraitUI()
-                    }else{
-                        LandscapeUI()
+                        PortraitUI(rootNavController,currentRoute)
+                    } else {
+                        LandscapeUI(rootNavController,currentRoute)
                     }
                 }
             }

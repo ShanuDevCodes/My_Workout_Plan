@@ -20,12 +20,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.example.myworkoutplan.ui.components.items
 import com.example.myworkoutplan.ui.navigation.NavigationViewModel
 import com.example.myworkoutplan.ui.navigation.PlansNavigator
@@ -35,9 +37,7 @@ import com.example.myworkoutplan.ui.screen.SettingsScreen
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LandscapeUI(viewModel: NavigationViewModel = viewModel()) {
-    val selectedItemIndex by viewModel.selectedItemIndex.collectAsState()
-
+fun LandscapeUI(rootNavController: NavHostController,currentRoute: String?,viewModel: NavigationViewModel = viewModel()) {
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -49,13 +49,22 @@ fun LandscapeUI(viewModel: NavigationViewModel = viewModel()) {
                 containerColor = MaterialTheme.colorScheme.surfaceContainer
             ) {
                 items.forEachIndexed { index, item ->
+                    val isSelected = item.title.lowercase() == currentRoute
                     NavigationRailItem(
-                        selected = selectedItemIndex == index,
-                        onClick = { viewModel.onItemSelected(index) },
+                        selected = isSelected,
+                        onClick = {
+                            rootNavController.navigate(item.title.lowercase()){
+                                popUpTo(rootNavController.graph.findStartDestination().id){
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
                         icon = {
                             BadgedBox(badge = { }) {
                                 Icon(
-                                    imageVector = if (index == selectedItemIndex) {
+                                    imageVector = if (isSelected) {
                                         item.selectedIcon
                                     } else item.unselectedIcon,
                                     contentDescription = item.title,
@@ -81,10 +90,10 @@ fun LandscapeUI(viewModel: NavigationViewModel = viewModel()) {
                     TopAppBar(
                         title = {
                             Text(
-                                when (selectedItemIndex) {
-                                    0 -> "Home "
-                                    1 -> "Plans"
-                                    2 -> "Settings"
+                                when (currentRoute) {
+                                    "home" -> "Home "
+                                    "plans" -> "Plans"
+                                    "settings" -> "Settings"
                                     else -> ""
                                 },
                                 color = MaterialTheme.colorScheme.secondary,
@@ -104,10 +113,19 @@ fun LandscapeUI(viewModel: NavigationViewModel = viewModel()) {
                         .fillMaxSize()
                         .padding(innerPadding)
                 ) {
-                    when (selectedItemIndex) {
-                        0 -> HomeScreen()
-                        1 -> PlansNavigator()
-                        2 -> SettingsScreen()
+                    NavHost(
+                        rootNavController,
+                        startDestination = "home"
+                    ) {
+                        composable("home") {
+                            HomeScreen()
+                        }
+                        composable("plans") {
+                            PlansNavigator()
+                        }
+                        composable("settings") {
+                            SettingsScreen()
+                        }
                     }
                 }
             }
