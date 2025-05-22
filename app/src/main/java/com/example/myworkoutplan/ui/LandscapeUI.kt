@@ -2,6 +2,9 @@ package com.example.myworkoutplan.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -115,7 +118,19 @@ fun LandscapeUI(rootNavController: NavHostController,currentRoute: String?,viewM
                 ) {
                     NavHost(
                         rootNavController,
-                        startDestination = "home"
+                        startDestination = "home",
+                        enterTransition = {
+                            fadeIn(animationSpec = tween(durationMillis = 100))
+                        },
+                        exitTransition = {
+                            fadeOut(animationSpec = tween(durationMillis = 100))
+                        },
+                        popEnterTransition = {
+                            fadeIn(animationSpec = tween(durationMillis = 100))
+                        },
+                        popExitTransition = {
+                            fadeOut(animationSpec = tween(durationMillis = 100))
+                        }
                     ) {
                         composable("home") {
                             HomeScreen()
