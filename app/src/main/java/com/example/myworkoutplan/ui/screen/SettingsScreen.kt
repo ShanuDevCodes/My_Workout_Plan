@@ -32,53 +32,62 @@ fun SettingsScreen() {
 
     val selectedThemeOption = settingsViewModel.selectedTheme
     val selectedDynamicColorOption = settingsViewModel.dynamicColorOption
+    Column {
+        Text(
+            text = "Settings",
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(16.dp)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Column {
+                Text(
+                    "Choose Theme",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Column {
-            Text(
-                "Choose Theme",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-            )
-
-            ThemeOptions.entries.forEach { option ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                ) {
-                    RadioButton(
-                        selected = selectedThemeOption == option,
-                        onClick = { settingsViewModel.setThemeOption(option) }
-                    )
-                    Text(
-                        text = option.name.replace("_", " ").lowercase()
-                            .replaceFirstChar { it.uppercase() }
-                    )
+                ThemeOptions.entries.forEach { option ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    ) {
+                        RadioButton(
+                            selected = selectedThemeOption == option,
+                            onClick = { settingsViewModel.setThemeOption(option) }
+                        )
+                        Text(
+                            text = option.name.replace("_", " ").lowercase()
+                                .replaceFirstChar { it.uppercase() }
+                        )
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                "Use Dynamic Colors",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-            )
+                Text(
+                    "Use Dynamic Colors",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                )
 
-            DynamicColorOption.entries.forEach { option ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                ) {
-                    RadioButton(
-                        selected = selectedDynamicColorOption == option,
-                        onClick = { settingsViewModel.updateDynamicColorOption(option) }
-                    )
-                    Text(text = option.name.lowercase().replaceFirstChar { it.uppercase() })
+                DynamicColorOption.entries.forEach { option ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    ) {
+                        RadioButton(
+                            selected = selectedDynamicColorOption == option,
+                            onClick = { settingsViewModel.updateDynamicColorOption(option) }
+                        )
+                        Text(text = option.name.lowercase().replaceFirstChar { it.uppercase() })
+                    }
                 }
             }
         }

@@ -2,13 +2,27 @@ package com.example.myworkoutplan.ui.screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.ui.components.legWorkout
 import com.example.myworkoutplan.ui.components.pullWorkout
 import com.example.myworkoutplan.ui.components.pushWorkout
 import java.time.DayOfWeek
 import java.time.LocalDate
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(){
@@ -19,6 +33,15 @@ fun HomeScreen(){
         DayOfWeek.WEDNESDAY, DayOfWeek.SATURDAY -> "Leg Day" to legWorkout
         else -> "Rest Day" to emptyList()
     }
-
-    DayScreen(title,workout)
+    Column {
+        Text(
+            text = "Home",
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(16.dp)
+        )
+        DayScreen(title, workout)
+    }
 }

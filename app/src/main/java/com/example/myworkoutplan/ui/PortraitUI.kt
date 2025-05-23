@@ -50,27 +50,6 @@ fun PortraitUI(rootNavController: NavHostController,currentRoute: String?,viewMo
         Scaffold(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             contentWindowInsets = WindowInsets.systemBars,
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            when (currentRoute) {
-                                "home" -> "Home "
-                                "plans" -> "Plans"
-                                "settings" -> "Settings"
-                                else -> ""
-                            },
-                            color = MaterialTheme.colorScheme.secondary,
-                            style = MaterialTheme.typography.headlineMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                    },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Color.Transparent // Make top bar transparent
-                    )
-                )
-            },
             bottomBar = {
                 NavigationBar(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer
