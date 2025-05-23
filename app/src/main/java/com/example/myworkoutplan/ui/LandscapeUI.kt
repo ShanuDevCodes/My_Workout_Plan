@@ -20,12 +20,9 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -89,27 +86,6 @@ fun LandscapeUI(rootNavController: NavHostController,currentRoute: String?,viewM
             Scaffold(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 contentWindowInsets = WindowInsets.systemBars,
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                when (currentRoute) {
-                                    "home" -> "Home "
-                                    "plans" -> "Plans"
-                                    "settings" -> "Settings"
-                                    else -> ""
-                                },
-                                color = MaterialTheme.colorScheme.secondary,
-                                style = MaterialTheme.typography.headlineMedium.copy(
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                        },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                            containerColor = Color.Transparent
-                        )
-                    )
-                }
             ) { innerPadding ->
                 Box(
                     modifier = Modifier
