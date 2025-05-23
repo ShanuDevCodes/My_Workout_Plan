@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -46,14 +47,17 @@ fun SettingsScreen() {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Column {
-                Text(
-                    "Choose Theme",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                )
+            LazyColumn {
+                item {
+                    Text(
+                        "Choose Theme",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
 
-                ThemeOptions.entries.forEach { option ->
+                items(ThemeOptions.entries.size) { index ->
+                    val option = ThemeOptions.entries[index]
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(vertical = 4.dp)
@@ -69,15 +73,18 @@ fun SettingsScreen() {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                item { Spacer(modifier = Modifier.height(16.dp)) }
 
-                Text(
-                    "Use Dynamic Colors",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                )
+                item {
+                    Text(
+                        "Use Dynamic Colors",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
 
-                DynamicColorOption.entries.forEach { option ->
+                items(DynamicColorOption.entries.size) { index ->
+                    val option = DynamicColorOption.entries[index]
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(vertical = 4.dp)
@@ -86,7 +93,9 @@ fun SettingsScreen() {
                             selected = selectedDynamicColorOption == option,
                             onClick = { settingsViewModel.updateDynamicColorOption(option) }
                         )
-                        Text(text = option.name.lowercase().replaceFirstChar { it.uppercase() })
+                        Text(
+                            text = option.name.lowercase().replaceFirstChar { it.uppercase() }
+                        )
                     }
                 }
             }
