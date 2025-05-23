@@ -22,8 +22,8 @@ import androidx.navigation.toRoute
 import com.example.myworkoutplan.ui.components.legWorkout
 import com.example.myworkoutplan.ui.components.pullWorkout
 import com.example.myworkoutplan.ui.components.pushWorkout
-import com.example.myworkoutplan.ui.screen.DayScreen
 import com.example.myworkoutplan.ui.screen.PlansScreen
+import com.example.myworkoutplan.ui.screen.PlansScreenView
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -78,7 +78,7 @@ fun PlansNavigator() {
                     "Leg Day" -> legWorkout
                     else -> emptyList()
                 }
-                DayScreen(args.dayTitle, workoutList)
+                PlansScreenView(args.dayTitle, workoutList)
             }
         }
     }
