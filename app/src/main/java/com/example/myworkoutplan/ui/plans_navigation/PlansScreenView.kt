@@ -1,4 +1,4 @@
-package com.example.myworkoutplan.ui.screen
+package com.example.myworkoutplan.ui.plans_navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.myworkoutplan.ui.screen.DayScreen
 
 @Composable
 fun PlansScreenView(dayTitle: String, workoutList: List<Pair<String, Int>>) {

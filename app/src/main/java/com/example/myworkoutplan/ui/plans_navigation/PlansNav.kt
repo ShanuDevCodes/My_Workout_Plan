@@ -1,4 +1,4 @@
-package com.example.myworkoutplan.ui.navigation
+package com.example.myworkoutplan.ui.plans_navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -23,7 +23,6 @@ import com.example.myworkoutplan.ui.components.legWorkout
 import com.example.myworkoutplan.ui.components.pullWorkout
 import com.example.myworkoutplan.ui.components.pushWorkout
 import com.example.myworkoutplan.ui.screen.PlansScreen
-import com.example.myworkoutplan.ui.screen.PlansScreenView
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

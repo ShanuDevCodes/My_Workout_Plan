@@ -1,4 +1,4 @@
-package com.example.myworkoutplan.ui.navigation
+package com.example.myworkoutplan.ui.plans_navigation
 
 import kotlinx.serialization.Serializable
 

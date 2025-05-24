@@ -27,7 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.myworkoutplan.ui.components.items
-import com.example.myworkoutplan.ui.navigation.PlansNavigator
+import com.example.myworkoutplan.ui.plans_navigation.PlansNavigator
 import com.example.myworkoutplan.ui.screen.HomeScreen
 import com.example.myworkoutplan.ui.screen.SettingsScreen
 

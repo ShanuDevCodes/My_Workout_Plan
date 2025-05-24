@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.ui.components.DayCards
-import com.example.myworkoutplan.ui.navigation.Day
+import com.example.myworkoutplan.ui.plans_navigation.Day
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -27,7 +27,8 @@ fun PlansScreen(navController: NavController) {
                     workout = item,
                     icon = icon,
                     onClick = {
-                        navController.navigate(Day(dayTitle = item)
+                        navController.navigate(
+                            Day(dayTitle = item)
                         )
                     }
                 )
