@@ -29,7 +29,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.myworkoutplan.ui.components.items
-import com.example.myworkoutplan.ui.navigation.NavigationViewModel
 import com.example.myworkoutplan.ui.navigation.PlansNavigator
 import com.example.myworkoutplan.ui.screen.HomeScreen
 import com.example.myworkoutplan.ui.screen.SettingsScreen
@@ -37,14 +36,13 @@ import com.example.myworkoutplan.ui.screen.SettingsScreen
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LandscapeUI(rootNavController: NavHostController,currentRoute: String?,viewModel: NavigationViewModel = viewModel()) {
+fun LandscapeUI(rootNavController: NavHostController,currentRoute: String?) {
     Surface(
         modifier = Modifier
             .fillMaxSize(),
         color = Color.Transparent
     ) {
         Row {
-            // NavigationRail instead of Bottom Navigation
             NavigationRail(
                 containerColor = MaterialTheme.colorScheme.surfaceContainer
             ) {
@@ -96,16 +94,16 @@ fun LandscapeUI(rootNavController: NavHostController,currentRoute: String?,viewM
                         rootNavController,
                         startDestination = "home",
                         enterTransition = {
-                            fadeIn(animationSpec = tween(durationMillis = 100))
+                            fadeIn(animationSpec = tween(durationMillis = 1))
                         },
                         exitTransition = {
-                            fadeOut(animationSpec = tween(durationMillis = 100))
+                            fadeOut(animationSpec = tween(durationMillis = 1))
                         },
                         popEnterTransition = {
-                            fadeIn(animationSpec = tween(durationMillis = 100))
+                            fadeIn(animationSpec = tween(durationMillis = 1))
                         },
                         popExitTransition = {
-                            fadeOut(animationSpec = tween(durationMillis = 100))
+                            fadeOut(animationSpec = tween(durationMillis = 1))
                         }
                     ) {
                         composable("home") {
