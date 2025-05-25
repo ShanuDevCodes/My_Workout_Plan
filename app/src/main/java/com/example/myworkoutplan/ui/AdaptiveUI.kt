@@ -50,11 +50,11 @@ fun AdaptiveUI(rootNavController: NavHostController,currentRoute: String?){
             color = Color.Transparent
         ) {
             Scaffold(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                containerColor = MaterialTheme.colorScheme.background,
                 contentWindowInsets = WindowInsets.systemBars,
                 bottomBar = {
                     NavigationBar(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                     ) {
                         items.forEachIndexed { index, item ->
                             val isSelected = item.title.lowercase() == currentRoute
@@ -104,7 +104,7 @@ fun AdaptiveUI(rootNavController: NavHostController,currentRoute: String?){
         ) {
             Row {
                 NavigationRail(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                 ) {
                     items.forEachIndexed { index, item ->
                         val isSelected = item.title.lowercase() == currentRoute
@@ -140,7 +140,7 @@ fun AdaptiveUI(rootNavController: NavHostController,currentRoute: String?){
                     }
                 }
                 Scaffold(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    containerColor = MaterialTheme.colorScheme.background,
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->
                      MainNavigation(innerPadding,rootNavController)
