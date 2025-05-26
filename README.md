@@ -1,4 +1,4 @@
-# 🏋️‍♂️ Workout Planner App
+# 🏋️‍♂️ My Workout Planner App
 
 A clean and modern Workout Planner app built using **Kotlin** and **Jetpack Compose**. Plan your weekly fitness schedule, manage daily routines, and switch between light/dark/system themes with ease.
 
