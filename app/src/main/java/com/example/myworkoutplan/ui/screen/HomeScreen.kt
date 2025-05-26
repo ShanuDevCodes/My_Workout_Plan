@@ -186,7 +186,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
                                 )
                             },
                             modifier = Modifier
-                                .width(89.dp)
+                                .width(92.dp)
                                 .height(44.dp)
                                 .scale(fabScaleMini.value)
                                 .offset(y = fabOffsetY.value.dp),
