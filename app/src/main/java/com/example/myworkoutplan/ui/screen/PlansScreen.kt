@@ -29,7 +29,9 @@ fun PlansScreen(navController: NavController) {
                     onClick = {
                         navController.navigate(
                             Day(dayTitle = item)
-                        )
+                        ){
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
