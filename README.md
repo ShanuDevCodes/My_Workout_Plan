@@ -38,5 +38,5 @@ A clean and modern Workout Planner app built using **Kotlin** and **Jetpack Comp
 ### Setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Workout-Planner.git
-cd Workout-Planner
+git clone https://github.com/YOUR_USERNAME/My_Workout_Plan.git
+cd My_Workout_Plan
