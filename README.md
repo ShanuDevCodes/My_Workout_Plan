@@ -4,12 +4,6 @@ A clean and modern Workout Planner app built using **Kotlin** and **Jetpack Comp
 
 ---
 
-## 📱 Screenshots
-
-> (Add screenshots or a screen recording here)
-
----
-
 ## ✨ Features
 
 - 🗓️ Plan workouts for each day of the week
