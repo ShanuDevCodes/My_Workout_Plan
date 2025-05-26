@@ -11,7 +11,7 @@ A clean and modern Workout Planner app built using **Kotlin** and **Jetpack Comp
 - 🎨 Supports Light, Dark, and System themes
 - 🧠 State management using `ViewModel` and `State`
 - 📐 Responsive and modern UI using Jetpack Compose
-- 💾 (Optional) Data persistence using `DataStore` (planned/implemented)
+- 💾 Data persistence using `DataStore`
 
 ---
 
@@ -22,8 +22,8 @@ A clean and modern Workout Planner app built using **Kotlin** and **Jetpack Comp
 - **Material 3**
 - **Android Studio**
 - **ViewModel & State**
-- (Optional) **Proto DataStore** (planned or in-progress)
-- (Optional) **Room Database** (for persistent workout plans)
+- **DataStore**
+- **Room Database** (in-progress)
 
 ---
 
