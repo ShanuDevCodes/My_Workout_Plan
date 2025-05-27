@@ -8,17 +8,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.ui.components.PlansCards
-import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDatabase
-import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
-import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
-import androidx.compose.runtime.getValue
 
 @Composable
 fun DayScreen(dayTitle: String, workoutList: List<Pair<String, Int>>) {
