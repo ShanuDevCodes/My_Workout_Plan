@@ -1,5 +1,6 @@
 package com.example.myworkoutplan
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -20,6 +21,7 @@ import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
 import com.example.myworkoutplan.ui.theme.MyWorkoutPlanTheme
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("CoroutineCreationDuringComposition")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,19 +31,22 @@ class MainActivity : ComponentActivity() {
             val settingsViewModel: SettingsViewModel = viewModel(
                 factory = SettingsViewModelFactory(dataStore)
             )
-
             val selectedTheme by remember { derivedStateOf { settingsViewModel.selectedTheme } }
             val dynamicColorOption by remember { derivedStateOf { settingsViewModel.dynamicColorOption } }
             val isLoaded by remember { derivedStateOf { settingsViewModel.isSettingsLoaded } }
             val rootNavController = rememberNavController()
             val navBackStackEntry by rootNavController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
+
             BubblePopAnimation(visible = isLoaded) {
                 MyWorkoutPlanTheme(
                     themeOption = selectedTheme,
                     dynamicColorOption = dynamicColorOption
                 ) {
-                    AdaptiveUI(rootNavController,currentRoute)
+                    AdaptiveUI(
+                        rootNavController = rootNavController,
+                        currentRoute = currentRoute,
+                    )
                 }
             }
         }

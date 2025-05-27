@@ -18,6 +18,6 @@ interface WorkoutDao {
     @Query("SELECT exercise_name as workoutName,image_resource as imageResource FROM workout_plans WHERE workout_type = :workoutType")
     fun getWorkoutsByType(workoutType: String): Flow<List<WorkoutWithImage>>
 
-    @Query("SELECT DISTINCT workout_type as workoutType,workout_type_image as imageResource FROM workout_plans")
+    @Query("SELECT DISTINCT workout_type as workoutType,workout_type_image as workoutTypeImage FROM workout_plans")
     fun getAllWorkoutTypes(): Flow<List<WorkoutTypeWithImage>>
 }

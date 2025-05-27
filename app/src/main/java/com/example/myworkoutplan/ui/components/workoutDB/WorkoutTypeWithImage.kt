@@ -2,7 +2,7 @@ package com.example.myworkoutplan.ui.components.workoutDB
 
 data class WorkoutTypeWithImage(
     val workoutType: String,
-    val imageResource: Int
+    val workoutTypeImage: Int
 )
 data class WorkoutWithImage(
     val workoutName: String,

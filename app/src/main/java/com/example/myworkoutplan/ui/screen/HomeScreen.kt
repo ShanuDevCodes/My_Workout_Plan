@@ -151,23 +151,6 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Box(contentAlignment = Alignment.BottomEnd) {
-//                        FloatingActionButton(
-//                            onClick = {
-//                                isPaused = !isPaused
-//                            },
-//                            modifier = Modifier
-//                                .size(44.dp)
-//                                .offset(y = fabOffsetY.value.dp)
-//                                .scale(fabScaleMini.value),
-//                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-//                            elevation = FloatingActionButtonDefaults.elevation(2.dp)
-//                        ) {
-//                            Icon(
-//                                painter = painterResource(id = R.drawable.pause),
-//                                contentDescription = "AI",
-//                                modifier = Modifier.size(10.dp)
-//                            )
-//                        }
                         ExtendedFloatingActionButton(
                             onClick = {
                                 isPaused = !isPaused
