@@ -35,8 +35,6 @@ import com.example.myworkoutplan.ui.screen.WelcomeScreen
 import com.example.myworkoutplan.ui.settings.SettingsViewModel
 import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
 import com.example.myworkoutplan.ui.theme.MyWorkoutPlanTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
