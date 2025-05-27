@@ -16,13 +16,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.R
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDatabase
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
 import com.example.myworkoutplan.ui.screen.DayScreen
 import kotlinx.coroutines.delay
 
@@ -56,11 +63,17 @@ fun PlansScreenView(dayTitle: String, workoutList: List<Pair<String, Int>>) {
             animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
         )
     }
-
+    val context = LocalContext.current
+    val dao = WorkoutDatabase.getInstance(context).workoutDao()
+    val viewModel: WorkoutViewModel = viewModel(
+        factory = WorkoutViewModelFactory(dao)
+    )
+    val exerciseList by viewModel.getExerciseNameAndImagePairsByType(dayTitle)
+        .collectAsState(initial = emptyList())
     Box(modifier = Modifier.fillMaxSize()) {
         DayScreen(
             dayTitle = dayTitle,
-            workoutList = workoutList,
+            workoutList = exerciseList,
         )
         Box(
             modifier = Modifier
