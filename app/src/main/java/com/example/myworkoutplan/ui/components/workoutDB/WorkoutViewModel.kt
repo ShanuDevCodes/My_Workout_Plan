@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkoutplan.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -17,11 +19,6 @@ import kotlinx.coroutines.launch
 class WorkoutViewModel(
     private val dao: WorkoutDao
 ) : ViewModel(){
-    init {
-        viewModelScope.launch {
-            dao.upsertWorkout(WorkoutPlan("Bench Press",R.drawable.bench_press,"Pull Day",R.drawable.push_day))
-        }
-    }
     private val _state = MutableStateFlow(WorkoutState())
     private val _currentWorkoutType = MutableStateFlow("")
 
@@ -110,5 +107,11 @@ class WorkoutViewModel(
                 _currentWorkoutType.value = ""
             }
         }
+    }
+    fun getExerciseNameAndImagePairsByType(type: String): Flow<List<Pair<String, Int>>> {
+        return dao.getWorkoutsByType(type)
+            .map { list ->
+                list.map { it.workoutName to it.imageResource }
+            }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.myworkoutplan.ui.data
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -16,6 +17,7 @@ class DataStoreManager(private val context: Context) {
     companion object {
         val THEME_KEY = stringPreferencesKey("theme_option")
         val DYNAMIC_COLOR_KEY = stringPreferencesKey("dynamic_color_option")
+        val FIRST_LAUNCH_KEY = booleanPreferencesKey("first_launch_done")
     }
 
     val themeFlow: Flow<String> = context.dataStore.data.map { preferences ->
@@ -35,6 +37,16 @@ class DataStoreManager(private val context: Context) {
     suspend fun saveDynamicColorOption(option: DynamicColorOption) {
         context.dataStore.edit { preferences ->
             preferences[DYNAMIC_COLOR_KEY] = option.name
+        }
+    }
+
+    val isFirstLaunch: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[FIRST_LAUNCH_KEY] ?: true // true if key not set
+    }
+
+    suspend fun setFirstLaunchDone() {
+        context.dataStore.edit { preferences ->
+            preferences[FIRST_LAUNCH_KEY] = false // Not first launch anymore
         }
     }
 }

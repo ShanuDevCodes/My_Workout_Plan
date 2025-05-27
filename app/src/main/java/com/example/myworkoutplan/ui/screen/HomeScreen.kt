@@ -33,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -51,6 +53,9 @@ import com.example.myworkoutplan.R
 import com.example.myworkoutplan.ui.components.legWorkout
 import com.example.myworkoutplan.ui.components.pullWorkout
 import com.example.myworkoutplan.ui.components.pushWorkout
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDatabase
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
 import kotlinx.coroutines.delay
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -136,13 +141,20 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
                 delay(500L)
                 viewModel.show()
             }
+            val context = LocalContext.current
+            val dao = WorkoutDatabase.getInstance(context).workoutDao()
+            val viewModel: WorkoutViewModel = viewModel(
+                factory = WorkoutViewModelFactory(dao)
+            )
+            val exerciseList by viewModel.getExerciseNameAndImagePairsByType(title)
+                .collectAsState(initial = emptyList())
             Box(modifier = Modifier
                 .fillMaxSize()) {
                 this@Column.AnimatedVisibility(
                     visible = visible,
                     enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
                 ) {
-                    DayScreen(title, workout)
+                    DayScreen(title, exerciseList)
                 }
                 Box(
                     modifier = Modifier

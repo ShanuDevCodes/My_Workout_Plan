@@ -15,15 +15,13 @@ abstract class WorkoutDatabase: RoomDatabase() {
         @Volatile
         private var INSTANCE: WorkoutDatabase? = null
 
-        fun getDatabase(context: Context): WorkoutDatabase {
+        fun getInstance(context: Context): WorkoutDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
+                INSTANCE ?: Room.databaseBuilder(
                     context.applicationContext,
                     WorkoutDatabase::class.java,
-                    "workout_database"
-                ).build()
-                INSTANCE = instance
-                instance
+                    "workout.db"
+                ).build().also { INSTANCE = it }
             }
         }
     }
