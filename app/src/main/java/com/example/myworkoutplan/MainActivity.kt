@@ -69,26 +69,36 @@ class MainActivity : ComponentActivity() {
                         enterTransition = {
                             slideIntoContainer(
                                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                                animationSpec = tween(400, easing = FastOutSlowInEasing)
-                            ) + fadeIn(initialAlpha = 0.8f)
+                                animationSpec = tween(650, easing = FastOutSlowInEasing)
+                            )
                         },
                         exitTransition = {
+                            // Background slides slightly left and darkens
                             slideOutOfContainer(
                                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                animationSpec = tween(500, easing = FastOutSlowInEasing),
+                                targetOffset = { (it * 0.3f).toInt() } // Only moves 30% of screen width
+                            ) + fadeOut(
+                                targetAlpha = 1f, // Slight darkening
                                 animationSpec = tween(400, easing = FastOutSlowInEasing)
-                            ) + fadeOut(targetAlpha = 0.9f)
+                            )
                         },
                         popEnterTransition = {
+                            // Background slides back from left
                             slideIntoContainer(
                                 towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                animationSpec = tween(400, easing = FastOutSlowInEasing),
+                                initialOffset = { (it * 0.3f).toInt() }
+                            ) + fadeIn(
+                                initialAlpha = 0.6f,
                                 animationSpec = tween(400, easing = FastOutSlowInEasing)
-                            ) + fadeIn(initialAlpha = 0.8f)
+                            )
                         },
                         popExitTransition = {
                             slideOutOfContainer(
                                 towards = AnimatedContentTransitionScope.SlideDirection.Right,
                                 animationSpec = tween(400, easing = FastOutSlowInEasing)
-                            ) + fadeOut(targetAlpha = 0.9f)
+                            )
                         }
                     ) {
                         composable("Welcome") {
