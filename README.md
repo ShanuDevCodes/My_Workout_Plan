@@ -23,7 +23,7 @@ A clean and modern Workout Planner app built using **Kotlin** and **Jetpack Comp
 - **Android Studio**
 - **ViewModel & State**
 - **DataStore**
-- **Room Database** (in-progress)
+- **Room Database**
 
 ---
 
