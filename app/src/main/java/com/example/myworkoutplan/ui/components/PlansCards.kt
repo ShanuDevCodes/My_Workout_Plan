@@ -10,20 +10,35 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDatabase
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutEvent
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
 
 @Composable
 fun PlansCards(
@@ -59,8 +74,16 @@ fun PlansCards(
                 modifier = Modifier.weight(1f) // Takes remaining space
             )
             if (trashCan) {
+                var showDeleteDialog by remember { mutableStateOf(false) }
+                val context = LocalContext.current
+                val dao = WorkoutDatabase.getInstance(context).workoutDao()
+                val workoutViewModel: WorkoutViewModel = viewModel(
+                    factory = WorkoutViewModelFactory(dao)
+                )
                 IconButton(
-                    onClick = {  },
+                    onClick = {
+                        showDeleteDialog = true
+                    },
                     modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
@@ -70,7 +93,70 @@ fun PlansCards(
                         modifier = Modifier.size(20.dp)
                     )
                 }
+                if (showDeleteDialog) {
+                    DeleteConfirmationDialog(
+                        workoutName = workout,
+                        onConfirm = {
+                            workoutViewModel.onEvent(WorkoutEvent.DeleteWorkout(workout))
+                            showDeleteDialog = false
+                        },
+                        onDismiss = { showDeleteDialog = false }
+                    )
+                }
             }
         }
     }
+}
+
+@Composable
+fun DeleteConfirmationDialog(
+    workoutName: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = {
+            Icon(
+                imageVector = Icons.Default.Warning,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
+        title = {
+            Text(
+                text = "Delete Exercise",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Text(
+                text = "Are you sure you want to delete $workoutName? This action cannot be undone.",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onConfirm,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Text(
+                    text = "Delete",
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                ) {
+                Text("Cancel")
+            }
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
+        tonalElevation = 6.dp
+    )
 }

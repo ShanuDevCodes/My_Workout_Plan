@@ -20,4 +20,7 @@ interface WorkoutDao {
 
     @Query("SELECT DISTINCT workout_type as workoutType,workout_type_image as workoutTypeImage FROM workout_plans")
     fun getAllWorkoutTypes(): Flow<List<WorkoutTypeWithImage>>
+
+    @Query("DELETE FROM workout_plans WHERE exercise_name = :exerciseName")
+    suspend fun deleteByExerciseName(exerciseName: String)
 }
