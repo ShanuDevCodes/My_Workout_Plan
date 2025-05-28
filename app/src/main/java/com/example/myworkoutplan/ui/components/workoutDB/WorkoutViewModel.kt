@@ -57,7 +57,7 @@ class WorkoutViewModel(
             }
             WorkoutEvent.SaveWorkout -> {
                 val exerciseName = _state.value.exerciseName
-                val imageResource = R.drawable.ai
+                val imageResource = R.drawable.weights
                 val workoutType = _state.value.workoutType
                 val workoutTypeImage = _state.value.workoutTypeImage
 
