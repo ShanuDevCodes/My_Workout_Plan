@@ -248,6 +248,7 @@ fun PlansScreenView(dayTitle: String, workoutList: List<Pair<String, Int>>,viewM
                 if (workoutState.isAddingWorkout) {
                     AddWorkoutDialog(
                         state = workoutState,
+                        workoutCategory = dayTitle,
                         onEvent = workoutViewModel::onEvent
                     )
                 }
