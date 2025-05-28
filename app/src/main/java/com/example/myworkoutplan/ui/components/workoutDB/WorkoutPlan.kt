@@ -2,9 +2,13 @@ package com.example.myworkoutplan.ui.components.workoutDB
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "workout_plans")
+@Entity(
+    tableName = "workout_plans",
+    indices = [Index(value = ["exercise_name"], unique = true)]
+)
 data class WorkoutPlan(
     @ColumnInfo(name = "exercise_name")
     val exerciseName: String,

@@ -47,7 +47,7 @@ class WorkoutViewModel(
         when(event){
             is WorkoutEvent.DeleteWorkout -> {
                 viewModelScope.launch {
-                    dao.deleteWorkout(event.workout)
+                    dao.deleteByExerciseName(event.workoutName)
                 }
             }
             WorkoutEvent.HideDialog -> {
@@ -100,12 +100,6 @@ class WorkoutViewModel(
             WorkoutEvent.ShowDialog -> _state.update { it.copy(
                 isAddingWorkout = true
             ) }
-            is WorkoutEvent.ShowWorkoutByType -> {
-                _currentWorkoutType.value = event.workoutType
-            }
-            WorkoutEvent.ShowWorkoutTypes -> {
-                _currentWorkoutType.value = ""
-            }
         }
     }
     fun getExerciseNameAndImagePairsByType(type: String): Flow<List<Pair<String, Int>>> {
