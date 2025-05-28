@@ -2,6 +2,7 @@ package com.example.myworkoutplan.ui.components.workoutDB
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myworkoutplan.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +57,7 @@ class WorkoutViewModel(
             }
             WorkoutEvent.SaveWorkout -> {
                 val exerciseName = _state.value.exerciseName
-                val imageResource = _state.value.imageResource
+                val imageResource = R.drawable.ai
                 val workoutType = _state.value.workoutType
                 val workoutTypeImage = _state.value.workoutTypeImage
 
