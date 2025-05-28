@@ -8,19 +8,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.ui.AdaptiveUI
 import com.example.myworkoutplan.ui.components.BubblePopAnimation
@@ -35,6 +37,7 @@ import com.example.myworkoutplan.ui.screen.WelcomeScreen
 import com.example.myworkoutplan.ui.settings.SettingsViewModel
 import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
 import com.example.myworkoutplan.ui.theme.MyWorkoutPlanTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -52,9 +55,6 @@ class MainActivity : ComponentActivity() {
             val selectedTheme by remember { derivedStateOf { settingsViewModel.selectedTheme } }
             val dynamicColorOption by remember { derivedStateOf { settingsViewModel.dynamicColorOption } }
             val isLoaded by remember { derivedStateOf { settingsViewModel.isSettingsLoaded } }
-            val rootNavController = rememberNavController()
-            val navBackStackEntry by rootNavController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.destination?.route
             val localNavController = rememberNavController()
             val isFirstLaunch by dataStore.isFirstLaunch.collectAsState(initial = true)
             val dao = WorkoutDatabase.getInstance(applicationContext).workoutDao()
@@ -63,43 +63,41 @@ class MainActivity : ComponentActivity() {
                     themeOption = selectedTheme,
                     dynamicColorOption = dynamicColorOption
                 ) {
+                    var isRestoringState by remember { mutableStateOf(true) }
+
+                    LaunchedEffect(Unit) {
+                        // Allow animations after initial composition
+                        delay(200)
+                        isRestoringState = false
+                    }
                     NavHost(
                         navController = localNavController,
                         startDestination = if (isFirstLaunch) "Welcome" else "Adaptive",
                         enterTransition = {
-                            slideIntoContainer(
-                                towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                                animationSpec = tween(650, easing = FastOutSlowInEasing)
-                            )
+                            if (isRestoringState) {
+                                EnterTransition.None
+                            } else {
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(
+                                        600,
+                                        easing = CubicBezierEasing(0.1f, 0.1f, 0.25f, 1f)
+                                    )
+                                )
+                            }
                         },
                         exitTransition = {
-                            // Background slides slightly left and darkens
-                            slideOutOfContainer(
-                                towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                                animationSpec = tween(500, easing = FastOutSlowInEasing),
-                                targetOffset = { (it * 0.3f).toInt() } // Only moves 30% of screen width
-                            ) + fadeOut(
-                                targetAlpha = 1f, // Slight darkening
-                                animationSpec = tween(400, easing = FastOutSlowInEasing)
-                            )
+                            if (isRestoringState) {
+                                ExitTransition.None
+                            } else {
+                                // Background slides slightly left and darkens
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(500),
+                                    targetOffset = { (it * 0.2f).toInt() } // Only moves 30% of screen width
+                                )
+                            }
                         },
-                        popEnterTransition = {
-                            // Background slides back from left
-                            slideIntoContainer(
-                                towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                animationSpec = tween(400, easing = FastOutSlowInEasing),
-                                initialOffset = { (it * 0.3f).toInt() }
-                            ) + fadeIn(
-                                initialAlpha = 0.6f,
-                                animationSpec = tween(400, easing = FastOutSlowInEasing)
-                            )
-                        },
-                        popExitTransition = {
-                            slideOutOfContainer(
-                                towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                animationSpec = tween(400, easing = FastOutSlowInEasing)
-                            )
-                        }
                     ) {
                         composable("Welcome") {
                             WelcomeScreen(
@@ -111,10 +109,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("Adaptive") {
-                            AdaptiveUI(
-                                rootNavController = rootNavController, // Pass root controller to AdaptiveUI
-                                currentRoute = currentRoute,
-                            )
+                            AdaptiveUI()
                         }
                     }
                 }

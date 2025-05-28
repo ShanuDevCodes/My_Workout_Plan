@@ -1,8 +1,11 @@
 package com.example.myworkoutplan.ui.plans_navigation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -28,20 +31,35 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDatabase
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutEvent
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
 import com.example.myworkoutplan.ui.screen.DayScreen
 import kotlinx.coroutines.delay
 
 @Composable
-fun PlansScreenView(dayTitle: String, workoutList: List<Pair<String, Int>>) {
+fun PlansScreenView(dayTitle: String, workoutList: List<Pair<String, Int>>,viewModel: PlansScreenViewModel = viewModel()) {
     // Animation for scale and vertical offset
     val fabScale = remember { Animatable(0f) }
     val fabScaleMini = remember { Animatable(0f) }
     val fabOffsetY = remember { Animatable(0f) }
+    var visible = viewModel.visible
 
+    // Database and ViewModel setup
+    val context = LocalContext.current
+    val dao = WorkoutDatabase.getInstance(context).workoutDao()
+    val workoutViewModel: WorkoutViewModel = viewModel(
+        factory = WorkoutViewModelFactory(dao)
+    )
+    val workoutState by workoutViewModel.state.collectAsState()
+    val exerciseList by workoutViewModel.getExerciseNameAndImagePairsByType(dayTitle)
+        .collectAsState(initial = emptyList())
     LaunchedEffect(Unit) {
         delay(300)
+        viewModel.show()
+    }
+    LaunchedEffect(Unit) {
+        delay(350)
         // Animate both offset and scale in parallel
         fabScale.animateTo(
             targetValue = 1f,
@@ -63,18 +81,18 @@ fun PlansScreenView(dayTitle: String, workoutList: List<Pair<String, Int>>) {
             animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
         )
     }
-    val context = LocalContext.current
-    val dao = WorkoutDatabase.getInstance(context).workoutDao()
-    val viewModel: WorkoutViewModel = viewModel(
-        factory = WorkoutViewModelFactory(dao)
-    )
-    val exerciseList by viewModel.getExerciseNameAndImagePairsByType(dayTitle)
-        .collectAsState(initial = emptyList())
+
     Box(modifier = Modifier.fillMaxSize()) {
-        DayScreen(
-            dayTitle = dayTitle,
-            workoutList = exerciseList,
-        )
+
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
+        ) {
+            DayScreen(
+                dayTitle = dayTitle,
+                workoutList = exerciseList,
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -99,7 +117,7 @@ fun PlansScreenView(dayTitle: String, workoutList: List<Pair<String, Int>>) {
             }
                 // Main FAB (Add)
                 FloatingActionButton(
-                    onClick = { /* Main FAB action */ },
+                    onClick = { workoutViewModel.onEvent(WorkoutEvent.ShowDialog) },
                     modifier = Modifier
                         .size(56.dp)
                         .scale(fabScale.value),
@@ -112,6 +130,12 @@ fun PlansScreenView(dayTitle: String, workoutList: List<Pair<String, Int>>) {
                     )
                 }
             }
+        }
+        if (workoutState.isAddingWorkout) {
+            AddWorkoutDialog(
+                state = workoutState,
+                onEvent = workoutViewModel::onEvent
+            )
         }
     }
 }

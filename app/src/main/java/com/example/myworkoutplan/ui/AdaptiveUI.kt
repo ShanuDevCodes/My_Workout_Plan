@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -32,6 +33,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.ui.components.items
 import com.example.myworkoutplan.ui.plans_navigation.PlansNavigator
 import com.example.myworkoutplan.ui.screen.HomeScreen
@@ -40,7 +43,10 @@ import com.example.myworkoutplan.ui.screen.SettingsScreen
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdaptiveUI(rootNavController: NavHostController,currentRoute: String?){
+fun AdaptiveUI(){
+    val rootNavController = rememberNavController()
+    val navBackStackEntry by rootNavController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     if (isPortrait) {
@@ -170,12 +176,6 @@ fun MainNavigation(
             exitTransition = {
                 fadeOut(animationSpec = tween(durationMillis = 1))
             },
-            popEnterTransition = {
-                fadeIn(animationSpec = tween(durationMillis = 1))
-            },
-            popExitTransition = {
-                fadeOut(animationSpec = tween(durationMillis = 1))
-            }
         ) {
             composable("home") {
                 HomeScreen()
