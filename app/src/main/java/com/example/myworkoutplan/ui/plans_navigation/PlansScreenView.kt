@@ -51,7 +51,7 @@ import kotlinx.coroutines.delay
 import androidx.navigation.compose.composable
 
 @Composable
-fun PlansScreenView(dayTitle: String, workoutList: List<Pair<String, Int>>,viewModel: PlansScreenViewModel = viewModel()) {
+fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel()) {
     // Animation for scale and vertical offset
     val fabScale = remember { Animatable(0f) }
     val fabScaleMini = remember { Animatable(0f) }
