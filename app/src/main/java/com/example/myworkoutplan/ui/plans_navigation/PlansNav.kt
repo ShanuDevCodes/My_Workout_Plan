@@ -19,9 +19,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.myworkoutplan.ui.components.legWorkout
-import com.example.myworkoutplan.ui.components.pullWorkout
-import com.example.myworkoutplan.ui.components.pushWorkout
 import com.example.myworkoutplan.ui.screen.PlansScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -71,13 +68,7 @@ fun PlansNavigator() {
 
             composable<Day> {
                 val args = it.toRoute<Day>()
-                val workoutList = when (args.dayTitle) {
-                    "Push Day" -> pushWorkout
-                    "Pull Day" -> pullWorkout
-                    "Leg Day" -> legWorkout
-                    else -> emptyList()
-                }
-                PlansScreenView(args.dayTitle, workoutList)
+                PlansScreenView(args.dayTitle)
             }
         }
     }

@@ -50,9 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.R
-import com.example.myworkoutplan.ui.components.legWorkout
-import com.example.myworkoutplan.ui.components.pullWorkout
-import com.example.myworkoutplan.ui.components.pushWorkout
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDatabase
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
@@ -65,11 +62,11 @@ import java.time.LocalDate
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
     val dayOfWeek = LocalDate.now().dayOfWeek
-    val (title, workout) = when (dayOfWeek) {
-        DayOfWeek.MONDAY, DayOfWeek.THURSDAY -> "Push Day" to pushWorkout
-        DayOfWeek.TUESDAY, DayOfWeek.FRIDAY -> "Pull Day" to pullWorkout
-        DayOfWeek.WEDNESDAY, DayOfWeek.SATURDAY -> "Leg Day" to legWorkout
-        else -> "Rest Day" to emptyList()
+    val title = when (dayOfWeek) {
+        DayOfWeek.MONDAY, DayOfWeek.THURSDAY -> "Push Day"
+        DayOfWeek.TUESDAY, DayOfWeek.FRIDAY -> "Pull Day"
+        DayOfWeek.WEDNESDAY, DayOfWeek.SATURDAY -> "Leg Day"
+        else -> "Rest Day"
     }
     var isStarted by remember { mutableStateOf(false) }
     var timer by remember { mutableIntStateOf(0) }
