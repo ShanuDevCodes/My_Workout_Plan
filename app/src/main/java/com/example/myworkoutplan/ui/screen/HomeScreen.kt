@@ -154,7 +154,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
                     visible = visible,
                     enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
                 ) {
-                    DayScreen(title, exerciseList)
+                    DayScreen(title, exerciseList,false)
                 }
                 Box(
                     modifier = Modifier
