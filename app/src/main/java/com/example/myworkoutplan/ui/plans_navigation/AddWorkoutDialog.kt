@@ -3,10 +3,9 @@ package com.example.myworkoutplan.ui.plans_navigation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -14,6 +13,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutEvent
@@ -22,9 +22,9 @@ import com.example.myworkoutplan.ui.components.workoutDB.WorkoutState
 @Composable
 fun AddWorkoutDialog(
     state: WorkoutState,
-    onEvent: (WorkoutEvent) -> Unit,
+    workoutCategory: String,
+    onEvent: (WorkoutEvent) -> Unit
 ) {
-    val categories = listOf("Push Day", "Pull Day", "Leg Day")
     val categoryImages = mapOf(
         "Push Day" to R.drawable.push_day,
         "Pull Day" to R.drawable.pull_day,
@@ -39,13 +39,16 @@ fun AddWorkoutDialog(
             Text(
                 text = "Add New Workout",
                 style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.secondary
             )
         },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),// Center align content
             ) {
                 OutlinedTextField(
                     value = state.exerciseName,
@@ -57,38 +60,35 @@ fun AddWorkoutDialog(
                     singleLine = true
                 )
 
+                // Show selected category
                 Text(
-                    text = "Category",
+                    text = "Category: $workoutCategory",
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Start
                 )
-
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(categories) { category ->
-                        FilterChip(
-                            onClick = {
-                                val categoryImage = categoryImages[category] ?: R.drawable.push_day
-                                onEvent(WorkoutEvent.SetWorkoutType(category))
-                                onEvent(WorkoutEvent.SetWorkoutTypeImage(categoryImage))
-                            },
-                            label = { Text(category) },
-                            selected = state.workoutType == category
-                        )
-                    }
-                }
             }
         },
         confirmButton = {
-            TextButton(
+            FilledTonalButton(
                 onClick = {
+                    onEvent(WorkoutEvent.SetWorkoutType(workoutCategory))
+                    onEvent(WorkoutEvent.SetWorkoutTypeImage(categoryImages[workoutCategory] ?: R.drawable.push_day))
                     if (state.exerciseName.isNotBlank()) {
                         onEvent(WorkoutEvent.SaveWorkout)
                     }
-                }
+                },
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                enabled = state.exerciseName.isNotBlank() // Disable if empty
             ) {
-                Text("Add Workout")
+                Text(
+                    text = "Add Workout",
+                    fontWeight = FontWeight.Medium
+                )
             }
         },
         dismissButton = {
@@ -97,8 +97,14 @@ fun AddWorkoutDialog(
                     onEvent(WorkoutEvent.HideDialog)
                 }
             ) {
-                Text("Cancel")
+                Text(
+                    text = "Cancel",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
+        titleContentColor = MaterialTheme.colorScheme.onSurface,
+        textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }

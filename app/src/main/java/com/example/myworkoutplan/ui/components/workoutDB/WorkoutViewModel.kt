@@ -52,8 +52,13 @@ class WorkoutViewModel(
             }
             WorkoutEvent.HideDialog -> {
                 _state.update { it.copy(
-                    isAddingWorkout = false
-                ) }
+                    isAddingWorkout = false,
+                    exerciseName = "",
+                    imageResource = 0,
+                    workoutType = "",
+                    workoutTypeImage = 0
+                )
+                }
             }
             WorkoutEvent.SaveWorkout -> {
                 val exerciseName = _state.value.exerciseName
