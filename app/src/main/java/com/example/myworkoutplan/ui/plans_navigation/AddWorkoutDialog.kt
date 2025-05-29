@@ -60,6 +60,15 @@ fun AddWorkoutDialog(
                     singleLine = true
                 )
 
+                if(state.nameAlreadyExists) {
+                    Text(
+                        text = "Workout Name Already Exists",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Start
+                    )
+                }
                 // Show selected category
                 Text(
                     text = "Category: $workoutCategory",

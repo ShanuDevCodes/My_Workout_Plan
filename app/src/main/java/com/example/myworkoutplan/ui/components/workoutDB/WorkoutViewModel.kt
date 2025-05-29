@@ -31,7 +31,8 @@ class WorkoutViewModel(
                     exerciseName = "",
                     imageResource = 0,
                     workoutType = "",
-                    workoutTypeImage = 0
+                    workoutTypeImage = 0,
+                    nameAlreadyExists = false
                 )
                 }
             }
@@ -45,23 +46,33 @@ class WorkoutViewModel(
                     return
                 }
 
-                val workout = WorkoutPlan(
-                    exerciseName = exerciseName,
-                    imageResource = imageResource,
-                    workoutType = workoutType,
-                    workoutTypeImage = workoutTypeImage
-                )
-
                 viewModelScope.launch {
+                    // Check if workout already exists
+                    val existingWorkout = dao.getWorkoutByName(exerciseName)
+                    if (existingWorkout != null) {
+                        // Update state to indicate the name already exists
+                        _state.update { it.copy(nameAlreadyExists = true) }
+                        return@launch
+                    }
+
+                    val workout = WorkoutPlan(
+                        exerciseName = exerciseName,
+                        imageResource = imageResource,
+                        workoutType = workoutType,
+                        workoutTypeImage = workoutTypeImage
+                    )
                     dao.upsertWorkout(workout)
+                    _state.update {
+                        it.copy(
+                            isAddingWorkout = false,
+                            exerciseName = "",
+                            imageResource = 0,
+                            workoutType = "",
+                            workoutTypeImage = 0,
+                            nameAlreadyExists = false
+                        )
+                    }
                 }
-                _state.update { it.copy(
-                    isAddingWorkout = false,
-                    exerciseName = "",
-                    imageResource = 0,
-                    workoutType = "",
-                    workoutTypeImage = 0
-                ) }
             }
             is WorkoutEvent.SetExerciseName -> {
                 _state.update { it.copy(
