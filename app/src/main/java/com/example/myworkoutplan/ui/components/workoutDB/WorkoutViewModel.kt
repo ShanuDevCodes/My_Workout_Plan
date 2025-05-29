@@ -3,15 +3,13 @@ package com.example.myworkoutplan.ui.components.workoutDB
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkoutplan.R
+import com.example.myworkoutplan.ui.components.legWorkout
+import com.example.myworkoutplan.ui.components.pullWorkout
+import com.example.myworkoutplan.ui.components.pushWorkout
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -19,30 +17,7 @@ import kotlinx.coroutines.launch
 class WorkoutViewModel(
     private val dao: WorkoutDao
 ) : ViewModel(){
-    private val _state = MutableStateFlow(WorkoutState())
-    private val _currentWorkoutType = MutableStateFlow("")
-
-    private val _workoutTypes = dao.getAllWorkoutTypes()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    private val _workoutsByType = _currentWorkoutType
-        .flatMapLatest { workoutType ->
-            if (workoutType.isNotEmpty()) {
-                dao.getWorkoutsByType(workoutType)
-            } else {
-                flowOf(emptyList())
-            }
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    val state = combine(
-        _state,
-        _workoutTypes,
-        _workoutsByType
-    ) { state, workoutTypes, workoutsByType ->
-        state.copy(
-            workoutTypeWithImage = workoutTypes,
-            workoutWithImage = workoutsByType
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WorkoutState())
+    val _state = MutableStateFlow(WorkoutState())
     fun onEvent(event: WorkoutEvent){
         when(event){
             is WorkoutEvent.DeleteWorkout -> {
@@ -105,6 +80,23 @@ class WorkoutViewModel(
             WorkoutEvent.ShowDialog -> _state.update { it.copy(
                 isAddingWorkout = true
             ) }
+
+            WorkoutEvent.ResetWorkoutDB -> {
+                viewModelScope.launch {
+                    dao.deleteAllWorkouts()
+                    val push = pushWorkout.map { (name, image) ->
+                        WorkoutPlan(name, image, "Push Day", R.drawable.push_day)
+                    }
+                    val pull = pullWorkout.map { (name, image) ->
+                        WorkoutPlan(name, image, "Pull Day", R.drawable.pull_day)
+                    }
+                    val leg = legWorkout.map { (name, image) ->
+                        WorkoutPlan(name, image, "Leg Day", R.drawable.leg_day)
+                    }
+
+                    (push + pull + leg).forEach { dao.upsertWorkout(it) }
+                }
+            }
         }
     }
     fun getExerciseNameAndImagePairsByType(type: String): Flow<List<Pair<String, Int>>> {
