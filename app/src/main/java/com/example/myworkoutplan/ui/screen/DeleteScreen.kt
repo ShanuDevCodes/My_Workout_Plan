@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.ui.components.DeleteCards
 
 @Composable
-fun DeleteScreen(workoutList: List<Pair<String, Int>>, trashCan: Boolean) {
+fun DeleteScreen(workoutList: List<Pair<String, Int>>) {
 
     Box {
         Column {
@@ -28,7 +28,7 @@ fun DeleteScreen(workoutList: List<Pair<String, Int>>, trashCan: Boolean) {
                     )
                 }
                 items(workoutList) { (item, icon) ->
-                    DeleteCards(item, icon, trashCan)
+                    DeleteCards(item, icon)
                 }
             }
         }
