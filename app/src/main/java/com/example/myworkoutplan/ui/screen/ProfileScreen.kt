@@ -23,7 +23,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -103,10 +103,11 @@ fun ProfileScreen() {
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
                         shape = RoundedCornerShape(12.dp)
                     )
-                    .padding(horizontal = 20.dp, vertical = 8.dp)
+                    .padding(horizontal = 20.dp, vertical = 8.dp),
             ) {
+
                 Text(
-                    text = "sk5575723@gmail.com",
+                    text = "@Kaneki_Uzumaki",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -118,9 +119,8 @@ fun ProfileScreen() {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.cardElevation(6.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                 )
             ) {
                 ProfileActionItem(
@@ -145,16 +145,13 @@ fun ProfileScreen() {
                         context.startActivity(Intent(context, SettingsActivity::class.java))
                     }
                 )
-                Divider(
-                    color = MaterialTheme.colorScheme.outlineVariant
-                )
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 ProfileActionItem(
                     icon = Icons.AutoMirrored.Filled.ExitToApp,
                     label = "Logout",
                     onClick = {},
                     iconTint = Color(0xFFD32F2F),
                     textColor = Color(0xFFD32F2F),
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                 )
             }
         }
@@ -168,7 +165,7 @@ fun ProfileActionItem(
     onClick: () -> Unit,
     iconTint: Color = MaterialTheme.colorScheme.primary,
     textColor: Color = MaterialTheme.colorScheme.primary,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerLow
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh
 ) {
     ListItem(
         modifier = Modifier
