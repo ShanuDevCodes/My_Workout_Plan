@@ -63,6 +63,7 @@ class MainActivity : ComponentActivity() {
                     themeOption = selectedTheme,
                     dynamicColorOption = dynamicColorOption
                 ) {
+
                     var isRestoringState by remember { mutableStateOf(true) }
 
                     LaunchedEffect(Unit) {
@@ -70,47 +71,53 @@ class MainActivity : ComponentActivity() {
                         delay(200)
                         isRestoringState = false
                     }
-                    NavHost(
-                        navController = localNavController,
-                        startDestination = if (isFirstLaunch) "Welcome" else "Adaptive",
-                        enterTransition = {
-                            if (isRestoringState) {
-                                EnterTransition.None
-                            } else {
-                                slideIntoContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                                    animationSpec = tween(
-                                        600,
-                                        easing = CubicBezierEasing(0.1f, 0.1f, 0.25f, 1f)
+                    if (isFirstLaunch) {
+                        NavHost(
+                            navController = localNavController,
+                            startDestination = "Welcome",
+                            enterTransition = {
+                                if (isRestoringState) {
+                                    EnterTransition.None
+                                } else {
+                                    slideIntoContainer(
+                                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                        animationSpec = tween(
+                                            600,
+                                            easing = CubicBezierEasing(0.1f, 0.1f, 0.25f, 1f)
+                                        )
                                     )
-                                )
-                            }
-                        },
-                        exitTransition = {
-                            if (isRestoringState) {
-                                ExitTransition.None
-                            } else {
-                                // Background slides slightly left and darkens
-                                slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                                    animationSpec = tween(500),
-                                    targetOffset = { (it * 0.2f).toInt() } // Only moves 30% of screen width
-                                )
-                            }
-                        },
-                    ) {
-                        composable("Welcome") {
-                            WelcomeScreen(
-                                onContinueClicked = {
-                                    lifecycleScope.launch {
-                                        insertInitialDataIfNeeded(dao, dataStore)
-                                    }
                                 }
-                            )
+                            },
+                            exitTransition = {
+                                if (isRestoringState) {
+                                    ExitTransition.None
+                                } else {
+                                    // Background slides slightly left and darkens
+                                    slideOutOfContainer(
+                                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                        animationSpec = tween(500),
+                                        targetOffset = { (it * 0.2f).toInt() } // Only moves 30% of screen width
+                                    )
+                                }
+                            },
+                        ) {
+                            composable("Welcome") {
+                                WelcomeScreen(
+                                    onContinueClicked = {
+                                        localNavController.navigate("Adaptive")
+                                        lifecycleScope.launch {
+                                            delay(470)
+                                            insertInitialDataIfNeeded(dao, dataStore)
+                                        }
+                                    }
+                                )
+                            }
+                            composable("Adaptive") {
+                                AdaptiveUI()
+                            }
                         }
-                        composable("Adaptive") {
-                            AdaptiveUI()
-                        }
+                    } else {
+                        AdaptiveUI()
                     }
                 }
             }
