@@ -78,5 +78,5 @@ dependencies {
     testImplementation(libs.androidx.room.testing)
     implementation(libs.androidx.room.paging)
 
-    implementation ("androidx.datastore:datastore:1.1.7")
+    implementation (libs.datastore)
 }
