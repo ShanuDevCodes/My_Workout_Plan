@@ -79,4 +79,5 @@ dependencies {
     implementation(libs.androidx.room.paging)
 
     implementation (libs.datastore)
+    implementation ("androidx.core:core-splashscreen:1.0.0-beta02")
 }

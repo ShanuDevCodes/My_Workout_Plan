@@ -19,13 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.ui.AdaptiveUI
-import com.example.myworkoutplan.ui.components.BubblePopAnimation
 import com.example.myworkoutplan.ui.components.legWorkout
 import com.example.myworkoutplan.ui.components.pullWorkout
 import com.example.myworkoutplan.ui.components.pushWorkout
@@ -45,6 +45,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("CoroutineCreationDuringComposition")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -58,7 +59,7 @@ class MainActivity : ComponentActivity() {
             val localNavController = rememberNavController()
             val isFirstLaunch by dataStore.isFirstLaunch.collectAsState(initial = true)
             val dao = WorkoutDatabase.getInstance(applicationContext).workoutDao()
-            BubblePopAnimation(visible = isLoaded) {
+            splashScreen.setKeepOnScreenCondition { !isLoaded }
                 MyWorkoutPlanTheme(
                     themeOption = selectedTheme,
                     dynamicColorOption = dynamicColorOption
@@ -120,7 +121,7 @@ class MainActivity : ComponentActivity() {
                         AdaptiveUI()
                     }
                 }
-            }
+
         }
     }
     private fun insertInitialDataIfNeeded(dao: WorkoutDao, dataStoreManager: DataStoreManager) {
