@@ -35,7 +35,7 @@ class SettingsViewModel(private val dataStore: DataStoreManager) : ViewModel() {
     }
 
     private fun checkIfReady() {
-        if (_selectedTheme.value != null && _dynamicColorOption.value != null) {
+        if (true) {
             _isSettingsLoaded.value = true
         }
     }
