@@ -23,4 +23,7 @@ interface WorkoutDao {
 
     @Query("DELETE FROM workout_plans WHERE exercise_name = :exerciseName")
     suspend fun deleteByExerciseName(exerciseName: String)
+
+    @Query("DELETE FROM workout_plans")
+    suspend fun deleteAllWorkouts()
 }

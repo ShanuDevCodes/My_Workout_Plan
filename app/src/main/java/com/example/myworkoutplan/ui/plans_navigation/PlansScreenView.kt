@@ -66,7 +66,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
     val workoutViewModel: WorkoutViewModel = viewModel(
         factory = WorkoutViewModelFactory(dao)
     )
-    val workoutState by workoutViewModel.state.collectAsState()
+    val workoutState by workoutViewModel._state.collectAsState()
     val exerciseList by workoutViewModel.getExerciseNameAndImagePairsByType(dayTitle)
         .collectAsState(initial = emptyList())
     var isExpanded by remember { mutableStateOf(false) }

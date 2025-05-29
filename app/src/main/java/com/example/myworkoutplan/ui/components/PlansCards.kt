@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -124,7 +125,7 @@ fun DeleteConfirmationDialog(
             Icon(
                 imageVector = Icons.Default.Warning,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.errorContainer
+                tint = Color(0xFFB32727)
             )
         },
         title = {
@@ -148,8 +149,8 @@ fun DeleteConfirmationDialog(
             FilledTonalButton( // More prominent for destructive action
                 onClick = onConfirm,
                 colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    containerColor = Color(0xFFB32727), // Material Red 700
+                    contentColor = Color.White
                 )
             ) {
                 Text(

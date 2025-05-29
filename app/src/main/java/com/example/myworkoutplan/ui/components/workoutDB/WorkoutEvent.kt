@@ -9,4 +9,5 @@ sealed interface WorkoutEvent {
     object ShowDialog : WorkoutEvent
     object HideDialog : WorkoutEvent
     data class DeleteWorkout(val workoutName: String) : WorkoutEvent
+    object ResetWorkoutDB: WorkoutEvent
 }
