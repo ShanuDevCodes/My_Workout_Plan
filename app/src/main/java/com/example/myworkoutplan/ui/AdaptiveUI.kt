@@ -38,7 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.ui.components.items
 import com.example.myworkoutplan.ui.plans_navigation.PlansNavigator
 import com.example.myworkoutplan.ui.screen.HomeScreen
-import com.example.myworkoutplan.ui.screen.SettingsScreen
+import com.example.myworkoutplan.ui.screen.ProfileScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -183,8 +183,8 @@ fun MainNavigation(
             composable("plans") {
                 PlansNavigator()
             }
-            composable("settings") {
-                SettingsScreen()
+            composable("profile") {
+                ProfileScreen()
             }
         }
     }

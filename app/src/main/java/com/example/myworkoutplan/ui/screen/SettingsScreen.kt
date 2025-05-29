@@ -1,13 +1,17 @@
 package com.example.myworkoutplan.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
@@ -56,114 +60,122 @@ fun SettingsScreen() {
         factory = WorkoutViewModelFactory(dao)
     )
     var showResetDialog by remember { mutableStateOf(false) }
-    Column {
-        Text(
-            text = "Settings",
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier.padding(16.dp)
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            LazyColumn {
-                item {
-                    Text(
-                        "Choose Theme",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-
-                items(ThemeOptions.entries.size) { index ->
-                    val option = ThemeOptions.entries[index]
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    ) {
-                        RadioButton(
-                            selected = selectedThemeOption == option,
-                            onClick = { settingsViewModel.setThemeOption(option) }
-                        )
+    Box(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.systemBars)
+    ) {
+        Column {
+            Text(
+                text = "Settings",
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.padding(16.dp)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                LazyColumn {
+                    item {
                         Text(
-                            text = option.name.replace("_", " ").lowercase()
-                                .replaceFirstChar { it.uppercase() }
+                            "Choose Theme",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
                         )
                     }
-                }
 
-                item { Spacer(modifier = Modifier.height(16.dp)) }
+                    items(ThemeOptions.entries.size) { index ->
+                        val option = ThemeOptions.entries[index]
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        ) {
+                            RadioButton(
+                                selected = selectedThemeOption == option,
+                                onClick = { settingsViewModel.setThemeOption(option) }
+                            )
+                            Text(
+                                text = option.name.replace("_", " ").lowercase()
+                                    .replaceFirstChar { it.uppercase() },
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                    }
 
-                item {
-                    Text(
-                        "Use Dynamic Colors",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
 
-                items(DynamicColorOption.entries.size) { index ->
-                    val option = DynamicColorOption.entries[index]
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    ) {
-                        RadioButton(
-                            selected = selectedDynamicColorOption == option,
-                            onClick = { settingsViewModel.updateDynamicColorOption(option) }
-                        )
+                    item {
                         Text(
-                            text = option.name.lowercase().replaceFirstChar { it.uppercase() }
+                            "Use Dynamic Colors",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
                         )
                     }
+
+                    items(DynamicColorOption.entries.size) { index ->
+                        val option = DynamicColorOption.entries[index]
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        ) {
+                            RadioButton(
+                                selected = selectedDynamicColorOption == option,
+                                onClick = { settingsViewModel.updateDynamicColorOption(option) }
+                            )
+                            Text(
+                                text = option.name.lowercase().replaceFirstChar { it.uppercase() },
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                    }
+                    item { Spacer(modifier = Modifier.height(32.dp)) }
+                    item {
+                        Text(
+                            "Reset Workout List",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                        )
+                    }
+                    item {
+                        Text(
+                            "This will reset your workout list and cannot be undone.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+                    item {
+                        Button(
+                            onClick = {
+                                showResetDialog = !showResetDialog
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFB32727)
+                            ),
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        ) {
+                            Text(
+                                text = "Reset",
+                                color = Color.White
+                            )
+                        }
+                    }
                 }
-                item { Spacer(modifier = Modifier.height(32.dp)) }
-                item {
-                    Text(
-                        "Reset Workout List",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-                item {
-                    Text(
-                        "This will reset your workout list and cannot be undone.",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                }
-                item {
-                    Button(
-                        onClick = {
+                if (showResetDialog) {
+                    ResetConfirmationDialog(
+                        onConfirm = {
+                            workoutViewModel.onEvent(WorkoutEvent.ResetWorkoutDB)
                             showResetDialog = !showResetDialog
                         },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFB32727)
-                        ),
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    ) {
-                        Text(
-                            text = "Reset",
-                            color = Color.White
-                        )
-                    }
+                        onDismiss = {
+                            showResetDialog = !showResetDialog
+                        }
+                    )
                 }
-            }
-            if (showResetDialog){
-                ResetConfirmationDialog(
-                    onConfirm = {
-                        workoutViewModel.onEvent(WorkoutEvent.ResetWorkoutDB)
-                        showResetDialog = !showResetDialog
-                    },
-                    onDismiss = {
-                        showResetDialog = !showResetDialog
-                    }
-                )
             }
         }
     }
