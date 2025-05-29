@@ -148,7 +148,7 @@ fun SettingsScreen() {
                         modifier = Modifier.padding(vertical = 4.dp)
                     ) {
                         Text(
-                            text = "Reset Data",
+                            text = "Reset",
                             color = Color.White
                         )
                     }
