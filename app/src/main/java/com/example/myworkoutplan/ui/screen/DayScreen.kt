@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.ui.components.PlansCards
 
 @Composable
-fun DayScreen(dayTitle: String, workoutList: List<Pair<String, Int>>,trashCan: Boolean) {
+fun DayScreen(dayTitle: String, workoutList: List<Pair<String, Int>>) {
 
     Box {
         Column {
@@ -28,7 +28,7 @@ fun DayScreen(dayTitle: String, workoutList: List<Pair<String, Int>>,trashCan: B
                     )
                 }
                 items(workoutList) { (item, icon) ->
-                    PlansCards(item, icon, trashCan)
+                    PlansCards(item, icon)
                 }
             }
         }

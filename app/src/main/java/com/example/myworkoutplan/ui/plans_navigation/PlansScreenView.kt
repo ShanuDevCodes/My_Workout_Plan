@@ -40,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDatabase
@@ -47,8 +48,8 @@ import com.example.myworkoutplan.ui.components.workoutDB.WorkoutEvent
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
 import com.example.myworkoutplan.ui.screen.DayScreen
+import com.example.myworkoutplan.ui.screen.DeleteScreen
 import kotlinx.coroutines.delay
-import androidx.navigation.compose.composable
 
 @Composable
 fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel()) {
@@ -152,8 +153,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
                 ) {
                     DayScreen(
                         dayTitle = dayTitle,
-                        workoutList = exerciseList,
-                        trashCan = false
+                        workoutList = exerciseList
                     )
                 }
                 if (isExpanded) {
@@ -259,8 +259,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
                 visible = visible,
                 enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
             ) {
-                DayScreen(
-                    dayTitle = dayTitle,
+                DeleteScreen(
                     workoutList = exerciseList,
                     trashCan = true
                 )
