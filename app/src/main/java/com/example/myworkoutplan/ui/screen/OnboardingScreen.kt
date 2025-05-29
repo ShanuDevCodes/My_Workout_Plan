@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.R
 
 @Composable
-fun WelcomeScreen(
+fun OnboardingScreen(
     onContinueClicked: () -> Unit
 ) {
     Surface(
