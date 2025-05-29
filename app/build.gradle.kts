@@ -14,7 +14,8 @@ android {
     defaultConfig {
         applicationId = "com.example.myworkoutplan"
         minSdk = 24
-        targetSdk = 35
+        //noinspection EditedTargetSdkVersion
+        targetSdk = 36
         versionCode = 2
         versionName = "2.2.5-beta"
 
@@ -82,5 +83,5 @@ dependencies {
     implementation(libs.androidx.room.paging)
 
     implementation (libs.datastore)
-    implementation ("androidx.core:core-splashscreen:1.0.0-beta02")
+    implementation (libs.androidx.core.splashscreen)
 }
