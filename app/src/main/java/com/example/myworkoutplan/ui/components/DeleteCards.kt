@@ -45,8 +45,7 @@ import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
 @Composable
 fun DeleteCards(
     workout: String,
-    icon: Int,
-    trashCan: Boolean
+    icon: Int
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -75,36 +74,34 @@ fun DeleteCards(
                 textAlign = TextAlign.Start, // Changed from Center to Start
                 modifier = Modifier.weight(1f) // Takes remaining space
             )
-            if (trashCan) {
-                var showDeleteDialog by remember { mutableStateOf(false) }
-                val context = LocalContext.current
-                val dao = WorkoutDatabase.getInstance(context).workoutDao()
-                val workoutViewModel: WorkoutViewModel = viewModel(
-                    factory = WorkoutViewModelFactory(dao)
+            var showDeleteDialog by remember { mutableStateOf(false) }
+            val context = LocalContext.current
+            val dao = WorkoutDatabase.getInstance(context).workoutDao()
+            val workoutViewModel: WorkoutViewModel = viewModel(
+                factory = WorkoutViewModelFactory(dao)
+            )
+            IconButton(
+                onClick = {
+                    showDeleteDialog = true
+                },
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete $workout",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp)
                 )
-                IconButton(
-                    onClick = {
-                        showDeleteDialog = true
+            }
+            if (showDeleteDialog) {
+                DeleteConfirmationDialog(
+                    workoutName = workout,
+                    onConfirm = {
+                        workoutViewModel.onEvent(WorkoutEvent.DeleteWorkout(workout))
+                        showDeleteDialog = false
                     },
-                    modifier = Modifier.size(40.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete $workout",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-                if (showDeleteDialog) {
-                    DeleteConfirmationDialog(
-                        workoutName = workout,
-                        onConfirm = {
-                            workoutViewModel.onEvent(WorkoutEvent.DeleteWorkout(workout))
-                            showDeleteDialog = false
-                        },
-                        onDismiss = { showDeleteDialog = false }
-                    )
-                }
+                    onDismiss = { showDeleteDialog = false }
+                )
             }
         }
     }

@@ -260,8 +260,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
                 enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
             ) {
                 DeleteScreen(
-                    workoutList = exerciseList,
-                    trashCan = true
+                    workoutList = exerciseList
                 )
             }
         }
