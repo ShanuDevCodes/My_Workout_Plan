@@ -126,13 +126,15 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
         if (dayOfWeek != DayOfWeek.SUNDAY) {
             val visible = viewModel.visible
             val fabScale = remember { Animatable(0f) }
-            LaunchedEffect(Unit) {
-                delay(300)
-                // Animate both offset and scale in parallel
-                fabScale.animateTo(
-                    targetValue = 1f,
-                    animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
-                )
+            if (visible) {
+                LaunchedEffect(Unit) {
+                    delay(150)
+                    // Animate both offset and scale in parallel
+                    fabScale.animateTo(
+                        targetValue = 1f,
+                        animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
+                    )
+                }
             }
             LaunchedEffect(Unit) {
                 delay(500L)
