@@ -1,0 +1,194 @@
+package com.example.myworkoutplan.ui.screen
+
+import android.content.Intent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.example.myworkoutplan.R
+import com.example.myworkoutplan.SettingsActivity
+
+@Composable
+fun ProfileScreen() {
+    val context = LocalContext.current
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 48.dp, start = 16.dp, end = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Profile Image with Edit Icon
+            Box(
+                contentAlignment = Alignment.BottomEnd,
+                modifier = Modifier.size(110.dp)
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.rest),
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                )
+                IconButton(
+                    onClick = {},
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(MaterialTheme.colorScheme.primary, CircleShape)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit",
+                        tint = Color.White,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                text = "Shanu",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.secondary
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            // Email badge
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .padding(horizontal = 20.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = "sk5575723@gmail.com",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            // Card with actions
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(6.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                )
+            ) {
+                ProfileActionItem(
+                    icon = Icons.Default.Edit,
+                    label = "Edit Profile",
+                    onClick = {}
+                )
+                ProfileActionItem(
+                    icon = Icons.Default.DateRange,
+                    label = "History",
+                    onClick = {}
+                )
+                ProfileActionItem(
+                    icon = Icons.Default.Info,
+                    label = "Info",
+                    onClick = {}
+                )
+                ProfileActionItem(
+                    icon = Icons.Default.Settings,
+                    label = "Settings",
+                    onClick = {
+                        context.startActivity(Intent(context, SettingsActivity::class.java))
+                    }
+                )
+                Divider(
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
+                ProfileActionItem(
+                    icon = Icons.AutoMirrored.Filled.ExitToApp,
+                    label = "Logout",
+                    onClick = {},
+                    iconTint = Color(0xFFD32F2F),
+                    textColor = Color(0xFFD32F2F),
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileActionItem(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    iconTint: Color = MaterialTheme.colorScheme.primary,
+    textColor: Color = MaterialTheme.colorScheme.primary,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerLow
+) {
+    ListItem(
+        modifier = Modifier
+            .clickable { onClick() }
+            .padding(horizontal = 8.dp),
+        leadingContent = {
+            Icon(icon, contentDescription = null, tint = iconTint)
+        },
+        headlineContent = {
+            Text(label, color = textColor)
+        },
+        trailingContent = {
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = iconTint
+            )
+        },
+        colors = ListItemDefaults.colors(
+            containerColor = containerColor
+        )
+    )
+}
