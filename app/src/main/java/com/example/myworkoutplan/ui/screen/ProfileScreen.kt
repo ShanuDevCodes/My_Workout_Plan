@@ -5,13 +5,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -51,108 +51,110 @@ fun ProfileScreen() {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 48.dp, start = 16.dp, end = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Profile Image with Edit Icon
-            Box(
-                contentAlignment = Alignment.BottomEnd,
-                modifier = Modifier.size(110.dp)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.rest),
-                    contentDescription = "Profile Picture",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape)
-                )
-                IconButton(
-                    onClick = {},
-                    modifier = Modifier
-                        .size(32.dp)
-                        .background(MaterialTheme.colorScheme.primary, CircleShape)
+            item {
+                Box(
+                    contentAlignment = Alignment.BottomEnd,
+                    modifier = Modifier.size(110.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit",
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp)
+                    Image(
+                        painter = painterResource(R.drawable.rest),
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
                     )
+                    IconButton(
+                        onClick = {},
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(MaterialTheme.colorScheme.primary, CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit",
+                            tint = Color.White,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
                 }
-            }
 
-            Spacer(Modifier.height(16.dp))
-
-            Text(
-                text = "Shanu",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                color = MaterialTheme.colorScheme.secondary
-            )
-
-            Spacer(Modifier.height(8.dp))
-
-            // Email badge
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .padding(horizontal = 20.dp, vertical = 8.dp),
-            ) {
+                Spacer(Modifier.height(16.dp))
 
                 Text(
-                    text = "@Kaneki_Uzumaki",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    text = "Shanu",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = MaterialTheme.colorScheme.secondary
                 )
-            }
 
-            Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(8.dp))
 
-            // Card with actions
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                )
-            ) {
-                ProfileActionItem(
-                    icon = Icons.Default.Edit,
-                    label = "Edit Profile",
-                    onClick = {}
-                )
-                ProfileActionItem(
-                    icon = Icons.Default.DateRange,
-                    label = "History",
-                    onClick = {}
-                )
-                ProfileActionItem(
-                    icon = Icons.Default.Info,
-                    label = "Info",
-                    onClick = {}
-                )
-                ProfileActionItem(
-                    icon = Icons.Default.Settings,
-                    label = "Settings",
-                    onClick = {
-                        context.startActivity(Intent(context, SettingsActivity::class.java))
-                    }
-                )
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                ProfileActionItem(
-                    icon = Icons.AutoMirrored.Filled.ExitToApp,
-                    label = "Logout",
-                    onClick = {},
-                    iconTint = Color(0xFFD32F2F),
-                    textColor = Color(0xFFD32F2F),
-                )
+                // Email badge
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                ) {
+
+                    Text(
+                        text = "@Kaneki_Uzumaki",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                // Card with actions
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    )
+                ) {
+                    ProfileActionItem(
+                        icon = Icons.Default.Edit,
+                        label = "Edit Profile",
+                        onClick = {}
+                    )
+                    ProfileActionItem(
+                        icon = Icons.Default.DateRange,
+                        label = "History",
+                        onClick = {}
+                    )
+                    ProfileActionItem(
+                        icon = Icons.Default.Info,
+                        label = "Info",
+                        onClick = {}
+                    )
+                    ProfileActionItem(
+                        icon = Icons.Default.Settings,
+                        label = "Settings",
+                        onClick = {
+                            context.startActivity(Intent(context, SettingsActivity::class.java))
+                        }
+                    )
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                    ProfileActionItem(
+                        icon = Icons.AutoMirrored.Filled.ExitToApp,
+                        label = "Logout",
+                        onClick = {},
+                        iconTint = Color(0xFFD32F2F),
+                        textColor = Color(0xFFD32F2F),
+                    )
+                }
             }
         }
     }

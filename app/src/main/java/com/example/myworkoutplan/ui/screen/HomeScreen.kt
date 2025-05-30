@@ -1,5 +1,6 @@
 package com.example.myworkoutplan.ui.screen
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -16,14 +17,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -50,24 +48,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.R
+import com.example.myworkoutplan.WorkoutActivity
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDatabase
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
 import kotlinx.coroutines.delay
 import java.time.DayOfWeek
-import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
-    val dayOfWeek = LocalDate.now().dayOfWeek
-    val title = when (dayOfWeek) {
-        DayOfWeek.MONDAY, DayOfWeek.THURSDAY -> "Push Day"
-        DayOfWeek.TUESDAY, DayOfWeek.FRIDAY -> "Pull Day"
-        DayOfWeek.WEDNESDAY, DayOfWeek.SATURDAY -> "Leg Day"
-        else -> "Rest Day"
-    }
+    val title = viewModel.title
     var isStarted by remember { mutableStateOf(false) }
     var timer by remember { mutableIntStateOf(0) }
     val minutes = timer / 60
@@ -116,14 +108,14 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
     }
     Column {
         Text(
-            text = if (!isStarted) "Home" else "%02d:%02d".format(minutes, seconds),
+            text = "Home",
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontWeight = FontWeight.Bold
             ),
             modifier = Modifier.padding(16.dp)
         )
-        if (dayOfWeek != DayOfWeek.SUNDAY) {
+        if (viewModel.dayOfWeek != DayOfWeek.SUNDAY) {
             val visible = viewModel.visible
             val fabScale = remember { Animatable(0f) }
             if (visible) {
@@ -164,43 +156,17 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
                     Box(contentAlignment = Alignment.BottomEnd) {
                         ExtendedFloatingActionButton(
                             onClick = {
-                                isPaused = !isPaused
+                                context.startActivity(Intent(context, WorkoutActivity::class.java))
                             },
                             icon = {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.pause),
-                                    contentDescription = "AI",
-                                    modifier = Modifier.size(10.dp)
+                                    imageVector = Icons.Filled.PlayArrow,
+                                    contentDescription = "Start"
                                 )
                             },
-                            text = {
-                                Text(
-                                    "Pause",
-                                    style = MaterialTheme.typography.labelSmall
-                                )
-                            },
+                            text = { Text("Start") },
                             modifier = Modifier
-                                .width(92.dp)
-                                .height(44.dp)
-                                .scale(fabScaleMini.value)
-                                .offset(y = fabOffsetY.value.dp),
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            elevation = FloatingActionButtonDefaults.elevation(2.dp)
-                        )
-                        ExtendedFloatingActionButton(
-                            onClick = {
-                                isStarted = !isStarted
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = if (!isStarted) Icons.Filled.PlayArrow else Icons.Filled.Done,
-                                    contentDescription = if (!isStarted) "Start" else "Done"
-                                )
-                            },
-                            text = { Text(if (!isStarted) "Start" else "Done") },
-                            modifier = Modifier
-                                .scale(fabScale.value)
-                                .width(107.dp),
+                                .scale(fabScale.value),
                             containerColor = MaterialTheme.colorScheme.primary,
                             elevation = FloatingActionButtonDefaults.elevation(2.dp)
                         )
