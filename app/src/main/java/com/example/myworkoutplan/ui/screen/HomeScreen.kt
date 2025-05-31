@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -59,9 +58,9 @@ import java.time.DayOfWeek
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
     val title = viewModel.title
-    var isStarted by remember { mutableStateOf(false) }
+    val isStarted by remember { mutableStateOf(false) }
     var timer by remember { mutableIntStateOf(0) }
-    var isPaused by remember { mutableStateOf(false) }
+    val isPaused by remember { mutableStateOf(false) }
     val fabScaleMini = remember { Animatable(0f) }
     val fabOffsetY = remember { Animatable(0f) }
     LaunchedEffect(isStarted) {
@@ -131,10 +130,10 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
             }
             val context = LocalContext.current
             val dao = WorkoutDatabase.getInstance(context).workoutDao()
-            val viewModel: WorkoutViewModel = viewModel(
+            val workoutViewModel: WorkoutViewModel = viewModel(
                 factory = WorkoutViewModelFactory(dao)
             )
-            val exerciseList by viewModel.getExerciseNameAndImagePairsByType(title)
+            val exerciseList by workoutViewModel.getExerciseNameAndImagePairsByType(title)
                 .collectAsState(initial = emptyList())
             Box(modifier = Modifier
                 .fillMaxSize()) {
