@@ -1,8 +1,6 @@
 package com.example.myworkoutplan.ui.screen
 
 import android.app.Activity
-import androidx.collection.ScatterSet
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,11 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -52,9 +48,9 @@ import com.example.myworkoutplan.ui.components.workoutDB.WorkoutEvent
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
 import com.example.myworkoutplan.ui.data.DataStoreManager
-import com.example.myworkoutplan.ui.theme.DynamicColorOption
 import com.example.myworkoutplan.ui.settings.SettingsViewModel
 import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
+import com.example.myworkoutplan.ui.theme.DynamicColorOption
 import com.example.myworkoutplan.ui.theme.ThemeOptions
 
 

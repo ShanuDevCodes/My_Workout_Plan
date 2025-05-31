@@ -3,12 +3,10 @@ package com.example.myworkoutplan.ui.screen.WorkoutActivityScreens
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,25 +18,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -85,7 +78,7 @@ fun PortraitWorkoutScreen() {
     Surface {
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
-            sheetPeekHeight = 200.dp,
+            sheetPeekHeight = 210.dp,
             sheetContent = {
                 PeekBottomSheetContent(
                     isRunning = isRunning,
@@ -229,9 +222,34 @@ fun PeekBottomSheetContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
+        Text( text = "Current Workout")
+
+        Spacer(modifier = Modifier.height(8.dp))
         // Lap times card - visible when sheet is expanded
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+            )
+        ) {
+            Column {
+                LapTimeRow(
+                    lapNumber = 1,
+                    lapTime = 200000,
+                    totalTime = 400000
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text( text = "Upcoming Workout")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -241,21 +259,38 @@ fun PeekBottomSheetContent(
             )
         ) {
             Column {
-                // Header
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Text("Lap", fontWeight = FontWeight.Medium)
-                    Text("Lap Time", fontWeight = FontWeight.Medium)
-                    Text("Total", fontWeight = FontWeight.Medium)
+                    itemsIndexed(lapTimes) { index, lapTime ->
+                        val lapNumber = lapCounter - lapTimes.size + index + 1
+                        val previousTime = if (index == 0) 0L else lapTimes[index - 1]
+                        val currentLapTime = lapTime - previousTime
+                        LapTimeRow(
+                            lapNumber = lapNumber,
+                            lapTime = currentLapTime,
+                            totalTime = lapTime
+                        )
+                    }
                 }
+            }
+        }
 
-                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface)
+        Spacer(modifier = Modifier.height(12.dp))
 
-                // Scrollable lap times
+        Text( text = "Completed Workout")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+            )
+        ) {
+            Column {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
@@ -274,6 +309,6 @@ fun PeekBottomSheetContent(
         }
 
         // Bottom padding to ensure content doesn't get cut off
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }

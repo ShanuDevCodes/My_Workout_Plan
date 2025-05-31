@@ -55,7 +55,6 @@ import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
 import kotlinx.coroutines.delay
 import java.time.DayOfWeek
 
-@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
