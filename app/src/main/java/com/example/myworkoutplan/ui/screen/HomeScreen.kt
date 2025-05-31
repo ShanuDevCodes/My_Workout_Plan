@@ -62,8 +62,6 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
     val title = viewModel.title
     var isStarted by remember { mutableStateOf(false) }
     var timer by remember { mutableIntStateOf(0) }
-    val minutes = timer / 60
-    val seconds = timer % 60
     var isPaused by remember { mutableStateOf(false) }
     val fabScaleMini = remember { Animatable(0f) }
     val fabOffsetY = remember { Animatable(0f) }

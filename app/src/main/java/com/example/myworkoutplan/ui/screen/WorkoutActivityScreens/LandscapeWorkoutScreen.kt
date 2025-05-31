@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
@@ -19,15 +19,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LandscapeWorkoutScreen() {
     val context = LocalContext.current
     var isRunning by remember { mutableStateOf(false) }
-    var timeInMillis by remember { mutableStateOf(0L) }
+    var timeInMillis by remember { mutableLongStateOf(0L) }
     var lapTimes by remember { mutableStateOf(listOf<Long>()) }
-    var lapCounter by remember { mutableStateOf(55) } // Starting from lap 55
-
+    var lapCounter by remember { mutableIntStateOf(0) }
+    val scope = rememberCoroutineScope()
     // Timer logic
     LaunchedEffect(isRunning) {
         while (isRunning) {
@@ -50,18 +52,28 @@ fun LandscapeWorkoutScreen() {
             Box(modifier = Modifier.weight(1f)) {
 
                 // Top-start Back Button
-                IconButton(
-                    onClick = { (context as? Activity)?.finish() },
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.onSurface
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Workout Session",
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            (context as? Activity)?.finish()
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back",
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent
                     )
-                }
+                )
 
                 // Main Row: Timer and Lap list
                 Row(modifier = Modifier.fillMaxSize()) {
@@ -75,14 +87,14 @@ fun LandscapeWorkoutScreen() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = formatTime(timeInMillis),
+                            text = FormatTime(timeInMillis),
                             fontSize = 72.sp,
                             fontWeight = FontWeight.Light,
                             color = MaterialTheme.colorScheme.primary,
                             fontFamily = FontFamily.Monospace
                         )
                         Text(
-                            text = formatTime(timeInMillis),
+                            text = FormatTime(timeInMillis),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.Light,
                             color = MaterialTheme.colorScheme.secondary,
@@ -114,20 +126,7 @@ fun LandscapeWorkoutScreen() {
 
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
-                                reverseLayout = true
                             ) {
-                                if (isRunning && lapTimes.isNotEmpty()) {
-                                    item {
-                                        val currentLapTime = timeInMillis - lapTimes.last()
-                                        LapTimeRow(
-                                            lapNumber = lapCounter,
-                                            lapTime = currentLapTime,
-                                            totalTime = timeInMillis,
-                                            isCurrentLap = true
-                                        )
-                                    }
-                                }
-
                                 itemsIndexed(lapTimes) { index, lapTime ->
                                     val lapNumber = lapCounter - lapTimes.size + index + 1
                                     val previousTime = if (index == 0) 0L else lapTimes[index - 1]
@@ -186,10 +185,13 @@ fun LandscapeWorkoutScreen() {
                     modifier = Modifier
                         .width(300.dp),
                     onClick = {
-                        isRunning = false
-                        timeInMillis = 0L
-                        lapTimes = emptyList()
-                        lapCounter = 55
+                        scope.launch {
+                            isRunning = false
+                            delay(20)
+                            timeInMillis = 0L
+                            lapTimes = emptyList()
+                            lapCounter = 0
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
@@ -210,7 +212,6 @@ fun LapTimeRow(
     lapNumber: Int,
     lapTime: Long,
     totalTime: Long,
-    isCurrentLap: Boolean = false
 ) {
     Row(
         modifier = Modifier
@@ -221,26 +222,18 @@ fun LapTimeRow(
     ) {
         Text(
             text = lapNumber.toString(),
-            color = if (isCurrentLap) Color.Red else MaterialTheme.colorScheme.onSurface,
-            fontWeight = if (isCurrentLap) FontWeight.Bold else FontWeight.Normal
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Normal
         )
         Text(
-            text = formatTime(lapTime),
-            color = if (isCurrentLap) Color.Red else MaterialTheme.colorScheme.onSurface,
-            fontWeight = if (isCurrentLap) FontWeight.Bold else FontWeight.Normal,
+            text = FormatTime(lapTime),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Normal,
         )
         Text(
-            text = formatTime(totalTime),
-            color = if (isCurrentLap) Color.Red else MaterialTheme.colorScheme.onSurface,
-            fontWeight = if (isCurrentLap) FontWeight.Bold else FontWeight.Normal,
+            text = FormatTime(totalTime),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Normal,
         )
     }
-}
-
-fun formatTime(timeInMillis: Long): String {
-    val minutes = (timeInMillis / 60000) % 60
-    val seconds = (timeInMillis / 1000) % 60
-    val centiseconds = (timeInMillis / 10) % 100
-
-    return String.format("%02d:%02d.%02d", minutes, seconds, centiseconds)
 }

@@ -1,5 +1,7 @@
 package com.example.myworkoutplan.ui.screen
 
+import android.app.Activity
+import androidx.collection.ScatterSet
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,16 +16,24 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +58,7 @@ import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
 import com.example.myworkoutplan.ui.theme.ThemeOptions
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen() {
     val context = LocalContext.current
@@ -60,127 +71,157 @@ fun SettingsScreen() {
         factory = WorkoutViewModelFactory(dao)
     )
     var showResetDialog by remember { mutableStateOf(false) }
-    Box(
+    Surface(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.systemBars)
+            .fillMaxSize(),
+        color = Color.Transparent
     ) {
-        Column {
-            Text(
-                text = "Settings",
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(16.dp)
-            )
+        Scaffold(
+            containerColor = MaterialTheme.colorScheme.background,
+            contentWindowInsets = WindowInsets.systemBars,
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Settings",
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            (context as? Activity)?.finish()
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back",
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent
+                    )
+                )
+            }
+        ) { innerPadding ->
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(innerPadding)
             ) {
-                LazyColumn {
-                    item {
-                        Text(
-                            "Choose Theme",
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                        )
-                    }
+                Column {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        LazyColumn {
+                            item {
+                                Text(
+                                    "Choose Theme",
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                                )
+                            }
 
-                    items(ThemeOptions.entries.size) { index ->
-                        val option = ThemeOptions.entries[index]
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(vertical = 4.dp)
-                        ) {
-                            RadioButton(
-                                selected = selectedThemeOption == option,
-                                onClick = { settingsViewModel.setThemeOption(option) }
-                            )
-                            Text(
-                                text = option.name.replace("_", " ").lowercase()
-                                    .replaceFirstChar { it.uppercase() },
-                                color = MaterialTheme.colorScheme.onBackground
+                            items(ThemeOptions.entries.size) { index ->
+                                val option = ThemeOptions.entries[index]
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                ) {
+                                    RadioButton(
+                                        selected = selectedThemeOption == option,
+                                        onClick = { settingsViewModel.setThemeOption(option) }
+                                    )
+                                    Text(
+                                        text = option.name.replace("_", " ").lowercase()
+                                            .replaceFirstChar { it.uppercase() },
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    )
+                                }
+                            }
+
+                            item { Spacer(modifier = Modifier.height(16.dp)) }
+
+                            item {
+                                Text(
+                                    "Use Dynamic Colors",
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                                )
+                            }
+
+                            items(DynamicColorOption.entries.size) { index ->
+                                val option = DynamicColorOption.entries[index]
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                ) {
+                                    RadioButton(
+                                        selected = selectedDynamicColorOption == option,
+                                        onClick = {
+                                            settingsViewModel.updateDynamicColorOption(
+                                                option
+                                            )
+                                        }
+                                    )
+                                    Text(
+                                        text = option.name.lowercase()
+                                            .replaceFirstChar { it.uppercase() },
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    )
+                                }
+                            }
+                            item { Spacer(modifier = Modifier.height(32.dp)) }
+                            item {
+                                Text(
+                                    "Reset Workout List",
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                                )
+                            }
+                            item {
+                                Text(
+                                    "This will reset your workout list and cannot be undone.",
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                            }
+                            item {
+                                Button(
+                                    onClick = {
+                                        showResetDialog = !showResetDialog
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFFB32727)
+                                    ),
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                ) {
+                                    Text(
+                                        text = "Reset",
+                                        color = Color.White
+                                    )
+                                }
+                            }
+                        }
+                        if (showResetDialog) {
+                            ResetConfirmationDialog(
+                                onConfirm = {
+                                    workoutViewModel.onEvent(WorkoutEvent.ResetWorkoutDB)
+                                    showResetDialog = !showResetDialog
+                                },
+                                onDismiss = {
+                                    showResetDialog = !showResetDialog
+                                }
                             )
                         }
                     }
-
-                    item { Spacer(modifier = Modifier.height(16.dp)) }
-
-                    item {
-                        Text(
-                            "Use Dynamic Colors",
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                        )
-                    }
-
-                    items(DynamicColorOption.entries.size) { index ->
-                        val option = DynamicColorOption.entries[index]
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(vertical = 4.dp)
-                        ) {
-                            RadioButton(
-                                selected = selectedDynamicColorOption == option,
-                                onClick = { settingsViewModel.updateDynamicColorOption(option) }
-                            )
-                            Text(
-                                text = option.name.lowercase().replaceFirstChar { it.uppercase() },
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
-                    }
-                    item { Spacer(modifier = Modifier.height(32.dp)) }
-                    item {
-                        Text(
-                            "Reset Workout List",
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                        )
-                    }
-                    item {
-                        Text(
-                            "This will reset your workout list and cannot be undone.",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                    }
-                    item {
-                        Button(
-                            onClick = {
-                                showResetDialog = !showResetDialog
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFB32727)
-                            ),
-                            modifier = Modifier.padding(vertical = 4.dp)
-                        ) {
-                            Text(
-                                text = "Reset",
-                                color = Color.White
-                            )
-                        }
-                    }
-                }
-                if (showResetDialog) {
-                    ResetConfirmationDialog(
-                        onConfirm = {
-                            workoutViewModel.onEvent(WorkoutEvent.ResetWorkoutDB)
-                            showResetDialog = !showResetDialog
-                        },
-                        onDismiss = {
-                            showResetDialog = !showResetDialog
-                        }
-                    )
                 }
             }
         }
     }
 }
-
 @Composable
 fun ResetConfirmationDialog(
     onConfirm: () -> Unit,
@@ -188,8 +229,7 @@ fun ResetConfirmationDialog(
 ) {
     AlertDialog(
         modifier = Modifier
-            .fillMaxWidth()
-        ,
+            .fillMaxWidth(),
         onDismissRequest = onDismiss,
         icon = {
             Icon(
