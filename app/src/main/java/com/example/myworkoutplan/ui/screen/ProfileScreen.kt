@@ -2,6 +2,7 @@ package com.example.myworkoutplan.ui.screen
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +38,9 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,14 +51,31 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.SettingsActivity
+import com.example.myworkoutplan.ui.components.FirebaseAuth.FirebaseEvent
+import com.example.myworkoutplan.ui.components.FirebaseAuth.FirebaseViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ProfileScreen() {
+
+    val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    val firebaseViewModel: FirebaseViewModel = viewModel()
+    val firebaseState by firebaseViewModel.state.collectAsState()
+    val onEvent: (FirebaseEvent) -> Unit = firebaseViewModel::onEvent
+    val userName = auth.currentUser?.displayName?:"Guest"
+    val userEmail = auth.currentUser?.email?:"Anonymous"
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    LaunchedEffect(firebaseState.isError, firebaseState.error) {
+        if (firebaseState.isError && firebaseState.error.isNotBlank()) {
+            Toast.makeText(context, firebaseState.error, Toast.LENGTH_LONG).show()
+            firebaseViewModel.onEvent(FirebaseEvent.ResetError)
+        }
+    }
     if (isPortrait) {
         Box(
             modifier = Modifier
@@ -97,7 +118,7 @@ fun ProfileScreen() {
                 Spacer(Modifier.height(16.dp))
 
                 Text(
-                    text = "Shanu",
+                    text = userName.toString(),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -117,7 +138,7 @@ fun ProfileScreen() {
                 ) {
 
                     Text(
-                        text = "@Kaneki_Uzumaki",
+                        text = userEmail.toString(),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -199,13 +220,27 @@ fun ProfileScreen() {
                                 }
                             )
                             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                            ProfileActionItem(
-                                icon = Icons.AutoMirrored.Filled.ExitToApp,
-                                label = "Logout",
-                                onClick = {},
-                                iconTint = Color(0xFFD32F2F),
-                                textColor = Color(0xFFD32F2F),
-                            )
+                            if (auth.currentUser != null) {
+                                ProfileActionItem(
+                                    icon = Icons.AutoMirrored.Filled.ExitToApp,
+                                    label = "Logout",
+                                    onClick = {
+                                        onEvent(FirebaseEvent.LogoutUser)
+                                    },
+                                    iconTint = Color(0xFFD32F2F),
+                                    textColor = Color(0xFFD32F2F),
+                                )
+                            }else{
+                                ProfileActionItem(
+                                    icon = Icons.AutoMirrored.Filled.ExitToApp,
+                                    label = "Login",
+                                    onClick = {
+
+                                    },
+                                    iconTint = Color(0xFFD32F2F),
+                                    textColor = Color(0xFFD32F2F),
+                                )
+                            }
                         }
 
                         Spacer(Modifier.height(24.dp))
@@ -261,7 +296,7 @@ fun ProfileScreen() {
                     Spacer(Modifier.height(16.dp))
 
                     Text(
-                        text = "Shanu",
+                        text = userName.toString(),
                         style = MaterialTheme.typography.headlineMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -279,7 +314,7 @@ fun ProfileScreen() {
                             .padding(horizontal = 20.dp, vertical = 8.dp),
                     ) {
                         Text(
-                            text = "@Kaneki_Uzumaki",
+                            text = userEmail.toString(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -341,7 +376,13 @@ fun ProfileScreen() {
                             ProfileActionItem(
                                 icon = Icons.Default.Edit,
                                 label = "Edit Profile",
-                                onClick = {}
+                                onClick = {
+                                    if(auth.currentUser == null){
+                                        Toast.makeText(context, "Login to edit your profile", Toast.LENGTH_LONG).show()
+                                    }else{
+                                        Toast.makeText(context, "Edit Profile", Toast.LENGTH_LONG).show()
+                                    }
+                                }
                             )
                             ProfileActionItem(
                                 icon = Icons.Default.DateRange,
@@ -366,13 +407,27 @@ fun ProfileScreen() {
                                 }
                             )
                             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                            ProfileActionItem(
-                                icon = Icons.AutoMirrored.Filled.ExitToApp,
-                                label = "Logout",
-                                onClick = {},
-                                iconTint = Color(0xFFD32F2F),
-                                textColor = Color(0xFFD32F2F),
-                            )
+                            if (auth.currentUser != null) {
+                                ProfileActionItem(
+                                    icon = Icons.AutoMirrored.Filled.ExitToApp,
+                                    label = "Logout",
+                                    onClick = {
+                                        onEvent(FirebaseEvent.LogoutUser)
+                                    },
+                                    iconTint = Color(0xFFD32F2F),
+                                    textColor = Color(0xFFD32F2F),
+                                )
+                            }else{
+                                ProfileActionItem(
+                                    icon = Icons.AutoMirrored.Filled.ExitToApp,
+                                    label = "Login",
+                                    onClick = {
+
+                                    },
+                                    iconTint = Color(0xFFD32F2F),
+                                    textColor = Color(0xFFD32F2F),
+                                )
+                            }
                         }
                     }
                 }

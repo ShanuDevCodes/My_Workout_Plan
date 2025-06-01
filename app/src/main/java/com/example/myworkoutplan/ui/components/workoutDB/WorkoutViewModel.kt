@@ -3,21 +3,22 @@ package com.example.myworkoutplan.ui.components.workoutDB
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkoutplan.R
+import com.example.myworkoutplan.ui.components.FirebaseAuth.FirebaseState
 import com.example.myworkoutplan.ui.components.legWorkout
 import com.example.myworkoutplan.ui.components.pullWorkout
 import com.example.myworkoutplan.ui.components.pushWorkout
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class WorkoutViewModel(
     private val dao: WorkoutDao
 ) : ViewModel(){
-    val _state = MutableStateFlow(WorkoutState())
+    private val _state = MutableStateFlow(WorkoutState())
+    val state: StateFlow<WorkoutState> = _state
     fun onEvent(event: WorkoutEvent){
         when(event){
             is WorkoutEvent.DeleteWorkout -> {
