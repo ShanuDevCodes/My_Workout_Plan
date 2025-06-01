@@ -35,39 +35,12 @@ class OnboardingActivity : ComponentActivity() {
             )
             val selectedTheme by remember { derivedStateOf { settingsViewModel.selectedTheme } }
             val dynamicColorOption by remember { derivedStateOf { settingsViewModel.dynamicColorOption } }
-            val dao = WorkoutDatabase.getInstance(applicationContext).workoutDao()
             MyWorkoutPlanTheme(
                 themeOption = selectedTheme,
                 dynamicColorOption = dynamicColorOption
             ){
-                OnboardingScreen {
-
-                    lifecycleScope.launch {
-                        insertInitialDataIfNeeded(dao, dataStore)
-                        startActivity(Intent(this@OnboardingActivity, MainActivity::class.java))
-                        finish()
-                    }
-
-                }
+                OnboardingScreen()
             }
         }
-    }
-    private suspend fun insertInitialDataIfNeeded(dao: WorkoutDao, dataStoreManager: DataStoreManager) {
-            val isFirstTime = dataStoreManager.isFirstLaunch.first()
-            if (isFirstTime) {
-                val push = pushWorkout.map { (name, image) ->
-                    WorkoutPlan(name, image, "Push Day", R.drawable.push_day)
-                }
-                val pull = pullWorkout.map { (name, image) ->
-                    WorkoutPlan(name, image, "Pull Day", R.drawable.pull_day)
-                }
-                val leg = legWorkout.map { (name, image) ->
-                    WorkoutPlan(name, image, "Leg Day", R.drawable.leg_day)
-                }
-
-                (push + pull + leg).forEach { dao.upsertWorkout(it) }
-
-                dataStoreManager.setFirstLaunchDone()
-            }
     }
 }
