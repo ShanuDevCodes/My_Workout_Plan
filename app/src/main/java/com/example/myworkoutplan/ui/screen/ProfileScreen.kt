@@ -118,7 +118,7 @@ fun ProfileScreen() {
                 Spacer(Modifier.height(16.dp))
 
                 Text(
-                    text = userName.toString(),
+                    text = userName,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -138,7 +138,7 @@ fun ProfileScreen() {
                 ) {
 
                     Text(
-                        text = userEmail.toString(),
+                        text = userEmail,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -296,7 +296,7 @@ fun ProfileScreen() {
                     Spacer(Modifier.height(16.dp))
 
                     Text(
-                        text = userName.toString(),
+                        text = userName,
                         style = MaterialTheme.typography.headlineMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -314,7 +314,7 @@ fun ProfileScreen() {
                             .padding(horizontal = 20.dp, vertical = 8.dp),
                     ) {
                         Text(
-                            text = userEmail.toString(),
+                            text = userEmail,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.primary
                         )
