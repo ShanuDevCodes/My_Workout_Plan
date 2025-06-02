@@ -40,6 +40,8 @@ A clean and modern **Workout Planner app** built with **Jetpack Compose** in **K
   <img src="screenshots/13.png" width="250"/>
   <img src="screenshots/14.png" width="250"/>
   <img src="screenshots/17.png" width="250"/>
+</p>
+<p align="left">
   <img src="screenshots/18.png" width="250"/>
 </p>
 
@@ -50,23 +52,24 @@ A clean and modern **Workout Planner app** built with **Jetpack Compose** in **K
 > Optimized layout for tablets and horizontal phones.
 
 <p align="center">
-  <img src="screenshots/3.jpg" width="500"/>
-  <img src="screenshots/4.jpg" width="500"/>
-  <img src="screenshots/7.jpg" width="500"/>
+  <img src="screenshots/3.jpg" width="48%"/>
+  <img src="screenshots/4.jpg" width="48%"/>
 </p>
 <p align="center">
-  <img src="screenshots/8.jpg" width="500"/>
-  <img src="screenshots/11.jpg" width="500"/>
-  <img src="screenshots/12.jpg" width="500"/>
+  <img src="screenshots/7.jpg" width="48%"/>
+  <img src="screenshots/8.jpg" width="48%"/>
 </p>
 <p align="center">
-  <img src="screenshots/15.jpg" width="500"/>
-  <img src="screenshots/16.jpg" width="500"/>
-  <img src="screenshots/19.jpg" width="500"/>
-  <img src="screenshots/20.jpg" width="500"/>
+  <img src="screenshots/11.jpg" width="48%"/>
+  <img src="screenshots/12.jpg" width="48%"/>
 </p>
-<p align="left">
-  <img src="screenshots/20.jpg" width="500"/>
+<p align="center">
+  <img src="screenshots/15.jpg" width="48%"/>
+  <img src="screenshots/16.jpg" width="48%"/>
+</p>
+<p align="center">
+  <img src="screenshots/19.jpg" width="48%"/>
+  <img src="screenshots/20.jpg" width="48%"/>
 </p>
 
 ---
