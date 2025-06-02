@@ -65,6 +65,9 @@ A clean and modern **Workout Planner app** built with **Jetpack Compose** in **K
   <img src="screenshots/19.jpg" width="500"/>
   <img src="screenshots/20.jpg" width="500"/>
 </p>
+<p align="left">
+  <img src="screenshots/20.jpg" width="500"/>
+</p>
 
 ---
 
