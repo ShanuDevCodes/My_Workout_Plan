@@ -5,34 +5,69 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.MainActivity
-import com.example.myworkoutplan.WorkoutActivity
+import com.example.myworkoutplan.R
+import com.example.myworkoutplan.ui.components.EmailVerificationWaitingScreen
 import com.example.myworkoutplan.ui.components.FirebaseAuth.FirebaseEvent
 import com.example.myworkoutplan.ui.components.FirebaseAuth.FirebaseViewModel
+import com.example.myworkoutplan.ui.components.TermsAndPrivacyDialog
 import com.example.myworkoutplan.ui.data.DataStoreManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onLoginClicked: () -> Unit
+) {
+    val auth: FirebaseAuth = FirebaseAuth.getInstance()
     val firebaseViewModel: FirebaseViewModel = viewModel()
     val firebaseState by firebaseViewModel.state.collectAsState()
     val onEvent: (FirebaseEvent) -> Unit = firebaseViewModel::onEvent
     val context = LocalContext.current
     val dataStore = DataStoreManager(context)
     var agreeToTerms by remember { mutableStateOf(false) }
+    var checkingVerification by remember { mutableStateOf(false) }
+    var isFirstLaunch by remember { mutableStateOf<Boolean?>(null) }
 
     var showTermsDialog by remember { mutableStateOf(false) }
     if (showTermsDialog) {
@@ -50,8 +85,24 @@ fun LoginScreen() {
     }
     LaunchedEffect(firebaseState.isLoggedIn) {
         if (firebaseState.isLoggedIn) {
-            dataStore.setFirstLaunchDone()
-            context.startActivity(Intent(context, MainActivity::class.java))
+            checkingVerification = true
+            while(checkingVerification){
+                auth.currentUser?.reload()
+                if (auth.currentUser == null){
+                    checkingVerification = false
+                    return@LaunchedEffect
+                }
+                if (auth.currentUser?.isEmailVerified == true) {
+                    checkingVerification = false
+                    break
+                }
+                delay(20)
+            }
+            isFirstLaunch = dataStore.isFirstLaunch.first()
+            if (isFirstLaunch == true) {
+                dataStore.setFirstLaunchDone()
+                context.startActivity(Intent(context, MainActivity::class.java))
+            }
             (context as? Activity)?.finish()
         }
     }
@@ -59,17 +110,6 @@ fun LoginScreen() {
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        if (firebaseState.isLoading) {
-            // Full-screen loading overlay
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.7f)),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -77,16 +117,12 @@ fun LoginScreen() {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Get Started Now",
+                text = "Login to your account",
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
-            Text(
-                text = "Please log in to your account to continue.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
+
+            Spacer(modifier = Modifier.padding(18.dp))
 
             // Email Field
             TextField(
@@ -160,7 +196,7 @@ fun LoginScreen() {
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
             ) {
-                Text("Log in")
+                Text("Login")
             }
 
             // Signup Link
@@ -173,7 +209,9 @@ fun LoginScreen() {
                 Text("Don't have an account? ")
                 Text(
                     text = "Sign Up",
-                    modifier = Modifier.clickable {},
+                    modifier = Modifier.clickable {
+                        onLoginClicked()
+                    },
                     color = MaterialTheme.colorScheme.primary
                 )
             }
@@ -185,9 +223,9 @@ fun LoginScreen() {
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
             ) {
-                Divider(modifier = Modifier.weight(1f))
+                HorizontalDivider(modifier = Modifier.weight(1f))
                 Text("  Or  ", style = MaterialTheme.typography.bodySmall)
-                Divider(modifier = Modifier.weight(1f))
+                HorizontalDivider(modifier = Modifier.weight(1f))
             }
 
             // Social Login Buttons (placeholders)
@@ -198,9 +236,12 @@ fun LoginScreen() {
                 Button(
                     onClick = {
                         CoroutineScope(Dispatchers.IO).launch{
-                            dataStore.setFirstLaunchDone()
+                            isFirstLaunch = dataStore.isFirstLaunch.first()
+                            if (isFirstLaunch == true) {
+                                dataStore.setFirstLaunchDone()
+                                context.startActivity(Intent(context, MainActivity::class.java))
+                            }
                         }
-                        context.startActivity(Intent(context, MainActivity::class.java))
                         (context as? Activity)?.finish()
                     },
                     modifier = Modifier.weight(1f),
@@ -208,6 +249,13 @@ fun LoginScreen() {
                         containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
+                    Icon(
+                        imageVector = Icons.Filled.Person,
+                        contentDescription = "Person Logo",
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text("Continue as a Guest")
                 }
                 Spacer(modifier = Modifier.width(8.dp))
@@ -215,41 +263,49 @@ fun LoginScreen() {
                     onClick = { /* TODO: Apple Login */ },
                     modifier = Modifier.weight(1f)
                 ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.google),
+                        contentDescription = "Google Logo",
+                        modifier = Modifier
+                            .size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text("Login with Google")
                 }
             }
         }
-    }
-}
-
-@Composable
-fun TermsAndPrivacyDialog(
-    onDismiss: () -> Unit,
-    title: String = "Terms & Privacy",
-    termsText: String = """
-        Terms & Privacy Policy
-
-        By using this app, you agree to the following:
-
-        • Information We Collect: We may collect personal information such as your name, email address, device information, and usage data to provide and improve our services.
-        • How We Use Your Information: Your data is used for core app functionality, account management, analytics, and to personalize your experience.
-        • Data Sharing: We do not sell your personal information. Your data may be shared with trusted third-party services for authentication, analytics, and data storage, in accordance with their privacy policies.
-        • Security: We use industry-standard security measures to protect your data, including encryption and secure transmission protocols.
-        • User Rights: You have the right to access, update, or delete your personal information. Contact us at [your support email] for any requests regarding your data.
-        • Policy Changes: We may update this policy from time to time. Significant changes will be communicated within the app or via email.
-
-        For more details, please review our full Privacy Policy available on our website or app store listing.
-    """.trimIndent()
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = { Text(termsText) },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text("OK")
+        if (firebaseState.isLoading) {
+            // Full-screen loading overlay
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.7f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
-        },
-        dismissButton = {}
-    )
+        }
+        if (checkingVerification) {
+            EmailVerificationWaitingScreen(
+                onResend = {
+                    // Send verification email
+                    auth.currentUser?.sendEmailVerification()
+                    Toast.makeText(
+                        context,
+                        "Verification email resent! Please check your inbox.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                },
+                onCancel = {
+                    firebaseViewModel.onEvent(FirebaseEvent.DeleteUser)
+                    firebaseViewModel.onEvent(FirebaseEvent.LogoutUser)
+                    Toast.makeText(
+                        context,
+                        "LogIn canceled",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            )
+        }
+    }
 }

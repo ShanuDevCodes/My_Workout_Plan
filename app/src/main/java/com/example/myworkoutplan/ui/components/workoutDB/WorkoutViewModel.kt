@@ -3,7 +3,6 @@ package com.example.myworkoutplan.ui.components.workoutDB
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkoutplan.R
-import com.example.myworkoutplan.ui.components.FirebaseAuth.FirebaseState
 import com.example.myworkoutplan.ui.components.legWorkout
 import com.example.myworkoutplan.ui.components.pullWorkout
 import com.example.myworkoutplan.ui.components.pushWorkout
@@ -116,5 +115,19 @@ class WorkoutViewModel(
             .map { list ->
                 list.map { it.workoutName to it.imageResource }
             }
+    }
+    suspend fun initialiseDB(){
+        dao.deleteAllWorkouts()
+        val push = pushWorkout.map { (name, image) ->
+            WorkoutPlan(name, image, "Push Day", R.drawable.push_day)
+        }
+        val pull = pullWorkout.map { (name, image) ->
+            WorkoutPlan(name, image, "Pull Day", R.drawable.pull_day)
+        }
+        val leg = legWorkout.map { (name, image) ->
+            WorkoutPlan(name, image, "Leg Day", R.drawable.leg_day)
+        }
+
+        (push + pull + leg).forEach { dao.upsertWorkout(it) }
     }
 }

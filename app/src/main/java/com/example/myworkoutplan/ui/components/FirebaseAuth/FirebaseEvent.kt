@@ -12,4 +12,5 @@ sealed interface FirebaseEvent {
     object UpdateUserName: FirebaseEvent
     object SignInAnonymously : FirebaseEvent
     object ResetPassword : FirebaseEvent
+    object DeleteUser : FirebaseEvent
 }
