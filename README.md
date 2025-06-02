@@ -1,5 +1,8 @@
 # 🏋️‍♂️ My Workout Planner App
 
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A clean and modern **Workout Planner app** built with **Jetpack Compose** in **Kotlin**. Plan your weekly fitness schedule, track your routines, and experience a responsive UI across themes and orientations.
 
 > 🚀 *Still a Work In Progress — constantly evolving as I explore Clean Architecture, DI, testing, and modularization.*
