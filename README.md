@@ -51,16 +51,6 @@ A clean and modern **Workout Planner app** built with **Jetpack Compose** in **K
 
 ---
 
-## 📚 What I’ve Learned So Far
-
-✅ Real-world MVVM and modular structure  
-✅ Scalable and clean UI state management  
-✅ Landscape UI support using Compose  
-✅ Reactive design using Flows and effects  
-✅ Hands-on experience with Gradle Kotlin DSL and app modularization
-
----
-
 ## 🚧 Upcoming Plans
 
 - 📊 Workout session tracking & weekly summaries
