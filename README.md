@@ -27,22 +27,24 @@ A clean and modern **Workout Planner app** built with **Jetpack Compose** in **K
 > Key screens from light and dark mode.
 
 <p align="center">
-  <img src="screenshots/1.png" width="250"/>
-  <img src="screenshots/2.png" width="250"/>
-  <img src="screenshots/5.png" width="250"/>
+  <img src="screenshots/1.png" width="48%"/>
+  <img src="screenshots/2.png" width="48%"/>
 </p>
 <p align="center">
-  <img src="screenshots/6.png" width="250"/>
-  <img src="screenshots/9.png" width="250"/>
-  <img src="screenshots/10.png" width="250"/>
+  <img src="screenshots/5.png" width="48%"/>
+  <img src="screenshots/6.png" width="48%"/>
 </p>
 <p align="center">
-  <img src="screenshots/13.png" width="250"/>
-  <img src="screenshots/14.png" width="250"/>
-  <img src="screenshots/17.png" width="250"/>
+  <img src="screenshots/9.png" width="48%"/>
+  <img src="screenshots/10.png" width="48%"/>
 </p>
-<p align="left">
-  <img src="screenshots/18.png" width="250"/>
+<p align="center">
+  <img src="screenshots/13.png" width="48%"/>
+  <img src="screenshots/14.png" width="48%"/>
+</p>
+<p align="center">
+  <img src="screenshots/17.png" width="48%"/>
+  <img src="screenshots/18.png" width="48%"/>
 </p>
 
 ---
