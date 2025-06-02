@@ -52,21 +52,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myworkoutplan.LoginOrSignUpActivity
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.SettingsActivity
 import com.example.myworkoutplan.ui.components.FirebaseAuth.FirebaseEvent
 import com.example.myworkoutplan.ui.components.FirebaseAuth.FirebaseViewModel
-import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ProfileScreen() {
 
-    val auth: FirebaseAuth = FirebaseAuth.getInstance()
     val firebaseViewModel: FirebaseViewModel = viewModel()
     val firebaseState by firebaseViewModel.state.collectAsState()
     val onEvent: (FirebaseEvent) -> Unit = firebaseViewModel::onEvent
-    val userName = auth.currentUser?.displayName?:"Guest"
-    val userEmail = auth.currentUser?.email?:"Anonymous"
+    val currentUser by firebaseViewModel.currentUser.collectAsState()
+    val userName = currentUser?.displayName ?: "Guest"
+    val userEmail = currentUser?.email ?: "Anonymous"
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -220,7 +220,7 @@ fun ProfileScreen() {
                                 }
                             )
                             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                            if (auth.currentUser != null) {
+                            if (currentUser != null) {
                                 ProfileActionItem(
                                     icon = Icons.AutoMirrored.Filled.ExitToApp,
                                     label = "Logout",
@@ -235,7 +235,7 @@ fun ProfileScreen() {
                                     icon = Icons.AutoMirrored.Filled.ExitToApp,
                                     label = "Login",
                                     onClick = {
-
+                                        context.startActivity(Intent(context, LoginOrSignUpActivity::class.java))
                                     },
                                     iconTint = Color(0xFFD32F2F),
                                     textColor = Color(0xFFD32F2F),
@@ -377,7 +377,7 @@ fun ProfileScreen() {
                                 icon = Icons.Default.Edit,
                                 label = "Edit Profile",
                                 onClick = {
-                                    if(auth.currentUser == null){
+                                    if(currentUser == null){
                                         Toast.makeText(context, "Login to edit your profile", Toast.LENGTH_LONG).show()
                                     }else{
                                         Toast.makeText(context, "Edit Profile", Toast.LENGTH_LONG).show()
@@ -407,7 +407,7 @@ fun ProfileScreen() {
                                 }
                             )
                             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                            if (auth.currentUser != null) {
+                            if (currentUser != null) {
                                 ProfileActionItem(
                                     icon = Icons.AutoMirrored.Filled.ExitToApp,
                                     label = "Logout",
@@ -422,7 +422,7 @@ fun ProfileScreen() {
                                     icon = Icons.AutoMirrored.Filled.ExitToApp,
                                     label = "Login",
                                     onClick = {
-
+                                        context.startActivity(Intent(context, LoginOrSignUpActivity::class.java))
                                     },
                                     iconTint = Color(0xFFD32F2F),
                                     textColor = Color(0xFFD32F2F),

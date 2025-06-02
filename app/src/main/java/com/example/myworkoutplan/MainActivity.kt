@@ -17,25 +17,14 @@ import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.ui.AdaptiveUI
-import com.example.myworkoutplan.ui.components.legWorkout
-import com.example.myworkoutplan.ui.components.pullWorkout
-import com.example.myworkoutplan.ui.components.pushWorkout
-import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDao
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDatabase
-import com.example.myworkoutplan.ui.components.workoutDB.WorkoutEvent
-import com.example.myworkoutplan.ui.components.workoutDB.WorkoutPlan
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
 import com.example.myworkoutplan.ui.data.DataStoreManager
-import com.example.myworkoutplan.ui.screen.LoginScreen
-import com.example.myworkoutplan.ui.screen.SignupScreen
 import com.example.myworkoutplan.ui.settings.SettingsViewModel
 import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
 import com.example.myworkoutplan.ui.theme.MyWorkoutPlanTheme
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
@@ -52,14 +41,6 @@ class MainActivity : ComponentActivity() {
                 factory = WorkoutViewModelFactory(dao)
             )
             var isFirstLaunch by remember { mutableStateOf<Boolean?>(null) }
-            LaunchedEffect(Unit) {
-                isFirstLaunch = dataStore.isFirstLaunch.first()
-                if (isFirstLaunch == true){
-                    withContext(Dispatchers.IO) {
-                        workoutViewModel.onEvent(WorkoutEvent.ResetWorkoutDB)
-                    }
-                }
-            }
             val settingsViewModel: SettingsViewModel = viewModel(
                 factory = SettingsViewModelFactory(dataStore)
             )
@@ -70,6 +51,7 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 isFirstLaunch = dataStore.isFirstLaunch.first()
                 if (isFirstLaunch == true) {
+                    workoutViewModel.initialiseDB()
                     startActivity(Intent(this@MainActivity, OnboardingActivity::class.java))
                     finish()
                 }
@@ -80,8 +62,6 @@ class MainActivity : ComponentActivity() {
                     dynamicColorOption = dynamicColorOption
                 ) {
                     AdaptiveUI()
-                    //LoginScreen()
-                    //SignupScreen()
                 }
             }
         }

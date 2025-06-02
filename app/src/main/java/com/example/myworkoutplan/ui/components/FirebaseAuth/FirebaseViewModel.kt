@@ -1,13 +1,10 @@
 package com.example.myworkoutplan.ui.components.FirebaseAuth
 
-import android.annotation.SuppressLint
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +17,14 @@ class FirebaseViewModel: ViewModel() {
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _state = MutableStateFlow(FirebaseState())
     val state: StateFlow<FirebaseState> = _state
+    private val _currentUser = MutableStateFlow(FirebaseAuth.getInstance().currentUser)
+    val currentUser: StateFlow<FirebaseUser?> = _currentUser
+
+    init {
+        FirebaseAuth.getInstance().addAuthStateListener { auth ->
+            _currentUser.value = auth.currentUser
+        }
+    }
     fun onEvent(event: FirebaseEvent) {
         when (event) {
 
@@ -110,6 +115,7 @@ class FirebaseViewModel: ViewModel() {
 
             FirebaseEvent.RegisterUser -> {
                 if (_state.value.email.isNotBlank() && _state.value.password.isNotBlank()) {
+                    _state.update { it.copy(isLoading = true) }
                     viewModelScope.launch {
                         try {
                             auth.createUserWithEmailAndPassword(
@@ -123,7 +129,7 @@ class FirebaseViewModel: ViewModel() {
                             withContext(Dispatchers.Main){
                                 checkLoggedInState()
                             }
-                            //auth.currentUser?.sendEmailVerification()
+                            auth.currentUser?.sendEmailVerification()
                         } catch (e: Exception) {
                             _state.update {
                                 it.copy(
@@ -131,6 +137,8 @@ class FirebaseViewModel: ViewModel() {
                                     error = e.message.toString()
                                 )
                             }
+                        } finally {
+                            _state.update { it.copy(isLoading = false) }
                         }
                     }
                 }
@@ -193,6 +201,24 @@ class FirebaseViewModel: ViewModel() {
                                 isError = true,
                                 error = "If an account exists for this email, a password reset link has been sent."
                             )
+                        }
+                    } catch (e: Exception) {
+                        _state.update {
+                            it.copy(
+                                isError = true,
+                                error = e.message.toString()
+                            )
+                        }
+                    }
+                }
+            }
+
+            FirebaseEvent.DeleteUser -> {
+                viewModelScope.launch {
+                    try {
+                        auth.currentUser?.delete()?.await()
+                        withContext(Dispatchers.Main) {
+                            checkLoggedInState()
                         }
                     } catch (e: Exception) {
                         _state.update {

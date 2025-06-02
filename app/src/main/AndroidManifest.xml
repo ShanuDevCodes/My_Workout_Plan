@@ -13,6 +13,9 @@
         android:theme="@style/Theme.MyWorkoutPlan"
         tools:targetApi="31">
         <activity
+            android:name=".LoginOrSignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".WorkoutActivity"
             android:exported="false" />
         <activity
