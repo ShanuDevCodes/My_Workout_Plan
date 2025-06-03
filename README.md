@@ -59,8 +59,6 @@ A clean and modern **Workout Planner app** built with **Jetpack Compose** in **K
 - 📊 Workout session tracking & weekly summaries
 - ☁️ Firebase cloud sync for user sessions
 - 🧠 AI-driven workout suggestions
-- 💉 Dependency Injection with Hilt
-- 🧱 Clean Architecture + Module separation
 - 🧪 UI & Unit Testing using Compose Testing APIs
 
 ---
