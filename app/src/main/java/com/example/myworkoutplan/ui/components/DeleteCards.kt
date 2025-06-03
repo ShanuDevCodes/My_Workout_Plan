@@ -30,22 +30,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDatabase
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutEvent
 import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
-import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
 
 @Composable
 fun DeleteCards(
     workout: String,
-    icon: Int
+    icon: Int,
+    workoutViewModel: WorkoutViewModel
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -75,11 +72,6 @@ fun DeleteCards(
                 modifier = Modifier.weight(1f) // Takes remaining space
             )
             var showDeleteDialog by remember { mutableStateOf(false) }
-            val context = LocalContext.current
-            val dao = WorkoutDatabase.getInstance(context).workoutDao()
-            val workoutViewModel: WorkoutViewModel = viewModel(
-                factory = WorkoutViewModelFactory(dao)
-            )
             IconButton(
                 onClick = {
                     showDeleteDialog = true

@@ -12,9 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.ui.components.DeleteCards
+import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
 
 @Composable
-fun DeleteScreen(workoutList: List<Pair<String, Int>>) {
+fun DeleteScreen(workoutList: List<Pair<String, Int>>,workoutViewModel: WorkoutViewModel) {
 
     Box {
         Column {
@@ -28,7 +29,7 @@ fun DeleteScreen(workoutList: List<Pair<String, Int>>) {
                     )
                 }
                 items(workoutList) { (item, icon) ->
-                    DeleteCards(item, icon)
+                    DeleteCards(item, icon,workoutViewModel)
                 }
             }
         }
