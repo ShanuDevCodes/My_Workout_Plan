@@ -16,14 +16,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myworkoutplan.ui.AdaptiveUI
-import com.example.myworkoutplan.ui.components.workoutDB.WorkoutDatabase
-import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModel
-import com.example.myworkoutplan.ui.components.workoutDB.WorkoutViewModelFactory
-import com.example.myworkoutplan.ui.data.DataStoreManager
-import com.example.myworkoutplan.ui.settings.SettingsViewModel
-import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
-import com.example.myworkoutplan.ui.theme.MyWorkoutPlanTheme
+import com.example.myworkoutplan.features.mainapp.ui.AdaptiveUI
+import com.example.myworkoutplan.data.local.workout.WorkoutDatabase
+import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutViewModel
+import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutViewModelFactory
+import com.example.myworkoutplan.core.DataStoreManager
+import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModel
+import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModelFactory
+import com.example.myworkoutplan.theme.MyWorkoutPlanTheme
 import kotlinx.coroutines.flow.first
 
 class MainActivity : ComponentActivity() {

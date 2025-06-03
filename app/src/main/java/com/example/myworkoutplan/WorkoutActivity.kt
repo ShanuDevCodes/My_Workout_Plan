@@ -10,12 +10,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myworkoutplan.ui.data.DataStoreManager
-import com.example.myworkoutplan.ui.screen.WorkoutActivityScreens.LandscapeWorkoutScreen
-import com.example.myworkoutplan.ui.screen.WorkoutActivityScreens.PortraitWorkoutScreen
-import com.example.myworkoutplan.ui.settings.SettingsViewModel
-import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
-import com.example.myworkoutplan.ui.theme.MyWorkoutPlanTheme
+import com.example.myworkoutplan.core.DataStoreManager
+import com.example.myworkoutplan.features.mainapp.ui.workoutactivityscreens.LandscapeWorkoutScreen
+import com.example.myworkoutplan.features.mainapp.ui.workoutactivityscreens.PortraitWorkoutScreen
+import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModel
+import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModelFactory
+import com.example.myworkoutplan.theme.MyWorkoutPlanTheme
 
 class WorkoutActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

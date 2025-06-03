@@ -19,14 +19,14 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.myworkoutplan.ui.data.DataStoreManager
-import com.example.myworkoutplan.ui.screen.LogIn
-import com.example.myworkoutplan.ui.screen.LoginScreen
-import com.example.myworkoutplan.ui.screen.SignUp
-import com.example.myworkoutplan.ui.screen.SignupScreen
-import com.example.myworkoutplan.ui.settings.SettingsViewModel
-import com.example.myworkoutplan.ui.settings.SettingsViewModelFactory
-import com.example.myworkoutplan.ui.theme.MyWorkoutPlanTheme
+import com.example.myworkoutplan.core.DataStoreManager
+import com.example.myworkoutplan.features.onboarding.ui.LogIn
+import com.example.myworkoutplan.features.auth.ui.LoginScreen
+import com.example.myworkoutplan.features.onboarding.ui.SignUp
+import com.example.myworkoutplan.features.auth.ui.SignupScreen
+import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModel
+import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModelFactory
+import com.example.myworkoutplan.theme.MyWorkoutPlanTheme
 
 
 class LoginOrSignUpActivity : ComponentActivity() {
