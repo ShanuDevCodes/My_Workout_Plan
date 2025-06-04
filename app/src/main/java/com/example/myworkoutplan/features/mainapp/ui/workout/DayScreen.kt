@@ -1,5 +1,8 @@
 package com.example.myworkoutplan.features.mainapp.ui.workout
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -16,22 +19,28 @@ import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutViewModel
 
 @Composable
-fun DayScreen(dayTitle: String, workoutViewModel: WorkoutViewModel) {
+fun DayScreen(visible: Boolean, dayTitle: String, workoutViewModel: WorkoutViewModel) {
     val exerciseList by workoutViewModel.getExerciseNameAndImagePairsByType(dayTitle)
         .collectAsState(initial = emptyList())
     Box {
         Column {
-            LazyColumn {
-                item {
-                    Text(
-                        dayTitle,
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-                items(exerciseList) { (item, icon) ->
-                    PlansCards(item, icon)
+            AnimatedVisibility(
+                visible = visible,
+                enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
+            ) {
+                LazyColumn {
+                    item {
+                        Text(
+                            dayTitle,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+
+                    items(exerciseList) { (item, icon) ->
+                        PlansCards(item, icon)
+                    }
                 }
             }
         }

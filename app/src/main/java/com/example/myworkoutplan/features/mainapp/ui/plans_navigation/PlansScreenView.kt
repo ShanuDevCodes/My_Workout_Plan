@@ -147,15 +147,11 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
     ) {
         composable("PlanScreenView") {
             Box(modifier = Modifier.fillMaxSize()) {
-                AnimatedVisibility(
+                DayScreen(
                     visible = visible,
-                    enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
-                ) {
-                    DayScreen(
-                        dayTitle = dayTitle,
-                        workoutViewModel = workoutViewModel
-                    )
-                }
+                    dayTitle = dayTitle,
+                    workoutViewModel = workoutViewModel
+                )
                 if (isExpanded) {
                     Box(
                         modifier = Modifier

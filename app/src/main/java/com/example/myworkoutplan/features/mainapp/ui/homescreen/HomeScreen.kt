@@ -130,18 +130,13 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
                 viewModel.show()
             }
             val context = LocalContext.current
-            val dao = WorkoutDatabase.getInstance(context).workoutDao()
+            val dao = remember {WorkoutDatabase.getInstance(context).workoutDao()}
             val workoutViewModel: WorkoutViewModel = viewModel(
                 factory = WorkoutViewModelFactory(dao)
             )
             Box(modifier = Modifier
                 .fillMaxSize()) {
-                this@Column.AnimatedVisibility(
-                    visible = visible,
-                    enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
-                ) {
-                    DayScreen(title, workoutViewModel)
-                }
+                DayScreen(visible,title, workoutViewModel)
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
