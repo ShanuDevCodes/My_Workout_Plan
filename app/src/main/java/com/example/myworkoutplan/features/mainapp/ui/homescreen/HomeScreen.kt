@@ -9,7 +9,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -49,9 +48,9 @@ import com.example.myworkoutplan.R
 import com.example.myworkoutplan.WorkoutActivity
 import com.example.myworkoutplan.data.local.workout.WorkoutDatabase
 import com.example.myworkoutplan.features.mainapp.ui.workout.DayScreen
+import com.example.myworkoutplan.features.mainapp.viewmodel.HomeScreenViewModel
 import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutViewModel
 import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutViewModelFactory
-import com.example.myworkoutplan.features.mainapp.viewmodel.HomeScreenViewModel
 import kotlinx.coroutines.delay
 import java.time.DayOfWeek
 

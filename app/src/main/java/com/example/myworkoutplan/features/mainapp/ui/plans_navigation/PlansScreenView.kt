@@ -61,7 +61,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
     val fabOffsetY = remember { Animatable(0f) }
     val addFabOffsetX = remember { Animatable(0f) }
     val deleteFabOffsetX = remember { Animatable(0f) }
-    var visible = viewModel.visible
+    val visible = viewModel.visible
     val navController = rememberNavController()
     // Database and ViewModel setup
     val context = LocalContext.current
