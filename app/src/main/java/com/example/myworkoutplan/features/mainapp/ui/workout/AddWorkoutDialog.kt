@@ -16,8 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.R
-import com.example.myworkoutplan.features.mainapp.data.WorkoutEvent
-import com.example.myworkoutplan.features.mainapp.data.WorkoutState
+import com.example.myworkoutplan.data.local.workout.WorkoutEvent
+import com.example.myworkoutplan.data.local.workout.WorkoutState
 
 @Composable
 fun AddWorkoutDialog(

@@ -49,9 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.MainActivity
 import com.example.myworkoutplan.R
+import com.example.myworkoutplan.core.DataStoreManager
 import com.example.myworkoutplan.data.remote.firebaseauth.FirebaseEvent
 import com.example.myworkoutplan.data.remote.firebaseauth.FirebaseViewModel
-import com.example.myworkoutplan.core.DataStoreManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

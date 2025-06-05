@@ -1,5 +1,6 @@
 package com.example.myworkoutplan.features.mainapp.ui.plans_navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
@@ -44,15 +45,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.data.local.workout.WorkoutDatabase
-import com.example.myworkoutplan.features.mainapp.data.WorkoutEvent
+import com.example.myworkoutplan.data.local.workout.WorkoutEvent
+import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
+import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
 import com.example.myworkoutplan.features.mainapp.ui.workout.AddWorkoutDialog
-import com.example.myworkoutplan.features.mainapp.viewmodel.PlansScreenViewModel
-import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutViewModel
-import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutViewModelFactory
 import com.example.myworkoutplan.features.mainapp.ui.workout.DayScreen
 import com.example.myworkoutplan.features.mainapp.ui.workout.DeleteScreen
+import com.example.myworkoutplan.features.mainapp.viewmodel.PlansScreenViewModel
 import kotlinx.coroutines.delay
 
+@SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
 fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel()) {
     // Animation for scale and vertical offset

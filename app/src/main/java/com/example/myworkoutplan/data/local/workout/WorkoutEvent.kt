@@ -1,4 +1,4 @@
-package com.example.myworkoutplan.features.mainapp.data
+package com.example.myworkoutplan.data.local.workout
 
 sealed interface WorkoutEvent {
     object SaveWorkout : WorkoutEvent

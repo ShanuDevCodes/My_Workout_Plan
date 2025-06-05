@@ -13,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutViewModel
+import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 
 @Composable
 fun DeleteScreen(dayTitle: String,workoutViewModel: WorkoutViewModel) {

@@ -35,8 +35,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myworkoutplan.features.mainapp.data.WorkoutEvent
-import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutViewModel
+import com.example.myworkoutplan.data.local.workout.WorkoutEvent
+import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 
 @Composable
 fun DeleteCards(

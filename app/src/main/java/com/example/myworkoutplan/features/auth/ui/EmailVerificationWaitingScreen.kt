@@ -1,7 +1,6 @@
 package com.example.myworkoutplan.features.auth.ui
 
 
-import com.example.myworkoutplan.features.auth.viewmodel.EmailVerificationViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myworkoutplan.features.auth.viewmodel.EmailVerificationViewModel
 
 @Composable
 fun EmailVerificationWaitingScreen(

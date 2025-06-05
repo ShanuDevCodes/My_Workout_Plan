@@ -35,8 +35,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.features.mainapp.data.items
-import com.example.myworkoutplan.features.mainapp.ui.plans_navigation.PlansNavigator
 import com.example.myworkoutplan.features.mainapp.ui.homescreen.HomeScreen
+import com.example.myworkoutplan.features.mainapp.ui.plans_navigation.PlansNavigator
 import com.example.myworkoutplan.features.profile.ui.ProfileScreen
 
 @RequiresApi(Build.VERSION_CODES.O)

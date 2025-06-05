@@ -1,12 +1,8 @@
-package com.example.myworkoutplan.features.mainapp.viewmodel
+package com.example.myworkoutplan.data.local.workout
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkoutplan.R
-import com.example.myworkoutplan.data.local.workout.WorkoutDao
-import com.example.myworkoutplan.data.local.workout.WorkoutPlan
-import com.example.myworkoutplan.features.mainapp.data.WorkoutEvent
-import com.example.myworkoutplan.features.mainapp.data.WorkoutState
 import com.example.myworkoutplan.features.mainapp.data.legWorkout
 import com.example.myworkoutplan.features.mainapp.data.pullWorkout
 import com.example.myworkoutplan.features.mainapp.data.pushWorkout

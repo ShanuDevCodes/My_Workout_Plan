@@ -1,8 +1,7 @@
-package com.example.myworkoutplan.features.mainapp.viewmodel
+package com.example.myworkoutplan.data.local.workout
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.myworkoutplan.data.local.workout.WorkoutDao
 
 class WorkoutViewModelFactory(
     private val dao: WorkoutDao

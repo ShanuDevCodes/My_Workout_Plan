@@ -1,6 +1,8 @@
 package com.example.myworkoutplan.features.settings.ui
 
 import android.app.Activity
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,17 +45,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myworkoutplan.data.local.workout.WorkoutDatabase
-import com.example.myworkoutplan.features.mainapp.data.WorkoutEvent
-import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutViewModel
-import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutViewModelFactory
 import com.example.myworkoutplan.core.DataStoreManager
+import com.example.myworkoutplan.data.local.workout.WorkoutDatabase
+import com.example.myworkoutplan.data.local.workout.WorkoutEvent
+import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
+import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
 import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModel
 import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModelFactory
 import com.example.myworkoutplan.theme.DynamicColorOption
 import com.example.myworkoutplan.theme.ThemeOptions
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen() {
