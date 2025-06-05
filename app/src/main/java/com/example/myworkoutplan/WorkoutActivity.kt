@@ -13,10 +13,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.core.DataStoreManager
-import com.example.myworkoutplan.features.mainapp.ui.workoutactivityscreens.LandscapeWorkoutScreen
-import com.example.myworkoutplan.features.mainapp.ui.workoutactivityscreens.PortraitWorkoutScreen
 import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModel
 import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModelFactory
+import com.example.myworkoutplan.features.workoutsession.ui.LandscapeWorkoutScreen
+import com.example.myworkoutplan.features.workoutsession.ui.PortraitWorkoutScreen
 import com.example.myworkoutplan.theme.MyWorkoutPlanTheme
 
 class WorkoutActivity : ComponentActivity() {

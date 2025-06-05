@@ -1,4 +1,4 @@
-package com.example.myworkoutplan.features.mainapp.ui.workoutactivityscreens
+package com.example.myworkoutplan.features.workoutsession.ui
 
 import android.annotation.SuppressLint
 

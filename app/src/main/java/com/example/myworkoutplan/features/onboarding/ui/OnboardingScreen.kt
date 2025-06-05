@@ -1,6 +1,8 @@
 package com.example.myworkoutplan.features.onboarding.ui
 
 import android.content.res.Configuration
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -55,6 +57,7 @@ object LogIn
 @Serializable
 object SignUp
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun OnboardingScreen() {
     val configuration = LocalConfiguration.current
@@ -252,7 +255,7 @@ fun OnboardingScreen() {
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
                         ) {
                             NavHost(
-                                startDestination = Welcome,
+                                startDestination = LogIn,
                                 navController = navController,
                                 enterTransition = {
                                     slideIntoContainer(
@@ -279,19 +282,6 @@ fun OnboardingScreen() {
                                     ) + fadeOut(targetAlpha = 0.9f)
                                 }
                             ) {
-                                composable<Welcome> {
-                                    LoginScreen(
-                                        onLoginClicked = {
-                                            navController.navigate(SignUp){
-                                                popUpTo(navController.graph.findStartDestination().id) {
-                                                    saveState = true
-                                                }
-                                                launchSingleTop = true
-                                                restoreState = true
-                                            }
-                                        }
-                                    )
-                                }
                                 composable<LogIn> {
                                     LoginScreen(
                                         onLoginClicked = {

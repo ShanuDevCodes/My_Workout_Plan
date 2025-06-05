@@ -1,4 +1,4 @@
-package com.example.myworkoutplan.features.mainapp.ui.workoutactivityscreens
+package com.example.myworkoutplan.features.workoutsession.ui
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
@@ -224,7 +224,11 @@ fun PeekBottomSheetContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text( text = "Current Workout")
+        Text(
+            text = "Current Workout",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.secondary
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
         // Lap times card - visible when sheet is expanded
@@ -236,17 +240,19 @@ fun PeekBottomSheetContent(
             )
         ) {
             Column {
-                LapTimeRow(
-                    lapNumber = 1,
-                    lapTime = 200000,
-                    totalTime = 400000
+                WorkoutRow(
+                    workoutName = "Bench Press"
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text( text = "Upcoming Workout")
+        Text(
+            text = "Upcoming Workout",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.secondary
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -266,11 +272,7 @@ fun PeekBottomSheetContent(
                         val lapNumber = lapCounter - lapTimes.size + index + 1
                         val previousTime = if (index == 0) 0L else lapTimes[index - 1]
                         val currentLapTime = lapTime - previousTime
-                        LapTimeRow(
-                            lapNumber = lapNumber,
-                            lapTime = currentLapTime,
-                            totalTime = lapTime
-                        )
+
                     }
                 }
             }
@@ -278,7 +280,9 @@ fun PeekBottomSheetContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text( text = "Completed Workout")
+        Text(text = "Completed Workout",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.secondary)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -298,11 +302,7 @@ fun PeekBottomSheetContent(
                         val lapNumber = lapCounter - lapTimes.size + index + 1
                         val previousTime = if (index == 0) 0L else lapTimes[index - 1]
                         val currentLapTime = lapTime - previousTime
-                        LapTimeRow(
-                            lapNumber = lapNumber,
-                            lapTime = currentLapTime,
-                            totalTime = lapTime
-                        )
+
                     }
                 }
             }

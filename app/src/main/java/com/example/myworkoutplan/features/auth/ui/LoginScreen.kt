@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -118,176 +119,191 @@ fun LoginScreen(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding(32.dp)
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = "Login to your account",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
+        LazyColumn {
+            item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(32.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Login to your account",
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
 
-            Spacer(modifier = Modifier.padding(18.dp))
+                    Spacer(modifier = Modifier.padding(18.dp))
 
-            // Email Field
-            TextField(
-                value = firebaseState.email,
-                onValueChange = { onEvent(FirebaseEvent.SetUserEmail(it)) },
-                label = { Text("Email address") },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            )
+                    // Email Field
+                    TextField(
+                        value = firebaseState.email,
+                        onValueChange = { onEvent(FirebaseEvent.SetUserEmail(it)) },
+                        label = { Text("Email address") },
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    )
 
-            TextField(
-                value = firebaseState.password,
-                onValueChange = { onEvent(FirebaseEvent.SetUserPassword(it)) },
-                label = { Text("Password") },
-                singleLine = true,
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                    val description = if (passwordVisible) "Hide password" else "Show password"
+                    TextField(
+                        value = firebaseState.password,
+                        onValueChange = { onEvent(FirebaseEvent.SetUserPassword(it)) },
+                        label = { Text("Password") },
+                        singleLine = true,
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val image =
+                                if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                            val description =
+                                if (passwordVisible) "Hide password" else "Show password"
 
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(imageVector = image, contentDescription = description)
-                    }
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-            )
-
-            // Forgot Password Row
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                TextButton(onClick = { onEvent(FirebaseEvent.ResetPassword) }) {
-                    Text("Forgot Password?")
-                }
-            }
-
-            // Terms and Privacy Checkbox
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-            ) {
-                Checkbox(
-                    checked = agreeToTerms,
-                    onCheckedChange = { agreeToTerms = it }
-                )
-                Text(
-                    text = "I agree to the ",
-                    style = MaterialTheme.typography.bodySmall
-                )
-                Text(
-                    text = "Terms & Privacy",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.clickable {
-                        showTermsDialog = true
-                    },
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            // Login Button
-            Button(
-                onClick = {
-                    if (agreeToTerms) {
-                        onEvent(FirebaseEvent.LoginUser)
-                    } else {
-                        Toast.makeText(context, "Please agree to the terms.", Toast.LENGTH_SHORT).show()
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            ) {
-                Text("Login")
-            }
-
-            // Signup Link
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text("Don't have an account? ")
-                Text(
-                    text = "Sign Up",
-                    modifier = Modifier.clickable {
-                        onLoginClicked()
-                    },
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            // Divider
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            ) {
-                HorizontalDivider(modifier = Modifier.weight(1f))
-                Text("  Or  ", style = MaterialTheme.typography.bodySmall)
-                HorizontalDivider(modifier = Modifier.weight(1f))
-            }
-
-            // Social Login Buttons (placeholders)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Button(
-                    onClick = {
-                        CoroutineScope(Dispatchers.IO).launch{
-                            isFirstLaunch = dataStore.isFirstLaunch.first()
-                            if (isFirstLaunch == true) {
-                                dataStore.setFirstLaunchDone()
-                                context.startActivity(Intent(context, MainActivity::class.java))
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(imageVector = image, contentDescription = description)
                             }
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                    )
+
+                    // Forgot Password Row
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(onClick = { onEvent(FirebaseEvent.ResetPassword) }) {
+                            Text("Forgot Password?")
                         }
-                        (context as? Activity)?.finish()
-                    },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Person,
-                        contentDescription = "Person Logo",
+                    }
+
+                    // Terms and Privacy Checkbox
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Continue as a Guest")
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                Button(
-                    onClick = { /* TODO: Apple Login */ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.google),
-                        contentDescription = "Google Logo",
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
+                    ) {
+                        Checkbox(
+                            checked = agreeToTerms,
+                            onCheckedChange = { agreeToTerms = it }
+                        )
+                        Text(
+                            text = "I agree to the ",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        Text(
+                            text = "Terms & Privacy",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.clickable {
+                                showTermsDialog = true
+                            },
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    // Login Button
+                    Button(
+                        onClick = {
+                            if (agreeToTerms) {
+                                onEvent(FirebaseEvent.LoginUser)
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Please agree to the terms.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
                         modifier = Modifier
-                            .size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Login with Google")
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Text("Login")
+                    }
+
+                    // Signup Link
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text("Don't have an account? ")
+                        Text(
+                            text = "Sign Up",
+                            modifier = Modifier.clickable {
+                                onLoginClicked()
+                            },
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    // Divider
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        HorizontalDivider(modifier = Modifier.weight(1f))
+                        Text("  Or  ", style = MaterialTheme.typography.bodySmall)
+                        HorizontalDivider(modifier = Modifier.weight(1f))
+                    }
+
+                    // Social Login Buttons (placeholders)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Button(
+                            onClick = {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    isFirstLaunch = dataStore.isFirstLaunch.first()
+                                    if (isFirstLaunch == true) {
+                                        dataStore.setFirstLaunchDone()
+                                        context.startActivity(
+                                            Intent(
+                                                context,
+                                                MainActivity::class.java
+                                            )
+                                        )
+                                    }
+                                }
+                                (context as? Activity)?.finish()
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Person,
+                                contentDescription = "Person Logo",
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Continue as a Guest")
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = { /* TODO: Apple Login */ },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.google),
+                                contentDescription = "Google Logo",
+                                modifier = Modifier
+                                    .size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Login with Google")
+                        }
+                    }
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.example.myworkoutplan.features.mainapp.ui.workoutactivityscreens
+package com.example.myworkoutplan.features.workoutsession.ui
 
 import android.app.Activity
 import androidx.compose.foundation.background
@@ -25,7 +25,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -134,43 +133,94 @@ fun LandscapeWorkoutScreen() {
                     }
 
                     // Right side - Lap list (unchanged)
-                    Card(
+                    Column(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight()
-                            .padding(start = 16.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+                            .padding(start = 16.dp)
                     ) {
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text("Lap", fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
-                                Text("Lap Time", fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
-                                Text("Total", fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
+                        // Current Workout Section
+                        Text(
+                            text = "Current Workout",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            )
+                        ) {
+                            Column {
+                                WorkoutRow(
+                                    workoutName = "Bench Press",
+                                    doneFirst = false,
+                                    doneSecond = false,
+                                    doneThird = false
+                                )
                             }
+                        }
 
-                            HorizontalDivider(color = MaterialTheme.colorScheme.onSurface)
+                        Spacer(modifier = Modifier.height(12.dp))
 
+                        // Upcoming Workout Section
+                        Text(
+                            text = "Upcoming Workout",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            )
+                        ) {
                             LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier.fillMaxSize()
                             ) {
                                 itemsIndexed(lapTimes) { index, lapTime ->
                                     val lapNumber = lapCounter - lapTimes.size + index + 1
                                     val previousTime = if (index == 0) 0L else lapTimes[index - 1]
                                     val currentLapTime = lapTime - previousTime
 
-                                    LapTimeRow(
-                                        lapNumber = lapNumber,
-                                        lapTime = currentLapTime,
-                                        totalTime = lapTime
-                                    )
                                 }
                             }
                         }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Completed Workout Section
+                        Text(
+                            text = "Completed Workout",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            )
+                        ) {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                itemsIndexed(lapTimes) { index, lapTime ->
+                                    val lapNumber = lapCounter - lapTimes.size + index + 1
+                                    val previousTime = if (index == 0) 0L else lapTimes[index - 1]
+                                    val currentLapTime = lapTime - previousTime
+
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             }
@@ -234,37 +284,5 @@ fun LandscapeWorkoutScreen() {
                 }
             }
         }
-    }
-}
-
-
-@Composable
-fun LapTimeRow(
-    lapNumber: Int,
-    lapTime: Long,
-    totalTime: Long,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = lapNumber.toString(),
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Normal
-        )
-        Text(
-            text = FormatTime(lapTime),
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Normal,
-        )
-        Text(
-            text = FormatTime(totalTime),
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Normal,
-        )
     }
 }
