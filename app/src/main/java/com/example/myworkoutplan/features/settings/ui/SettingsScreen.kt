@@ -45,8 +45,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myworkoutplan.core.AppDatabase
 import com.example.myworkoutplan.core.DataStoreManager
-import com.example.myworkoutplan.data.local.workout.WorkoutDatabase
 import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
@@ -65,7 +65,8 @@ fun SettingsScreen() {
     val settingsViewModel: SettingsViewModel = viewModel(factory = viewModelFactory)
     val selectedThemeOption = settingsViewModel.selectedTheme
     val selectedDynamicColorOption = settingsViewModel.dynamicColorOption
-    val dao = WorkoutDatabase.getInstance(context).workoutDao()
+    val db = remember { AppDatabase.getInstance(context) }
+    val dao = remember { db.workoutDao() }
     val workoutViewModel: WorkoutViewModel = viewModel(
         factory = WorkoutViewModelFactory(dao)
     )

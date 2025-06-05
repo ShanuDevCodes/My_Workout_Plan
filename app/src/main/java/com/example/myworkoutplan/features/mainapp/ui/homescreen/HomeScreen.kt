@@ -55,11 +55,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.WorkoutActivity
+import com.example.myworkoutplan.core.AppDatabase
 import com.example.myworkoutplan.core.DataStoreManager
-import com.example.myworkoutplan.data.local.workout.WorkoutDatabase
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekDatabase
 import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekEvent
 import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekState
 import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModel
@@ -80,7 +79,8 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
     val visible = viewModel.visible
     val context = LocalContext.current
     val dataStore = remember { DataStoreManager(context) }
-    val dao = remember { WorkoutWeekDatabase.getInstance(context).WorkoutWeekDao() }
+    val db = remember { AppDatabase.getInstance(context) }
+    val dao = db.WorkoutWeekDao()
     val workoutWeekViewModel: WorkoutWeekViewModel = viewModel(
         factory = WorkoutWeekViewModelFactory(dataStore, dao)
     )
@@ -148,7 +148,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
                 delay(500L)
                 viewModel.show()
             }
-            val workoutDao = remember {WorkoutDatabase.getInstance(context).workoutDao()}
+            val workoutDao = remember {db.workoutDao()}
             val workoutViewModel: WorkoutViewModel = viewModel(
                 factory = WorkoutViewModelFactory(workoutDao)
             )

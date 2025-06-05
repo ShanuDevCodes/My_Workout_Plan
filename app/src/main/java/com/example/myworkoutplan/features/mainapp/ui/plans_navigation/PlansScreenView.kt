@@ -44,7 +44,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.R
-import com.example.myworkoutplan.data.local.workout.WorkoutDatabase
+import com.example.myworkoutplan.core.AppDatabase
 import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
@@ -67,7 +67,8 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
     val navController = rememberNavController()
     // Database and ViewModel setup
     val context = LocalContext.current
-    val dao = remember { WorkoutDatabase.getInstance(context).workoutDao() }
+    val db = remember {AppDatabase.getInstance(context)}
+    val dao = remember { db.workoutDao() }
     val workoutViewModel: WorkoutViewModel = viewModel(
         factory = WorkoutViewModelFactory(dao)
     )
