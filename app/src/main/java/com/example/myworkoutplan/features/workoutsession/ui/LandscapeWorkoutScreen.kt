@@ -60,7 +60,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel) {
     val isCompleted by workoutSessionViewModel.isCompleted.collectAsState()
 
     BackHandler {
-        workoutSessionViewModel.skipWorkout()
+        (context as? Activity)?.finish()
     }
 
     Box(modifier = Modifier

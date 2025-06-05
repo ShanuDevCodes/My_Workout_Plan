@@ -2,6 +2,7 @@ package com.example.myworkoutplan.features.workoutsession.ui
 
 import android.app.Activity
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -59,6 +60,10 @@ fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel) {
     val scaffoldState = rememberBottomSheetScaffoldState()
     val isCompleted by workoutSessionViewModel.isCompleted.collectAsState()
 
+    BackHandler {
+        (context as? Activity)?.finish()
+    }
+
     Surface {
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
@@ -69,6 +74,8 @@ fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel) {
                     onStartPause = {
                         if(isRunning) {
                             workoutSessionViewModel.pauseWorkout()
+                        }else if (isCompleted){
+                            (context as? Activity)?.finish()
                         }else{
                             workoutSessionViewModel.resumeWorkout()
                         }
@@ -181,6 +188,7 @@ fun PeekBottomSheetContent(
             ) {
                 Text(
                     text = when {
+                        isCompleted -> "Done"
                         isRunning -> "Pause"
                         else -> "Resume"
                     },
@@ -224,7 +232,8 @@ fun PeekBottomSheetContent(
                 val count by workoutSessionViewModel.countState.collectAsState()
                 WorkoutRow(
                     workoutName = workoutName,
-                    count = count
+                    count = count,
+                    showCircle = !isCompleted
                 )
             }
         }
