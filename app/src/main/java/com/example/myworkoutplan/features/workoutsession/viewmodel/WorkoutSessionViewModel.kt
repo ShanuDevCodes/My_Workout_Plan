@@ -77,10 +77,6 @@ class WorkoutSessionViewModel:ViewModel() {
         }
     }
 
-    fun resetSession() {
-        sessionStarted = false
-    }
-
     fun workoutSetCompleted(){
         count.value++
         if(count.value == 4){
@@ -97,9 +93,6 @@ class WorkoutSessionViewModel:ViewModel() {
         isRunning.value = true
     }
 
-    fun resetTime(){
-        timeInMillis.value = 0
-    }
 
     fun skipWorkout(){
         completeCurrentWorkout()

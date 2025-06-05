@@ -66,7 +66,6 @@ fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel) {
             sheetContent = {
                 PeekBottomSheetContent(
                     isRunning = isRunning,
-                    timeInMillis = timeInMillis,
                     onStartPause = {
                         if(isRunning) {
                             workoutSessionViewModel.pauseWorkout()
@@ -149,7 +148,6 @@ fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel) {
 @Composable
 fun PeekBottomSheetContent(
     isRunning: Boolean,
-    timeInMillis: Long,
     onStartPause: () -> Unit,
     onLap: () -> Unit,
     onReset: () -> Unit,
