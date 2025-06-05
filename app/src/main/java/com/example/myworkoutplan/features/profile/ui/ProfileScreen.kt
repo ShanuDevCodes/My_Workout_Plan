@@ -27,8 +27,12 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +41,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,6 +55,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.LoginOrSignUpActivity
@@ -57,6 +63,7 @@ import com.example.myworkoutplan.R
 import com.example.myworkoutplan.SettingsActivity
 import com.example.myworkoutplan.data.remote.firebaseauth.FirebaseEvent
 import com.example.myworkoutplan.data.remote.firebaseauth.FirebaseViewModel
+import com.example.myworkoutplan.features.profile.viewmodel.ProfileViewModel
 
 @Composable
 fun ProfileScreen() {
@@ -70,6 +77,7 @@ fun ProfileScreen() {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    val viewModel : ProfileViewModel = viewModel()
     LaunchedEffect(firebaseState.isError, firebaseState.error) {
         if (firebaseState.isError && firebaseState.error.isNotBlank()) {
             Toast.makeText(context, firebaseState.error, Toast.LENGTH_LONG).show()
@@ -225,17 +233,22 @@ fun ProfileScreen() {
                                     icon = Icons.AutoMirrored.Filled.ExitToApp,
                                     label = "Logout",
                                     onClick = {
-                                        onEvent(FirebaseEvent.LogoutUser)
+                                        viewModel.isLoggingOut = true
                                     },
                                     iconTint = Color(0xFFD32F2F),
                                     textColor = Color(0xFFD32F2F),
                                 )
-                            }else{
+                            } else {
                                 ProfileActionItem(
                                     icon = Icons.AutoMirrored.Filled.ExitToApp,
                                     label = "Login",
                                     onClick = {
-                                        context.startActivity(Intent(context, LoginOrSignUpActivity::class.java))
+                                        context.startActivity(
+                                            Intent(
+                                                context,
+                                                LoginOrSignUpActivity::class.java
+                                            )
+                                        )
                                     },
                                     iconTint = Color(0xFFD32F2F),
                                     textColor = Color(0xFFD32F2F),
@@ -248,7 +261,7 @@ fun ProfileScreen() {
                 }
             }
         }
-    }else{
+    } else {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -377,10 +390,15 @@ fun ProfileScreen() {
                                 icon = Icons.Default.Edit,
                                 label = "Edit Profile",
                                 onClick = {
-                                    if(currentUser == null){
-                                        Toast.makeText(context, "Login to edit your profile", Toast.LENGTH_LONG).show()
-                                    }else{
-                                        Toast.makeText(context, "Edit Profile", Toast.LENGTH_LONG).show()
+                                    if (currentUser == null) {
+                                        Toast.makeText(
+                                            context,
+                                            "Login to edit your profile",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    } else {
+                                        Toast.makeText(context, "Edit Profile", Toast.LENGTH_LONG)
+                                            .show()
                                     }
                                 }
                             )
@@ -412,17 +430,22 @@ fun ProfileScreen() {
                                     icon = Icons.AutoMirrored.Filled.ExitToApp,
                                     label = "Logout",
                                     onClick = {
-                                        onEvent(FirebaseEvent.LogoutUser)
+                                        viewModel.isLoggingOut = true
                                     },
                                     iconTint = Color(0xFFD32F2F),
                                     textColor = Color(0xFFD32F2F),
                                 )
-                            }else{
+                            } else {
                                 ProfileActionItem(
                                     icon = Icons.AutoMirrored.Filled.ExitToApp,
                                     label = "Login",
                                     onClick = {
-                                        context.startActivity(Intent(context, LoginOrSignUpActivity::class.java))
+                                        context.startActivity(
+                                            Intent(
+                                                context,
+                                                LoginOrSignUpActivity::class.java
+                                            )
+                                        )
                                     },
                                     iconTint = Color(0xFFD32F2F),
                                     textColor = Color(0xFFD32F2F),
@@ -433,7 +456,17 @@ fun ProfileScreen() {
                 }
             }
         }
-
+    }
+    if (viewModel.isLoggingOut) {
+        LogoutConfirmationDialog(
+            onDismiss = {
+                viewModel.isLoggingOut = false
+            },
+            onConfirm = {
+                viewModel.isLoggingOut = false
+                onEvent(FirebaseEvent.LogoutUser)
+            },
+        )
     }
 }
 
@@ -518,4 +551,67 @@ fun WeeklyGoalProgress(current: Int, goal: Int) {
             color = MaterialTheme.colorScheme.primary
         )
     }
+}
+
+@Composable
+fun LogoutConfirmationDialog(
+onConfirm: () -> Unit,
+onDismiss: () -> Unit
+) {
+    AlertDialog(
+        modifier = Modifier
+            .fillMaxWidth(),
+        onDismissRequest = onDismiss,
+        icon = {
+            Icon(
+                imageVector = Icons.Default.Warning,
+                contentDescription = null,
+                tint = Color(0xFFB32727)
+            )
+        },
+        title = {
+            Text(
+                text = "Logout User",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        text = {
+            Text(
+                text = "Are you sure you want to Logout? This action cannot be undone.",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        confirmButton = {
+            FilledTonalButton( // More prominent for destructive action
+                onClick = onConfirm,
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = Color(0xFFB32727), // Material Red 700
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = "Logout",
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+            ) {
+                Text(
+                    text = "Cancel",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
+        tonalElevation = 6.dp
+    )
 }

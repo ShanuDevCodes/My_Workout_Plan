@@ -27,20 +27,23 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -165,7 +168,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
                         FloatingActionButton(
                             onClick = { workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog) },
                             modifier = Modifier
-                                .size(40.dp)
+                                .size(48.dp)
                                 .offset(y = fabOffsetY.value.dp)
                                 .scale(fabScaleMini.value),
                             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -358,11 +361,15 @@ fun SwapWorkoutWeekDialog(
     viewModel: WorkoutWeekViewModel,
 ){
     val workoutDays = state.availableSwapDays
-    var selectedDay by remember { mutableStateOf(workoutDays.firstOrNull()?.dayOfWeek ?: 1) }
+    var selectedDay by remember { mutableIntStateOf(0) }
 
     AlertDialog(
         onDismissRequest = { viewModel.onEvent(WorkoutWeekEvent.HideSwapDialog) },
-        title = { Text("Swap Workout With") },
+        title = { Text(
+            text = "Swap Today's Workout With",
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.primary,
+        )},
         text = {
             Column {
                 workoutDays.forEach { day ->
@@ -370,25 +377,36 @@ fun SwapWorkoutWeekDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 4.dp)
                     ) {
-                        RadioButton(
-                            selected = selectedDay == day.dayOfWeek,
-                            onClick = { selectedDay = day.dayOfWeek }
-                        )
                         Text(
                             text = "${DayOfWeek.of(day.dayOfWeek).name.lowercase().replaceFirstChar { it.uppercase() }} - ${day.workoutType}",
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.weight(1f),
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        RadioButton(
+                            selected = selectedDay == day.dayOfWeek,
+                            onClick = { selectedDay = day.dayOfWeek },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                unselectedColor = MaterialTheme.colorScheme.secondary
+                            )
                         )
                     }
                 }
             }
         },
         confirmButton = {
-            TextButton(onClick = {
-                viewModel.onEvent(WorkoutWeekEvent.SwapWorkoutWeek(selectedDay))
-                viewModel.onEvent(WorkoutWeekEvent.HideSwapDialog)
-            }) {
+            FilledTonalButton(
+                onClick = {
+                    viewModel.onEvent(WorkoutWeekEvent.SwapWorkoutWeek(selectedDay))
+                    viewModel.onEvent(WorkoutWeekEvent.HideSwapDialog)
+                },
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                enabled = selectedDay != 0
+            ) {
                 Text("Confirm")
             }
         },
