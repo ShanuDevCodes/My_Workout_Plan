@@ -35,7 +35,4 @@ class HomeScreenViewModel: ViewModel() {
             else -> "Hello"
         }
     }
-    fun onDayChanged() {
-        visible = false
-    }
 }
