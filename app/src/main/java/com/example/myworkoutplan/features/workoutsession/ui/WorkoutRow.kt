@@ -21,9 +21,7 @@ import androidx.compose.ui.unit.dp
 fun WorkoutRow(
     workoutName: String,
     showCircle:Boolean = true,
-    doneFirst:Boolean = true,
-    doneSecond:Boolean = true,
-    doneThird:Boolean = false,
+    count:Int = 0,
 ) {
     Row(
         modifier = Modifier
@@ -34,39 +32,39 @@ fun WorkoutRow(
     ) {
         Text(
             text = workoutName,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.secondary,
             fontWeight = FontWeight.Normal,
             modifier = Modifier.weight(1f)
         )
         if (showCircle) {
             Icon(
-                if (doneFirst) {
+                if (count>0) {
                     Icons.Filled.Circle
                 } else {
                     Icons.Outlined.Circle
                 },
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface,
+                tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.size(18.dp)
             )
             Icon(
-                if (doneSecond) {
+                if (count>1) {
                     Icons.Filled.Circle
                 } else {
                     Icons.Outlined.Circle
                 },
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface,
+                tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.size(18.dp)
             )
             Icon(
-                if (doneThird) {
+                if (count>2) {
                     Icons.Filled.Circle
                 } else {
                     Icons.Outlined.Circle
                 },
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface,
+                tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.size(18.dp)
             )
         }

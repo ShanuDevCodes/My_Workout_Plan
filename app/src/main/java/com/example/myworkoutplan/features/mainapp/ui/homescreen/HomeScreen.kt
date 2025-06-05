@@ -88,6 +88,10 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
         factory = WorkoutWeekViewModelFactory(dataStore, dao)
     )
     val workoutWeekState by workoutWeekViewModel.state.collectAsState()
+    val workoutDao = remember {db.workoutDao()}
+    val workoutViewModel: WorkoutViewModel = viewModel(
+        factory = WorkoutViewModelFactory(workoutDao)
+    )
     LaunchedEffect(Unit) {
         workoutWeekViewModel.getDay()
     }
@@ -151,10 +155,6 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
                 delay(500L)
                 viewModel.show()
             }
-            val workoutDao = remember {db.workoutDao()}
-            val workoutViewModel: WorkoutViewModel = viewModel(
-                factory = WorkoutViewModelFactory(workoutDao)
-            )
             Box(modifier = Modifier
                 .fillMaxSize()) {
                 DayScreen(visible,title, workoutViewModel)

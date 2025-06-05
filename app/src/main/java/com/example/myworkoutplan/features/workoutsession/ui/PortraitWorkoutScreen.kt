@@ -1,7 +1,8 @@
 package com.example.myworkoutplan.features.workoutsession.ui
 
 import android.app.Activity
-import androidx.activity.compose.BackHandler
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.BottomSheetScaffold
@@ -33,14 +34,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,32 +45,20 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
+import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PortraitWorkoutScreen() {
-    var isRunning by remember { mutableStateOf(false) }
-    var timeInMillis by remember { mutableLongStateOf(0L) }
-    var lapTimes by remember { mutableStateOf(emptyList<Long>()) }
-    var lapCounter by remember { mutableIntStateOf(0) }
+fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel) {
+    val isRunning by workoutSessionViewModel.isRunningState.collectAsState()
+    val timeInMillis by workoutSessionViewModel.timeInMillisState.collectAsState()
     val context = LocalContext.current
-
-    BackHandler {
-        (context as? Activity)?.finish()
-    }
-
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
+    val isCompleted by workoutSessionViewModel.isCompleted.collectAsState()
 
-    // Timer logic
-    LaunchedEffect(isRunning) {
-        while (isRunning) {
-            delay(10)
-            timeInMillis += 10
-        }
-    }
     Surface {
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
@@ -83,24 +67,23 @@ fun PortraitWorkoutScreen() {
                 PeekBottomSheetContent(
                     isRunning = isRunning,
                     timeInMillis = timeInMillis,
-                    lapTimes = lapTimes,
-                    lapCounter = lapCounter,
-                    onStartPause = { isRunning = !isRunning },
-                    onLap = {
-                        if (isRunning) {
-                            lapTimes = lapTimes + timeInMillis
-                            lapCounter++
+                    onStartPause = {
+                        if(isRunning) {
+                            workoutSessionViewModel.pauseWorkout()
+                        }else{
+                            workoutSessionViewModel.resumeWorkout()
                         }
+                    },
+                    onLap = {
+                        workoutSessionViewModel.workoutSetCompleted()
                     },
                     onReset = {
                         scope.launch {
-                            isRunning = false
-                            delay(20)
-                            timeInMillis = 0L
-                            lapTimes = emptyList()
-                            lapCounter = 0
+                            workoutSessionViewModel.skipWorkout()
                         }
-                    }
+                    },
+                    workoutSessionViewModel = workoutSessionViewModel,
+                    isCompleted
                 )
             },
             modifier = Modifier
@@ -167,11 +150,11 @@ fun PortraitWorkoutScreen() {
 fun PeekBottomSheetContent(
     isRunning: Boolean,
     timeInMillis: Long,
-    lapTimes: List<Long>,
-    lapCounter: Int,
     onStartPause: () -> Unit,
     onLap: () -> Unit,
-    onReset: () -> Unit
+    onReset: () -> Unit,
+    workoutSessionViewModel: WorkoutSessionViewModel,
+    isCompleted: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -183,12 +166,13 @@ fun PeekBottomSheetContent(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            val count = workoutSessionViewModel.countState.collectAsState()
             Button(
                 modifier = Modifier.weight(1f),
                 onClick = onLap,
-                enabled = isRunning,
+                enabled = !isCompleted,
             ) {
-                Text("Lap", fontSize = 16.sp)
+                Text(text = if (count.value <= 2)"+1 Set" else "Complete", fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -199,7 +183,6 @@ fun PeekBottomSheetContent(
             ) {
                 Text(
                     text = when {
-                        timeInMillis == 0L -> "Start"
                         isRunning -> "Pause"
                         else -> "Resume"
                     },
@@ -216,9 +199,9 @@ fun PeekBottomSheetContent(
                     containerColor = MaterialTheme.colorScheme.error,
                     contentColor = MaterialTheme.colorScheme.onError
                 ),
-                enabled = timeInMillis > 0L
+                enabled = !isCompleted
             ) {
-                Text("Reset", fontSize = 14.sp)
+                Text("Skip", fontSize = 14.sp)
             }
         }
 
@@ -226,8 +209,8 @@ fun PeekBottomSheetContent(
 
         Text(
             text = "Current Workout",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.secondary
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.primary
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -240,8 +223,11 @@ fun PeekBottomSheetContent(
             )
         ) {
             Column {
+                val workoutName by workoutSessionViewModel.currentWorkout.collectAsState()
+                val count by workoutSessionViewModel.countState.collectAsState()
                 WorkoutRow(
-                    workoutName = "Bench Press"
+                    workoutName = workoutName,
+                    count = count
                 )
             }
         }
@@ -250,8 +236,8 @@ fun PeekBottomSheetContent(
 
         Text(
             text = "Upcoming Workout",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.secondary
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.primary
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -265,14 +251,15 @@ fun PeekBottomSheetContent(
             )
         ) {
             Column {
+                val upcomingWorkouts: List<String> by workoutSessionViewModel.upcomingWorkouts.collectAsState()
                 LazyColumn(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    itemsIndexed(lapTimes) { index, lapTime ->
-                        val lapNumber = lapCounter - lapTimes.size + index + 1
-                        val previousTime = if (index == 0) 0L else lapTimes[index - 1]
-                        val currentLapTime = lapTime - previousTime
-
+                    items(upcomingWorkouts) {  item ->
+                        WorkoutRow(
+                            workoutName = item,
+                            showCircle = false
+                        )
                     }
                 }
             }
@@ -280,10 +267,11 @@ fun PeekBottomSheetContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(text = "Completed Workout",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.secondary)
-
+        Text(
+            text = "Completed Workout",
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.primary
+        )
         Spacer(modifier = Modifier.height(8.dp))
 
         Card(
@@ -295,14 +283,15 @@ fun PeekBottomSheetContent(
             )
         ) {
             Column {
+                val completedWorkouts: List<String> by workoutSessionViewModel.completedWorkouts.collectAsState()
                 LazyColumn(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    itemsIndexed(lapTimes) { index, lapTime ->
-                        val lapNumber = lapCounter - lapTimes.size + index + 1
-                        val previousTime = if (index == 0) 0L else lapTimes[index - 1]
-                        val currentLapTime = lapTime - previousTime
-
+                    items(completedWorkouts) {  item ->
+                        WorkoutRow(
+                            workoutName = item,
+                            showCircle = false
+                        )
                     }
                 }
             }

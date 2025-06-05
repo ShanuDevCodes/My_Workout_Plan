@@ -6,7 +6,7 @@ import android.annotation.SuppressLint
 fun FormatTime(timeInMillis: Long): String {
     val minutes = (timeInMillis / 60000) % 60
     val seconds = (timeInMillis / 1000) % 60
-    val centiseconds = (timeInMillis / 10) % 100
+    val centiSeconds = (timeInMillis / 10) % 100
 
-    return String.format("%02d:%02d.%02d", minutes, seconds, centiseconds)
+    return String.format("%02d:%02d.%02d", minutes, seconds, centiSeconds)
 }
