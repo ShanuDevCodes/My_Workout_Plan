@@ -170,7 +170,7 @@ fun PeekBottomSheetContent(
                 onClick = onLap,
                 enabled = !isCompleted,
             ) {
-                Text(text = if (count.value <= 2)"+1 Set" else "Complete", fontSize = 16.sp)
+                Text(text = if (count.value <= 2)"+1 Set" else "Complete")
             }
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -184,7 +184,6 @@ fun PeekBottomSheetContent(
                         isRunning -> "Pause"
                         else -> "Resume"
                     },
-                    fontSize = 14.sp
                 )
             }
 
@@ -199,7 +198,7 @@ fun PeekBottomSheetContent(
                 ),
                 enabled = !isCompleted
             ) {
-                Text("Skip", fontSize = 14.sp)
+                Text("Skip",)
             }
         }
 
