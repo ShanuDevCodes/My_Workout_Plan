@@ -13,23 +13,22 @@ data class BottomNavigationItem(
     val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-
-    )
+)
 
 val items = listOf(
     BottomNavigationItem(
         title = "Home",
         selectedIcon = Icons.Filled.Home,
-        unselectedIcon = Icons.Outlined.Home
+        unselectedIcon = Icons.Outlined.Home,
     ),
     BottomNavigationItem(
         title = "Plans",
         selectedIcon = Icons.Filled.Menu,
-        unselectedIcon = Icons.Outlined.Menu
+        unselectedIcon = Icons.Outlined.Menu,
     ),
     BottomNavigationItem(
         title = "Profile",
         selectedIcon = Icons.Filled.Person,
-        unselectedIcon = Icons.Outlined.Person
-    ),
+        unselectedIcon = Icons.Outlined.Person,
+    )
 )

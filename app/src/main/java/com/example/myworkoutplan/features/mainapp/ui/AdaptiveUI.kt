@@ -147,7 +147,7 @@ fun AdaptiveUI(){
                     containerColor = MaterialTheme.colorScheme.background,
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->
-                     MainNavigation(innerPadding,rootNavController)
+                    MainNavigation(innerPadding,rootNavController)
                 }
             }
         }

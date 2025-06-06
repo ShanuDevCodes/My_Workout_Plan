@@ -29,7 +29,7 @@ class DataStoreManager(private val context: Context) {
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 
     val themeFlow: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[THEME_KEY] ?: ThemeOptions.SYSTEM_DEFAULT.name
+        preferences[THEME_KEY] ?: ThemeOptions.LIGHT.name
     }
 
     val dynamicColorFlow: Flow<String> = context.dataStore.data.map { preferences ->

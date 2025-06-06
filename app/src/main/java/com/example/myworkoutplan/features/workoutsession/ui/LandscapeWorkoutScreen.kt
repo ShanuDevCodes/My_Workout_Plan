@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,13 +53,19 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel) {
+fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCompleted:() -> Unit  ) {
     val context = LocalContext.current
     val isRunning by workoutSessionViewModel.isRunningState.collectAsState()
     val timeInMillis by workoutSessionViewModel.timeInMillisState.collectAsState()
+    val isResting by workoutSessionViewModel.isRestingState.collectAsState()
+    val restTimeInMillis by workoutSessionViewModel.restTimeInMillisState.collectAsState()
     val scope = rememberCoroutineScope()
     val isCompleted by workoutSessionViewModel.isCompleted.collectAsState()
-
+    LaunchedEffect(isCompleted) {
+        if (isCompleted) {
+            onCompleted()
+        }
+    }
     BackHandler {
         (context as? Activity)?.finish()
     }
@@ -119,7 +126,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel) {
                             fontFamily = FontFamily.Monospace
                         )
                         Text(
-                            text = FormatTime(timeInMillis),
+                            text = FormatTime(restTimeInMillis),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.Light,
                             color = MaterialTheme.colorScheme.secondary,
@@ -236,11 +243,21 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel) {
                     modifier = Modifier
                         .width(300.dp),
                     onClick = {
-                        workoutSessionViewModel.workoutSetCompleted()
+                        if (!isResting) {
+                            workoutSessionViewModel.workoutSetCompleted()
+                        }else{
+                            workoutSessionViewModel.skipRest()
+                        }
                     },
                     enabled = !isCompleted,
                 ) {
-                    Text(text = if (count.value <= 2)"+1 Set" else "Complete", fontSize = 16.sp)
+                    Text(text = when {
+                        isResting -> "Skip Rest"
+                        count.value <= 2 -> "+1 Set"
+                        else -> "Complete"
+                    },
+                        fontSize = 16.sp
+                    )
                 }
 
                 Button(
@@ -249,6 +266,8 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel) {
                     onClick = {
                         if(isRunning) {
                             workoutSessionViewModel.pauseWorkout()
+                        }else if (isCompleted){
+                            (context as? Activity)?.finish()
                         }else{
                             workoutSessionViewModel.resumeWorkout()
                         }
@@ -256,6 +275,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel) {
                 ) {
                     Text(
                         text = when {
+                            isCompleted -> "Done"
                             isRunning -> "Pause"
                             else -> "Resume"
                         },

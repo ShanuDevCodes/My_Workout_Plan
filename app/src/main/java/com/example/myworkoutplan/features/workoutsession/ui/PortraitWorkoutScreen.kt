@@ -35,6 +35,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,13 +53,21 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel) {
+fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onCompleted:() -> Unit) {
     val isRunning by workoutSessionViewModel.isRunningState.collectAsState()
     val timeInMillis by workoutSessionViewModel.timeInMillisState.collectAsState()
+    val isResting by workoutSessionViewModel.isRestingState.collectAsState()
+    val restTimeInMillis by workoutSessionViewModel.restTimeInMillisState.collectAsState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
     val isCompleted by workoutSessionViewModel.isCompleted.collectAsState()
+
+    LaunchedEffect(isCompleted) {
+        if (isCompleted) {
+            onCompleted()
+        }
+    }
 
     BackHandler {
         (context as? Activity)?.finish()
@@ -81,7 +90,11 @@ fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel) {
                         }
                     },
                     onLap = {
-                        workoutSessionViewModel.workoutSetCompleted()
+                        if (!isResting) {
+                            workoutSessionViewModel.workoutSetCompleted()
+                        }else{
+                            workoutSessionViewModel.skipRest()
+                        }
                     },
                     onReset = {
                         scope.launch {
@@ -140,7 +153,7 @@ fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel) {
                         fontFamily = FontFamily.Monospace
                     )
                     Text(
-                        text = FormatTime(timeInMillis),
+                        text = FormatTime(restTimeInMillis),
                         fontSize = 36.sp,
                         fontWeight = FontWeight.Light,
                         color = MaterialTheme.colorScheme.secondary,
@@ -172,12 +185,17 @@ fun PeekBottomSheetContent(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             val count = workoutSessionViewModel.countState.collectAsState()
+            val isResting by workoutSessionViewModel.isRestingState.collectAsState()
             Button(
                 modifier = Modifier.weight(1f),
                 onClick = onLap,
                 enabled = !isCompleted,
             ) {
-                Text(text = if (count.value <= 2)"+1 Set" else "Complete")
+                Text(text = when {
+                    isResting -> "Skip Rest"
+                    count.value <= 2 -> "+1 Set"
+                    else -> "Complete"
+                })
             }
 
             Spacer(modifier = Modifier.width(8.dp))

@@ -33,6 +33,14 @@ class WorkoutSessionViewModel:ViewModel() {
     private var timeInMillis: MutableStateFlow<Long> = MutableStateFlow(0)
     val timeInMillisState: StateFlow<Long> = timeInMillis
 
+    private var restTimeInMillis: MutableStateFlow<Long> = MutableStateFlow(0)
+    val restTimeInMillisState: StateFlow<Long> = restTimeInMillis
+
+    private val isResting: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isRestingState: StateFlow<Boolean> = isResting
+
+    private var shouldCompleteAfterRest = false
+
     private val _isCompleted = MutableStateFlow(false)
     val isCompleted: StateFlow<Boolean> = _isCompleted
 
@@ -41,6 +49,22 @@ class WorkoutSessionViewModel:ViewModel() {
             while (true) {
                 if (isRunning.value) {
                     timeInMillis.value += 10
+                }
+                delay(10L)
+            }
+        }
+        viewModelScope.launch {
+            while (true) {
+                if (isResting.value) {
+                    restTimeInMillis.value -= 10
+                    if (restTimeInMillis.value <= 0) {
+                        isResting.value = false
+                        restTimeInMillis.value = 0
+                        if (shouldCompleteAfterRest) {
+                            completeCurrentWorkout()
+                            shouldCompleteAfterRest = false
+                        }
+                    }
                 }
                 delay(10L)
             }
@@ -72,16 +96,22 @@ class WorkoutSessionViewModel:ViewModel() {
             _upcomingWorkouts.value = _upcomingWorkouts.value.drop(1)
         } else {
             _currentWorkout.value = ""
-            isRunning.value = false  // Stop timer
-            _isCompleted.value = true  // Mark session as completed
+            isRunning.value = false
+            _isCompleted.value = true
+            count.value = 0
         }
     }
 
-    fun workoutSetCompleted(){
+    fun workoutSetCompleted() {
         count.value++
-        if(count.value == 4){
-            completeCurrentWorkout()
-            count.value = 0
+        if (count.value < 3) {
+            restTimeInMillis.value = 180000
+            isResting.value = true
+            shouldCompleteAfterRest = false
+        } else if (count.value == 3) {
+            restTimeInMillis.value = 300000
+            isResting.value = true
+            shouldCompleteAfterRest = true
         }
     }
 
@@ -95,6 +125,19 @@ class WorkoutSessionViewModel:ViewModel() {
 
 
     fun skipWorkout(){
+        count.value = 0
+        isResting.value = false
+        restTimeInMillis.value = 0
         completeCurrentWorkout()
+    }
+
+    fun skipRest() {
+        isResting.value = false
+        restTimeInMillis.value = 0
+        if (shouldCompleteAfterRest) {
+            count.value = 0
+            completeCurrentWorkout()
+            shouldCompleteAfterRest = false
+        }
     }
 }

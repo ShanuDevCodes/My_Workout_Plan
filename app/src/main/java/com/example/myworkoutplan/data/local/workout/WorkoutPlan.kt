@@ -25,4 +25,3 @@ data class WorkoutPlan(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
 )
-
