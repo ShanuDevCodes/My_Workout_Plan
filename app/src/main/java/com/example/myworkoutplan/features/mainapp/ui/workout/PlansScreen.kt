@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.myworkoutplan.features.mainapp.ui.plans_navigation.Day
+import com.example.myworkoutplan.features.mainapp.ui.PlanDestination
 import com.example.myworkoutplan.features.mainapp.viewmodel.PlansViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -26,7 +26,7 @@ fun PlansScreen(navController: NavController, viewModel: PlansViewModel = viewMo
                     workout = item,
                     icon = icon,
                     onClick = {
-                        navController.navigate(Day(dayTitle = item)) {
+                        navController.navigate(PlanDestination.Day(dayTitle = item)) {
                             launchSingleTop = true
                         }
                     }

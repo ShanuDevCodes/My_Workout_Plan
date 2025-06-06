@@ -8,11 +8,13 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.myworkoutplan.features.mainapp.ui.Destination
 
 data class BottomNavigationItem(
     val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
+    val destination:Destination
 )
 
 val items = listOf(
@@ -20,15 +22,18 @@ val items = listOf(
         title = "Home",
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home,
+        destination = Destination.Home
     ),
     BottomNavigationItem(
         title = "Plans",
         selectedIcon = Icons.Filled.Menu,
         unselectedIcon = Icons.Outlined.Menu,
+        destination = Destination.Plan
     ),
     BottomNavigationItem(
         title = "Profile",
         selectedIcon = Icons.Filled.Person,
         unselectedIcon = Icons.Outlined.Person,
+        destination = Destination.Profile
     )
 )

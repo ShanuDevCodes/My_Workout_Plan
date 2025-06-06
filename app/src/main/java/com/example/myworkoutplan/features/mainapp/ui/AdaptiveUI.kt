@@ -3,6 +3,8 @@ package com.example.myworkoutplan.features.mainapp.ui
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -28,23 +30,48 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.myworkoutplan.features.mainapp.data.items
 import com.example.myworkoutplan.features.mainapp.ui.homescreen.HomeScreen
-import com.example.myworkoutplan.features.mainapp.ui.plans_navigation.PlansNavigator
+import com.example.myworkoutplan.features.mainapp.ui.plans_navigation.PlansScreenView
+import com.example.myworkoutplan.features.mainapp.ui.workout.PlansScreen
 import com.example.myworkoutplan.features.profile.ui.ProfileScreen
+import kotlinx.serialization.Serializable
+
+sealed class Destination {
+    @Serializable
+    data object Home : Destination()
+
+    @Serializable
+    data object Plan : Destination()
+
+    @Serializable
+    data object Profile : Destination()
+}
+@Serializable
+sealed class PlanDestination{
+    @Serializable
+    data class Day(
+        val dayTitle: String,
+    )
+    @Serializable
+    object Plans
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AdaptiveUI(){
     val rootNavController = rememberNavController()
     val navBackStackEntry by rootNavController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val currentDestination = navBackStackEntry?.destination
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     if (isPortrait) {
@@ -61,11 +88,11 @@ fun AdaptiveUI(){
                         containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                     ) {
                         items.forEachIndexed { index, item ->
-                            val isSelected = item.title.lowercase() == currentRoute
+                            val isSelected = currentDestination?.hierarchy?.any { it.route == item.destination::class.qualifiedName } == true
                             NavigationBarItem(
                                 selected = isSelected,
                                 onClick = {
-                                    rootNavController.navigate(item.title.lowercase()) {
+                                    rootNavController.navigate(item.destination) {
                                         popUpTo(rootNavController.graph.findStartDestination().id) {
                                             saveState = true
                                         }
@@ -111,11 +138,11 @@ fun AdaptiveUI(){
                     containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                 ) {
                     items.forEachIndexed { index, item ->
-                        val isSelected = item.title.lowercase() == currentRoute
+                        val isSelected = currentDestination?.hierarchy?.any { it.route == item.destination::class.qualifiedName } == true
                         NavigationRailItem(
                             selected = isSelected,
                             onClick = {
-                                rootNavController.navigate(item.title.lowercase()){
+                                rootNavController.navigate(item.destination){
                                     popUpTo(rootNavController.graph.findStartDestination().id){
                                         saveState = true
                                     }
@@ -167,7 +194,7 @@ fun MainNavigation(
     ) {
         NavHost(
             navController = rootNavController,
-            startDestination = "home",
+            startDestination = Destination.Home,
             enterTransition = {
                 fadeIn(animationSpec = tween(durationMillis = 1))
             },
@@ -175,14 +202,46 @@ fun MainNavigation(
                 fadeOut(animationSpec = tween(durationMillis = 1))
             },
         ) {
-            composable("home") {
+            composable<Destination.Home> {
                 HomeScreen()
             }
-            composable("plans") {
-                PlansNavigator()
-            }
-            composable("profile") {
-                ProfileScreen()
+            navigation<Destination.Plan>(
+                startDestination = PlanDestination.Plans,
+                enterTransition = {
+                    slideIntoContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(400, easing = FastOutSlowInEasing)
+                    ) + fadeIn(initialAlpha = 0.8f)
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(400, easing = FastOutSlowInEasing)
+                    ) + fadeOut(targetAlpha = 0.9f)
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(400, easing = FastOutSlowInEasing)
+                    ) + fadeIn(initialAlpha = 0.8f)
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(400, easing = FastOutSlowInEasing)
+                    ) + fadeOut(targetAlpha = 0.9f)
+                }
+            ) {
+                composable<PlanDestination.Plans> {
+                    PlansScreen(rootNavController)
+                }
+                composable<PlanDestination.Day> {
+                    val args = it.toRoute<PlanDestination.Day>()
+                    PlansScreenView(args.dayTitle)
+                }
+                composable<Destination.Profile> {
+                    ProfileScreen()
+                }
             }
         }
     }
