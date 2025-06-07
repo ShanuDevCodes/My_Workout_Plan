@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class WorkoutSessionViewModel:ViewModel() {
@@ -64,7 +63,7 @@ class WorkoutSessionViewModel:ViewModel() {
                         isResting.value = false
                         restTimeInMillis.value = 0
                         if (count.value >= countLimit.value) {
-                            completeCurrentWorkout(count.value)
+                            completeCurrentWorkout()
                             count.value = 0
                         }
                     }
@@ -90,7 +89,7 @@ class WorkoutSessionViewModel:ViewModel() {
     }
 
     // Call this when the user completes the current workout
-    private fun completeCurrentWorkout(completedCount: Int) {
+    private fun completeCurrentWorkout() {
         countLimit.value = 3
         val current = _currentWorkout.value.ifEmpty { return }
         val updatedList = _completedWorkouts.value.toMutableList()
@@ -147,7 +146,7 @@ class WorkoutSessionViewModel:ViewModel() {
         isResting.value = false
         restTimeInMillis.value = 0
         if (count.value >= countLimit.value) {
-            completeCurrentWorkout(count.value)
+            completeCurrentWorkout()
             count.value = 0
         }
     }

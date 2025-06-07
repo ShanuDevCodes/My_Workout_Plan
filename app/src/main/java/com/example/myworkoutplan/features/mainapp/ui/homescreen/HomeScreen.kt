@@ -202,8 +202,6 @@ fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreen
                 }
             }
         } else {
-            val configuration = LocalConfiguration.current
-            val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
             Box( modifier = Modifier
                 .fillMaxSize(),
                 contentAlignment = Alignment.BottomEnd) {
