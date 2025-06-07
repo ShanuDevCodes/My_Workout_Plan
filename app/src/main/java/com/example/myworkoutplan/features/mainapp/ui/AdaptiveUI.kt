@@ -118,7 +118,7 @@ fun AdaptiveUI(){
                                             tint = MaterialTheme.colorScheme.onSecondaryContainer
                                         )
                                     }
-                                }
+                                },
                             )
                         }
                     }
@@ -166,7 +166,7 @@ fun AdaptiveUI(){
                                     text = item.title,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
-                            }
+                            },
                         )
                     }
                 }
@@ -208,28 +208,52 @@ fun MainNavigation(
             navigation<Destination.Plan>(
                 startDestination = PlanDestination.Plans,
                 enterTransition = {
-                    slideIntoContainer(
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(400, easing = FastOutSlowInEasing)
-                    ) + fadeIn(initialAlpha = 0.8f)
+                    val from = initialState.destination.route
+                    val to = targetState.destination.route
+                    if (from?.contains("PlanDestination") == true && to?.contains("PlanDestination") == true) {
+                        slideIntoContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(400, easing = FastOutSlowInEasing)
+                        ) + fadeIn(initialAlpha = 0.8f)
+                    } else {
+                        null
+                    }
                 },
                 exitTransition = {
-                    slideOutOfContainer(
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(400, easing = FastOutSlowInEasing)
-                    ) + fadeOut(targetAlpha = 0.9f)
+                    val from = initialState.destination.route
+                    val to = targetState.destination.route
+                    if (from?.contains("PlanDestination") == true && to?.contains("PlanDestination") == true) {
+                        slideOutOfContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(400, easing = FastOutSlowInEasing)
+                        ) + fadeOut(targetAlpha = 0.9f)
+                    } else {
+                        null
+                    }
                 },
                 popEnterTransition = {
-                    slideIntoContainer(
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(400, easing = FastOutSlowInEasing)
-                    ) + fadeIn(initialAlpha = 0.8f)
+                    val from = initialState.destination.route
+                    val to = targetState.destination.route
+                    if (from?.contains("PlanDestination") == true && to?.contains("PlanDestination") == true) {
+                        slideIntoContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(400, easing = FastOutSlowInEasing)
+                        ) + fadeIn(initialAlpha = 0.8f)
+                    } else {
+                        null
+                    }
                 },
                 popExitTransition = {
-                    slideOutOfContainer(
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(400, easing = FastOutSlowInEasing)
-                    ) + fadeOut(targetAlpha = 0.9f)
+                    val from = initialState.destination.route
+                    val to = targetState.destination.route
+                    if (from?.contains("PlanDestination") == true && to?.contains("PlanDestination") == true) {
+                        slideOutOfContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(400, easing = FastOutSlowInEasing)
+                        ) + fadeOut(targetAlpha = 0.9f)
+                    } else {
+                        null
+                    }
                 }
             ) {
                 composable<PlanDestination.Plans> {
@@ -239,9 +263,9 @@ fun MainNavigation(
                     val args = it.toRoute<PlanDestination.Day>()
                     PlansScreenView(args.dayTitle)
                 }
-                composable<Destination.Profile> {
-                    ProfileScreen()
-                }
+            }
+            composable<Destination.Profile> {
+                ProfileScreen()
             }
         }
     }

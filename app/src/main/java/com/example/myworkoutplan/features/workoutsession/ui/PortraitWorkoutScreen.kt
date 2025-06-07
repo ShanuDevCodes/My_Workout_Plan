@@ -242,7 +242,7 @@ fun PeekBottomSheetContent(
             modifier = Modifier
                 .fillMaxWidth(),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
             )
         ) {
             Column {
@@ -271,7 +271,7 @@ fun PeekBottomSheetContent(
                 .fillMaxWidth()
                 .weight(1f),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
             )
         ) {
             Column {
@@ -303,7 +303,7 @@ fun PeekBottomSheetContent(
                 .fillMaxWidth()
                 .weight(1f),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
             )
         ) {
             Column {

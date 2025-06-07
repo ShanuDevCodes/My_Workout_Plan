@@ -163,7 +163,7 @@ fun ProfileScreen() {
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             )
                         ) {
                             WeeklyGoalProgress(current = 4, goal = 5)
@@ -175,7 +175,7 @@ fun ProfileScreen() {
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             )
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
@@ -197,7 +197,7 @@ fun ProfileScreen() {
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             )
                         ) {
                             ProfileActionItem(
@@ -348,7 +348,7 @@ fun ProfileScreen() {
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             )
                         ) {
                             WeeklyGoalProgress(current = 4, goal = 5)
@@ -360,7 +360,7 @@ fun ProfileScreen() {
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             )
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
@@ -383,7 +383,7 @@ fun ProfileScreen() {
                                 .fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             )
                         ) {
                             ProfileActionItem(
@@ -477,7 +477,7 @@ fun ProfileActionItem(
     onClick: () -> Unit,
     iconTint: Color = MaterialTheme.colorScheme.primary,
     textColor: Color = MaterialTheme.colorScheme.primary,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerLow
 ) {
     ListItem(
         modifier = Modifier

@@ -151,7 +151,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             )
                         ) {
                             Column {
@@ -179,7 +179,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                                 .fillMaxWidth()
                                 .weight(1f),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             )
                         ) {
                             val upcomingWorkouts: List<String> by workoutSessionViewModel.upcomingWorkouts.collectAsState()
@@ -209,7 +209,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                                 .fillMaxWidth()
                                 .weight(1f),
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             )
                         ) {
                             val completedWorkouts: List<String> by workoutSessionViewModel.completedWorkouts.collectAsState()

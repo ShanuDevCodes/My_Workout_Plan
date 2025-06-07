@@ -8,6 +8,8 @@ sealed interface WorkoutEvent {
     data class SetWorkoutTypeImage(val workoutTypeImage: Int) : WorkoutEvent
     object ShowDialog : WorkoutEvent
     object HideDialog : WorkoutEvent
-    data class DeleteWorkout(val workoutName: String) : WorkoutEvent
+    data class DeleteWorkout(val workoutPlan: WorkoutPlan) : WorkoutEvent
+    data class DeleteWorkoutByName(val workoutName: String) : WorkoutEvent
     object ResetWorkoutDB: WorkoutEvent
+    data class GetWorkoutObjectByType(val workoutType: String) : WorkoutEvent
 }

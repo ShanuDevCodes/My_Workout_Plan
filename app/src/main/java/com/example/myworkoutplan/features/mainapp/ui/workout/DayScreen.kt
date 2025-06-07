@@ -16,12 +16,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 
 @Composable
 fun DayScreen(visible: Boolean, dayTitle: String, workoutViewModel: WorkoutViewModel) {
-    val exerciseList by workoutViewModel.getExerciseNameAndImagePairsByType(dayTitle)
-        .collectAsState(initial = emptyList())
+    val workoutState by workoutViewModel.state.collectAsState()
+    workoutViewModel.onEvent(WorkoutEvent.GetWorkoutObjectByType(dayTitle))
     Box {
         Column {
             AnimatedVisibility(
@@ -38,8 +39,8 @@ fun DayScreen(visible: Boolean, dayTitle: String, workoutViewModel: WorkoutViewM
                         )
                     }
 
-                    items(exerciseList) { (item, icon) ->
-                        PlansCards(item, icon)
+                    items(workoutState.workoutObjectByType) { item ->
+                        PlansCards(item)
                     }
                 }
             }

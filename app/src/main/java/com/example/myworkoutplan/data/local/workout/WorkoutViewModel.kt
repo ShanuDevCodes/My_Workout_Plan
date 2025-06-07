@@ -20,7 +20,7 @@ class WorkoutViewModel(
     val state: StateFlow<WorkoutState> = _state
     fun onEvent(event: WorkoutEvent){
         when(event){
-            is WorkoutEvent.DeleteWorkout -> {
+            is WorkoutEvent.DeleteWorkoutByName -> {
                 viewModelScope.launch {
                     dao.deleteByExerciseName(event.workoutName)
                 }
@@ -106,6 +106,20 @@ class WorkoutViewModel(
                     }
 
                     (push + pull + leg).forEach { dao.upsertWorkout(it) }
+                }
+            }
+
+            is WorkoutEvent.GetWorkoutObjectByType -> {
+                viewModelScope.launch {
+                    dao.getWorkoutObjectByType(event.workoutType).collect { workoutList ->
+                        _state.update { it.copy(workoutObjectByType = workoutList) }
+                    }
+                }
+            }
+
+            is WorkoutEvent.DeleteWorkout -> {
+                viewModelScope.launch {
+                    dao.deleteWorkout(event.workoutPlan)
                 }
             }
         }

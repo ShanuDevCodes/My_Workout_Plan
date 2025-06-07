@@ -36,12 +36,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkoutplan.data.local.workout.WorkoutEvent
+import com.example.myworkoutplan.data.local.workout.WorkoutPlan
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 
 @Composable
 fun DeleteCards(
-    workout: String,
-    icon: Int,
+    workoutPlan: WorkoutPlan,
     workoutViewModel: WorkoutViewModel
 ) {
     Card(
@@ -58,14 +58,14 @@ fun DeleteCards(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = icon),
-                contentDescription = "$workout icon",
+                painter = painterResource(id = workoutPlan.imageResource),
+                contentDescription = "${workoutPlan.exerciseName} icon",
                 modifier = Modifier.size(40.dp),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = workout,
+                text = workoutPlan.exerciseName,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Start, // Changed from Center to Start
@@ -80,16 +80,16 @@ fun DeleteCards(
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete $workout",
+                    contentDescription = "Delete ${workoutPlan.exerciseName}",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
             }
             if (showDeleteDialog) {
                 DeleteConfirmationDialog(
-                    workoutName = workout,
+                    workoutName = workoutPlan.exerciseName,
                     onConfirm = {
-                        workoutViewModel.onEvent(WorkoutEvent.DeleteWorkout(workout))
+                        workoutViewModel.onEvent(WorkoutEvent.DeleteWorkout(workoutPlan))
                         showDeleteDialog = false
                     },
                     onDismiss = { showDeleteDialog = false }

@@ -163,7 +163,7 @@ fun OnboardingScreen() {
                 }
                 composable<LogIn> {
                     Surface(
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh
+                        color = MaterialTheme.colorScheme.surfaceContainerLow
                     ) {
                         LoginScreen(
                             onLoginClicked = {
@@ -180,7 +180,7 @@ fun OnboardingScreen() {
                 }
                 composable<SignUp> {
                     Surface(
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh
+                        color = MaterialTheme.colorScheme.surfaceContainerLow
                     ) {
                         SignupScreen(
                             onLoginClicked = {
@@ -252,7 +252,7 @@ fun OnboardingScreen() {
                             ),
                             modifier = Modifier
                                 .fillMaxSize(),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
                         ) {
                             NavHost(
                                 startDestination = LogIn,

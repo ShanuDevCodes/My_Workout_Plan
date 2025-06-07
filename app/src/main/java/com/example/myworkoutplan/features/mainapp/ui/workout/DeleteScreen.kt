@@ -13,13 +13,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 
 @Composable
 fun DeleteScreen(dayTitle: String,workoutViewModel: WorkoutViewModel) {
-    val exerciseList by workoutViewModel.getExerciseNameAndImagePairsByType(dayTitle)
-        .collectAsState(initial = emptyList())
-
+    val workoutState by workoutViewModel.state.collectAsState()
+    workoutViewModel.onEvent(WorkoutEvent.GetWorkoutObjectByType(dayTitle))
     Box {
         Column {
             LazyColumn {
@@ -31,8 +31,8 @@ fun DeleteScreen(dayTitle: String,workoutViewModel: WorkoutViewModel) {
                         modifier = Modifier.padding(16.dp)
                     )
                 }
-                items(exerciseList) { (item, icon) ->
-                    DeleteCards(item, icon,workoutViewModel)
+                items(workoutState.workoutObjectByType) { item ->
+                    DeleteCards(item,workoutViewModel)
                 }
             }
         }

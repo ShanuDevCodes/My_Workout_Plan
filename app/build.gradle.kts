@@ -18,7 +18,7 @@ android {
         //noinspection EditedTargetSdkVersion
         targetSdk = 36
         versionCode = 7
-        versionName = "3.0.2-beta"
+        versionName = "3.0.3-beta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -93,4 +93,6 @@ dependencies {
 
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.material.icons.extended)
+
+    implementation(libs.androidx.material3.adaptive.navigation.suite)
 }
