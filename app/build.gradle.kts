@@ -18,7 +18,7 @@ android {
         //noinspection EditedTargetSdkVersion
         targetSdk = 36
         versionCode = 7
-        versionName = "3.0.3-beta"
+        versionName = "3.0.4-beta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -75,20 +75,14 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.navigation.compose.v277)
 
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
-    ksp(libs.androidx.room.compiler.v271)
-    annotationProcessor(libs.androidx.room.compiler.v271)
     implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.rxjava2)
-    implementation(libs.androidx.room.rxjava3)
     implementation(libs.androidx.room.guava)
     testImplementation(libs.androidx.room.testing)
     implementation(libs.androidx.room.paging)
 
-    implementation (libs.datastore)
     implementation (libs.androidx.core.splashscreen)
 
     implementation(libs.androidx.material.icons.core)

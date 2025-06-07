@@ -6,8 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "workout_plans",
-    indices = [Index(value = ["exercise_name"], unique = true)]
+    tableName = "workout_plans"
 )
 data class WorkoutPlan(
     @ColumnInfo(name = "exercise_name")
