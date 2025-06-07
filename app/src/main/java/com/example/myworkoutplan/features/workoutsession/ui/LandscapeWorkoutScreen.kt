@@ -23,6 +23,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -47,6 +49,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
 import kotlinx.coroutines.launch
 
@@ -55,7 +58,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCompleted:() -> Unit  ) {
     val context = LocalContext.current
-    val isRunning by workoutSessionViewModel.isRunningState.collectAsState()
     val timeInMillis by workoutSessionViewModel.timeInMillisState.collectAsState()
     val isResting by workoutSessionViewModel.isRestingState.collectAsState()
     val restTimeInMillis by workoutSessionViewModel.restTimeInMillisState.collectAsState()
@@ -119,14 +121,14 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = FormatTime(timeInMillis),
+                            text = FormatTime(restTimeInMillis),
                             fontSize = 72.sp,
                             fontWeight = FontWeight.Light,
                             color = MaterialTheme.colorScheme.primary,
                             fontFamily = FontFamily.Monospace
                         )
                         Text(
-                            text = FormatTime(restTimeInMillis),
+                            text = FormatTime(timeInMillis),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.Light,
                             color = MaterialTheme.colorScheme.secondary,
@@ -145,7 +147,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                         Text(
                             text = "Current Workout",
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Card(
@@ -157,10 +159,12 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                             Column {
                                 val workoutName by workoutSessionViewModel.currentWorkout.collectAsState()
                                 val count by workoutSessionViewModel.countState.collectAsState()
+                                val countLimit by workoutSessionViewModel.countLimitState.collectAsState()
                                 WorkoutRow(
                                     workoutName = workoutName,
                                     count = count,
-                                    showCircle = !isCompleted
+                                    showCircle = !isCompleted,
+                                    countLimit = countLimit
                                 )
                             }
                         }
@@ -183,14 +187,28 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                             )
                         ) {
                             val upcomingWorkouts: List<String> by workoutSessionViewModel.upcomingWorkouts.collectAsState()
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                items(upcomingWorkouts) {  item ->
-                                    WorkoutRow(
-                                        workoutName = item,
-                                        showCircle = false
+                            if (upcomingWorkouts.isEmpty()){
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ){
+                                    Text(
+                                        text = "No upcoming workout",
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        fontWeight = FontWeight.Normal
                                     )
+                                }
+                            }else {
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    items(upcomingWorkouts) { item ->
+                                        WorkoutRow(
+                                            workoutName = item,
+                                            showCircle = false
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -212,15 +230,30 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                                 containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             )
                         ) {
-                            val completedWorkouts: List<String> by workoutSessionViewModel.completedWorkouts.collectAsState()
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                items(completedWorkouts) {  item ->
-                                    WorkoutRow(
-                                        workoutName = item,
-                                        showCircle = false
+                            val completedWorkouts by workoutSessionViewModel.completedWorkouts.collectAsState()
+                            if (completedWorkouts.isEmpty()){
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ){
+                                    Text(
+                                        text = "No completed workouts yet",
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        fontWeight = FontWeight.Normal
                                     )
+                                }
+                            }else {
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    items(completedWorkouts) { item ->
+                                        WorkoutRow(
+                                            workoutName = item.first,
+                                            showSetCount = true,
+                                            setCount = item.second
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -238,7 +271,6 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                val count = workoutSessionViewModel.countState.collectAsState()
                 Button(
                     modifier = Modifier
                         .width(300.dp),
@@ -253,33 +285,9 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                 ) {
                     Text(text = when {
                         isResting -> "Skip Rest"
-                        count.value <= 2 -> "+1 Set"
-                        else -> "Complete"
+                        else -> "Complete Set"
                     },
                         fontSize = 16.sp
-                    )
-                }
-
-                Button(
-                    modifier = Modifier
-                        .width(300.dp),
-                    onClick = {
-                        if(isRunning) {
-                            workoutSessionViewModel.pauseWorkout()
-                        }else if (isCompleted){
-                            (context as? Activity)?.finish()
-                        }else{
-                            workoutSessionViewModel.resumeWorkout()
-                        }
-                    }
-                ) {
-                    Text(
-                        text = when {
-                            isCompleted -> "Done"
-                            isRunning -> "Pause"
-                            else -> "Resume"
-                        },
-                        fontSize = 14.sp
                     )
                 }
 
@@ -298,6 +306,19 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                     enabled = !isCompleted
                 ) {
                     Text("Skip", fontSize = 14.sp)
+                }
+
+                Button(
+                    modifier = Modifier
+                        .width(300.dp),
+                    onClick = {
+                        workoutSessionViewModel.countLimitIncrease()
+                    }
+                ) {
+                    Text(
+                        text = "Add Set",
+                        fontSize = 14.sp
+                    )
                 }
             }
         }

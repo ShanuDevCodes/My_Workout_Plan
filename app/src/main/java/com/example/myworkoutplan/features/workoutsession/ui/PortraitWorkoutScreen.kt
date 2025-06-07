@@ -54,7 +54,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onCompleted:() -> Unit) {
-    val isRunning by workoutSessionViewModel.isRunningState.collectAsState()
     val timeInMillis by workoutSessionViewModel.timeInMillisState.collectAsState()
     val isResting by workoutSessionViewModel.isRestingState.collectAsState()
     val restTimeInMillis by workoutSessionViewModel.restTimeInMillisState.collectAsState()
@@ -79,24 +78,17 @@ fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onCo
             sheetPeekHeight = 210.dp,
             sheetContent = {
                 PeekBottomSheetContent(
-                    isRunning = isRunning,
-                    onStartPause = {
-                        if(isRunning) {
-                            workoutSessionViewModel.pauseWorkout()
-                        }else if (isCompleted){
-                            (context as? Activity)?.finish()
-                        }else{
-                            workoutSessionViewModel.resumeWorkout()
-                        }
+                    onAddSet = {
+                        workoutSessionViewModel.countLimitIncrease()
                     },
-                    onLap = {
+                    onCompleteSet = {
                         if (!isResting) {
                             workoutSessionViewModel.workoutSetCompleted()
                         }else{
                             workoutSessionViewModel.skipRest()
                         }
                     },
-                    onReset = {
+                    onSkip = {
                         scope.launch {
                             workoutSessionViewModel.skipWorkout()
                         }
@@ -146,14 +138,14 @@ fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onCo
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = FormatTime(timeInMillis),
+                        text = FormatTime(restTimeInMillis),
                         fontSize = 72.sp,
                         fontWeight = FontWeight.Light,
                         color = MaterialTheme.colorScheme.primary,
                         fontFamily = FontFamily.Monospace
                     )
                     Text(
-                        text = FormatTime(restTimeInMillis),
+                        text = FormatTime(timeInMillis),
                         fontSize = 36.sp,
                         fontWeight = FontWeight.Light,
                         color = MaterialTheme.colorScheme.secondary,
@@ -167,10 +159,9 @@ fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onCo
 
 @Composable
 fun PeekBottomSheetContent(
-    isRunning: Boolean,
-    onStartPause: () -> Unit,
-    onLap: () -> Unit,
-    onReset: () -> Unit,
+    onAddSet: () -> Unit,
+    onCompleteSet: () -> Unit,
+    onSkip: () -> Unit,
     workoutSessionViewModel: WorkoutSessionViewModel,
     isCompleted: Boolean
 ) {
@@ -184,17 +175,15 @@ fun PeekBottomSheetContent(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            val count = workoutSessionViewModel.countState.collectAsState()
             val isResting by workoutSessionViewModel.isRestingState.collectAsState()
             Button(
                 modifier = Modifier.weight(1f),
-                onClick = onLap,
+                onClick = onCompleteSet,
                 enabled = !isCompleted,
             ) {
                 Text(text = when {
                     isResting -> "Skip Rest"
-                    count.value <= 2 -> "+1 Set"
-                    else -> "Complete"
+                    else -> "Complete Set"
                 })
             }
 
@@ -202,22 +191,7 @@ fun PeekBottomSheetContent(
 
             Button(
                 modifier = Modifier.weight(1f),
-                onClick = onStartPause
-            ) {
-                Text(
-                    text = when {
-                        isCompleted -> "Done"
-                        isRunning -> "Pause"
-                        else -> "Resume"
-                    },
-                )
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = onReset,
+                onClick = onSkip,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.error,
                     contentColor = MaterialTheme.colorScheme.onError
@@ -225,6 +199,17 @@ fun PeekBottomSheetContent(
                 enabled = !isCompleted
             ) {
                 Text("Skip",)
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = onAddSet
+            ) {
+                Text(
+                    text = "Add Set",
+                )
             }
         }
 
@@ -248,10 +233,12 @@ fun PeekBottomSheetContent(
             Column {
                 val workoutName by workoutSessionViewModel.currentWorkout.collectAsState()
                 val count by workoutSessionViewModel.countState.collectAsState()
+                val countLimit by workoutSessionViewModel.countLimitState.collectAsState()
                 WorkoutRow(
                     workoutName = workoutName,
                     count = count,
-                    showCircle = !isCompleted
+                    showCircle = !isCompleted,
+                    countLimit = countLimit
                 )
             }
         }
@@ -307,14 +294,15 @@ fun PeekBottomSheetContent(
             )
         ) {
             Column {
-                val completedWorkouts: List<String> by workoutSessionViewModel.completedWorkouts.collectAsState()
+                val completedWorkouts by workoutSessionViewModel.completedWorkouts.collectAsState()
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(completedWorkouts) {  item ->
                         WorkoutRow(
-                            workoutName = item,
-                            showCircle = false
+                            workoutName = item.first,
+                            showSetCount = true,
+                            setCount = item.second
                         )
                     }
                 }

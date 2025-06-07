@@ -1,21 +1,35 @@
 package com.example.myworkoutplan.features.mainapp.ui
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.interaction.Interaction
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -26,10 +40,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -39,11 +62,24 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.myworkoutplan.R
+import com.example.myworkoutplan.WorkoutActivity
+import com.example.myworkoutplan.core.AppDatabase
+import com.example.myworkoutplan.core.DataStoreManager
+import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekEvent
+import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModel
+import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModelFactory
 import com.example.myworkoutplan.features.mainapp.data.items
 import com.example.myworkoutplan.features.mainapp.ui.homescreen.HomeScreen
+import com.example.myworkoutplan.features.mainapp.ui.homescreen.SwapWorkoutWeekDialog
 import com.example.myworkoutplan.features.mainapp.ui.plans_navigation.PlansScreenView
 import com.example.myworkoutplan.features.mainapp.ui.workout.PlansScreen
 import com.example.myworkoutplan.features.profile.ui.ProfileScreen
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 sealed class Destination {
@@ -55,6 +91,13 @@ sealed class Destination {
 
     @Serializable
     data object Profile : Destination()
+
+    @Serializable
+    data object Report : Destination()
+
+    @Serializable
+
+    data object CustomWorkOut : Destination()
 }
 @Serializable
 sealed class PlanDestination{
@@ -66,14 +109,26 @@ sealed class PlanDestination{
     object Plans
 }
 
+@SuppressLint("UseOfNonLambdaOffsetOverload")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AdaptiveUI(){
+    val context = LocalContext.current
     val rootNavController = rememberNavController()
     val navBackStackEntry by rootNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    val dataStore = remember { DataStoreManager(context) }
+    val db = remember { AppDatabase.getInstance(context) }
+    val dao = db.WorkoutWeekDao()
+    val workoutWeekViewModel: WorkoutWeekViewModel = viewModel(
+        factory = WorkoutWeekViewModelFactory(dataStore, dao)
+    )
+    val workoutWeekState by workoutWeekViewModel.state.collectAsState()
+    LaunchedEffect(Unit) {
+        workoutWeekViewModel.getDay()
+    }
     if (isPortrait) {
         Surface(
             modifier = Modifier
@@ -119,12 +174,13 @@ fun AdaptiveUI(){
                                         )
                                     }
                                 },
+                                interactionSource = NoRippleInteractionSource
                             )
                         }
                     }
                 },
             ) { innerPadding ->
-                MainNavigation(innerPadding,rootNavController)
+                MainNavigation(innerPadding,rootNavController,workoutWeekViewModel)
             }
         }
     }else{
@@ -137,44 +193,136 @@ fun AdaptiveUI(){
                 NavigationRail(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                 ) {
-                    items.forEachIndexed { index, item ->
-                        val isSelected = currentDestination?.hierarchy?.any { it.route == item.destination::class.qualifiedName } == true
-                        NavigationRailItem(
-                            selected = isSelected,
-                            onClick = {
-                                rootNavController.navigate(item.destination){
-                                    popUpTo(rootNavController.graph.findStartDestination().id){
-                                        saveState = true
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(80.dp)
+                    ) {
+                        // 🔵 FAB layered on top (does not consume layout space)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
+                            val fabScaleMini = remember { Animatable(0f) }
+                            val fabOffsetY = remember { Animatable(0f) }
+                            val fabScale = remember { Animatable(0f) }
+                            val isOnHomeScreen = currentDestination?.route == Destination.Home::class.qualifiedName
+                            LaunchedEffect(Unit) {
+                                delay(150)
+                                // Animate both offset and scale in parallel
+                                fabScale.animateTo(
+                                    targetValue = 1f,
+                                    animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
+                                )
+                            }
+                            LaunchedEffect(isOnHomeScreen) {
+                                val targetOffset = if (isOnHomeScreen) 66f else 0f
+                                val targetScale = if (isOnHomeScreen) 1f else 0f
+
+                                // Animate both in parallel
+                                coroutineScope {
+                                    launch {
+                                        fabOffsetY.animateTo(
+                                            targetValue = targetOffset,
+                                            animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                        )
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
+                                    launch {
+                                        fabScaleMini.animateTo(
+                                            targetValue = targetScale,
+                                            animationSpec = tween(durationMillis = 230, easing = FastOutSlowInEasing)
+                                        )
+                                    }
                                 }
-                            },
-                            icon = {
-                                BadgedBox(badge = { }) {
+                            }
+                            if (workoutWeekState.currentWorkoutDay?.workoutType != "Rest Day") {
+                                FloatingActionButton(
+                                    onClick = { workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog) },
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .offset(y = fabOffsetY.value.dp)
+                                        .scale(fabScaleMini.value),
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                    elevation = FloatingActionButtonDefaults.elevation(2.dp)
+                                ) {
                                     Icon(
-                                        imageVector = if (isSelected) {
-                                            item.selectedIcon
-                                        } else item.unselectedIcon,
-                                        contentDescription = item.title,
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                        painter = painterResource(id = R.drawable.shuffle),
+                                        contentDescription = "Swap",
+                                        modifier = Modifier.size(24.dp)
                                     )
                                 }
-                            },
-                            label = {
-                                Text(
-                                    text = item.title,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                FloatingActionButton(
+                                    onClick = {
+                                        context.startActivity(
+                                            Intent(
+                                                context,
+                                                WorkoutActivity::class.java
+                                            )
+                                        )
+                                    },
+                                    modifier = Modifier,
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.start_button),
+                                        contentDescription = "Start",
+                                        modifier = Modifier.size(34.dp),
+                                        tint = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                }
+                            }
+                        }
+
+                        // 🟢 NavigationRail content centered, completely unaware of FAB
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .align(Alignment.Center),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            items.forEach { item ->
+                                val isSelected = currentDestination?.hierarchy?.any {
+                                    it.route == item.destination::class.qualifiedName
+                                } == true
+
+                                NavigationRailItem(
+                                    selected = isSelected,
+                                    onClick = {
+                                        rootNavController.navigate(item.destination) {
+                                            popUpTo(rootNavController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    },
+                                    icon = {
+                                        BadgedBox(badge = { }) {
+                                            Icon(
+                                                imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
+                                                contentDescription = item.title,
+                                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        }
+                                    },
+                                    interactionSource = NoRippleInteractionSource,
                                 )
-                            },
-                        )
+                            }
+                        }
                     }
                 }
                 Scaffold(
                     containerColor = MaterialTheme.colorScheme.background,
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->
-                    MainNavigation(innerPadding,rootNavController)
+                    MainNavigation(innerPadding,rootNavController,workoutWeekViewModel)
+                    if (workoutWeekState.isSwapping) {
+                        SwapWorkoutWeekDialog(workoutWeekState, workoutWeekViewModel)
+                    }
                 }
             }
         }
@@ -185,7 +333,8 @@ fun AdaptiveUI(){
 @Composable
 fun MainNavigation(
     innerPadding: PaddingValues,
-    rootNavController: NavHostController
+    rootNavController: NavHostController,
+    workoutWeekViewModel: WorkoutWeekViewModel
 ) {
     Box(
         modifier = Modifier
@@ -203,7 +352,10 @@ fun MainNavigation(
             },
         ) {
             composable<Destination.Home> {
-                HomeScreen()
+                HomeScreen(workoutWeekViewModel)
+            }
+            composable<Destination.CustomWorkOut> {
+                CustomWorkoutScreen()
             }
             navigation<Destination.Plan>(
                 startDestination = PlanDestination.Plans,
@@ -264,9 +416,20 @@ fun MainNavigation(
                     PlansScreenView(args.dayTitle)
                 }
             }
+            composable<Destination.Report> {
+                ReportScreen()
+            }
             composable<Destination.Profile> {
                 ProfileScreen()
             }
         }
     }
+}
+private object NoRippleInteractionSource : MutableInteractionSource {
+
+    override val interactions: Flow<Interaction> = emptyFlow()
+
+    override suspend fun emit(interaction: Interaction) {}
+
+    override fun tryEmit(interaction: Interaction) = true
 }

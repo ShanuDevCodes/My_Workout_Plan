@@ -1,9 +1,13 @@
 package com.example.myworkoutplan.features.mainapp.data
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Assessment
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Assessment
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Person
@@ -25,10 +29,22 @@ val items = listOf(
         destination = Destination.Home
     ),
     BottomNavigationItem(
+        title = "Custom",
+        selectedIcon = Icons.Filled.Edit,
+        unselectedIcon = Icons.Outlined.Edit,
+        destination = Destination.CustomWorkOut
+    ),
+    BottomNavigationItem(
         title = "Plans",
         selectedIcon = Icons.Filled.Menu,
         unselectedIcon = Icons.Outlined.Menu,
         destination = Destination.Plan
+    ),
+    BottomNavigationItem(
+        title = "Report",
+        selectedIcon = Icons.Filled.Assessment,
+        unselectedIcon = Icons.Outlined.Assessment,
+        destination = Destination.Report
     ),
     BottomNavigationItem(
         title = "Profile",

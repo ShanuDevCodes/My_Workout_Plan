@@ -20,8 +20,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun WorkoutRow(
     workoutName: String,
-    showCircle:Boolean = true,
+    showCircle:Boolean = false,
     count:Int = 0,
+    countLimit:Int = 3,
+    showSetCount:Boolean = false,
+    setCount:Int = 0,
 ) {
     Row(
         modifier = Modifier
@@ -37,35 +40,24 @@ fun WorkoutRow(
             modifier = Modifier.weight(1f)
         )
         if (showCircle) {
-            Icon(
-                if (count>0) {
-                    Icons.Filled.Circle
-                } else {
-                    Icons.Outlined.Circle
-                },
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.size(18.dp)
-            )
-            Icon(
-                if (count>1) {
-                    Icons.Filled.Circle
-                } else {
-                    Icons.Outlined.Circle
-                },
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.size(18.dp)
-            )
-            Icon(
-                if (count>2) {
-                    Icons.Filled.Circle
-                } else {
-                    Icons.Outlined.Circle
-                },
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.size(18.dp)
+            repeat(countLimit) {index->
+                Icon(
+                    if (count>index) {
+                        Icons.Filled.Circle
+                    } else {
+                        Icons.Outlined.Circle
+                    },
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        }
+        if (showSetCount){
+            Text(
+                text = "x$setCount",
+                color = MaterialTheme.colorScheme.secondary,
+                fontWeight = FontWeight.Normal,
             )
         }
     }

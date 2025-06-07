@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
@@ -61,13 +60,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.WorkoutActivity
 import com.example.myworkoutplan.core.AppDatabase
-import com.example.myworkoutplan.core.DataStoreManager
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
 import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekEvent
 import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekState
 import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModel
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModelFactory
 import com.example.myworkoutplan.data.remote.firebaseauth.FirebaseViewModel
 import com.example.myworkoutplan.features.mainapp.ui.workout.DayScreen
 import com.example.myworkoutplan.features.mainapp.viewmodel.HomeScreenViewModel
@@ -77,26 +74,20 @@ import java.time.DayOfWeek
 @SuppressLint("UseOfNonLambdaOffsetOverload")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
+fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreenViewModel = viewModel()) {
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     val firebaseViewModel: FirebaseViewModel = viewModel()
     val userName = firebaseViewModel.currentUser.value?.displayName ?: "Guest"
     val greeting = viewModel.greeting
     val visible = viewModel.visible
     val context = LocalContext.current
-    val dataStore = remember { DataStoreManager(context) }
     val db = remember { AppDatabase.getInstance(context) }
-    val dao = db.WorkoutWeekDao()
-    val workoutWeekViewModel: WorkoutWeekViewModel = viewModel(
-        factory = WorkoutWeekViewModelFactory(dataStore, dao)
-    )
     val workoutWeekState by workoutWeekViewModel.state.collectAsState()
     val workoutDao = remember {db.workoutDao()}
     val workoutViewModel: WorkoutViewModel = viewModel(
         factory = WorkoutViewModelFactory(workoutDao)
     )
-    LaunchedEffect(Unit) {
-        workoutWeekViewModel.getDay()
-    }
     val title = workoutWeekState.currentWorkoutDay?.workoutType?:"Rest Day"
     Column {
         Column(
@@ -167,37 +158,46 @@ fun HomeScreen(viewModel: HomeScreenViewModel = viewModel()) {
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Box(contentAlignment = Alignment.BottomEnd) {
-                        FloatingActionButton(
-                            onClick = { workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog) },
-                            modifier = Modifier
-                                .size(48.dp)
-                                .offset(y = fabOffsetY.value.dp)
-                                .scale(fabScaleMini.value),
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            elevation = FloatingActionButtonDefaults.elevation(2.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.shuffle),
-                                contentDescription = "Swap",
-                                modifier = Modifier.size(24.dp)
+                        if (isPortrait) {
+                            FloatingActionButton(
+                                onClick = { workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog) },
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .offset(y = fabOffsetY.value.dp)
+                                    .scale(fabScaleMini.value),
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                elevation = FloatingActionButtonDefaults.elevation(2.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.shuffle),
+                                    contentDescription = "Swap",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                            ExtendedFloatingActionButton(
+                                onClick = {
+                                    context.startActivity(
+                                        Intent(
+                                            context,
+                                            WorkoutActivity::class.java
+                                        )
+                                    )
+                                },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.start_button),
+                                        contentDescription = "Start",
+                                        modifier = Modifier.size(34.dp),
+                                        tint = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                },
+                                text = { Text("Start") },
+                                modifier = Modifier
+                                    .scale(fabScale.value),
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                elevation = FloatingActionButtonDefaults.elevation(2.dp)
                             )
                         }
-                        ExtendedFloatingActionButton(
-                            onClick = {
-                                context.startActivity(Intent(context, WorkoutActivity::class.java))
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = Icons.Filled.PlayArrow,
-                                    contentDescription = "Start"
-                                )
-                            },
-                            text = { Text("Start") },
-                            modifier = Modifier
-                                .scale(fabScale.value),
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            elevation = FloatingActionButtonDefaults.elevation(2.dp)
-                        )
                     }
                 }
             }

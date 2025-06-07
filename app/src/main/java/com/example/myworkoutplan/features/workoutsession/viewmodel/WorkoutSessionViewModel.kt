@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class WorkoutSessionViewModel:ViewModel() {
@@ -21,14 +22,16 @@ class WorkoutSessionViewModel:ViewModel() {
     private val _upcomingWorkouts = MutableStateFlow<List<String>>(emptyList())
     val upcomingWorkouts: StateFlow<List<String>> = _upcomingWorkouts
 
-    private val _completedWorkouts = MutableStateFlow<List<String>>(emptyList())
-    val completedWorkouts: StateFlow<List<String>> = _completedWorkouts
+    private val _completedWorkouts = MutableStateFlow<List<Pair<String,Int>>>(emptyList())
+    val completedWorkouts: StateFlow<List<Pair<String,Int>>> = _completedWorkouts
 
     private val count: MutableStateFlow<Int> = MutableStateFlow(0)
     val countState: StateFlow<Int> = count
 
+    private val countLimit: MutableStateFlow<Int> = MutableStateFlow(3)
+    val countLimitState: StateFlow<Int> = countLimit
+
     private var isRunning: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    val isRunningState: StateFlow<Boolean> = isRunning
 
     private var timeInMillis: MutableStateFlow<Long> = MutableStateFlow(0)
     val timeInMillisState: StateFlow<Long> = timeInMillis
@@ -60,9 +63,9 @@ class WorkoutSessionViewModel:ViewModel() {
                     if (restTimeInMillis.value <= 0) {
                         isResting.value = false
                         restTimeInMillis.value = 0
-                        if (shouldCompleteAfterRest) {
-                            completeCurrentWorkout()
-                            shouldCompleteAfterRest = false
+                        if (count.value >= countLimit.value) {
+                            completeCurrentWorkout(count.value)
+                            count.value = 0
                         }
                     }
                 }
@@ -87,9 +90,12 @@ class WorkoutSessionViewModel:ViewModel() {
     }
 
     // Call this when the user completes the current workout
-    private fun completeCurrentWorkout() {
+    private fun completeCurrentWorkout(completedCount: Int) {
+        countLimit.value = 3
         val current = _currentWorkout.value.ifEmpty { return }
-        _completedWorkouts.value += current
+        val updatedList = _completedWorkouts.value.toMutableList()
+        updatedList.add(current to count.value)
+        _completedWorkouts.value = updatedList
 
         if (_upcomingWorkouts.value.isNotEmpty()) {
             _currentWorkout.value = _upcomingWorkouts.value.first()
@@ -104,40 +110,48 @@ class WorkoutSessionViewModel:ViewModel() {
 
     fun workoutSetCompleted() {
         count.value++
-        if (count.value < 3) {
+        if (count.value < countLimit.value) {
             restTimeInMillis.value = 180000
             isResting.value = true
             shouldCompleteAfterRest = false
-        } else if (count.value == 3) {
+        } else {
             restTimeInMillis.value = 300000
             isResting.value = true
-            shouldCompleteAfterRest = true
         }
-    }
-
-    fun pauseWorkout() {
-        isRunning.value = false
-    }
-
-    fun resumeWorkout() {
-        isRunning.value = true
     }
 
 
     fun skipWorkout(){
+        if (count.value > 0){
+            val current = _currentWorkout.value.ifEmpty { return }
+            val updatedList = _completedWorkouts.value.toMutableList()
+            updatedList.add(current to count.value)
+            _completedWorkouts.value = updatedList
+        }
         count.value = 0
         isResting.value = false
         restTimeInMillis.value = 0
-        completeCurrentWorkout()
+        countLimit.value = 3
+        if (_upcomingWorkouts.value.isNotEmpty()) {
+            _currentWorkout.value = _upcomingWorkouts.value.first()
+            _upcomingWorkouts.value = _upcomingWorkouts.value.drop(1)
+        } else {
+            _currentWorkout.value = ""
+            isRunning.value = false
+            _isCompleted.value = true
+            count.value = 0
+        }
     }
 
     fun skipRest() {
         isResting.value = false
         restTimeInMillis.value = 0
-        if (shouldCompleteAfterRest) {
+        if (count.value >= countLimit.value) {
+            completeCurrentWorkout(count.value)
             count.value = 0
-            completeCurrentWorkout()
-            shouldCompleteAfterRest = false
         }
+    }
+    fun countLimitIncrease(){
+        countLimit.value++
     }
 }
