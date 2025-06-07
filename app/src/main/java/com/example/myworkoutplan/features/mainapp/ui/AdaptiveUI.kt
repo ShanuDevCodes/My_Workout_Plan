@@ -76,7 +76,6 @@ import com.example.myworkoutplan.features.mainapp.ui.plans_navigation.PlansScree
 import com.example.myworkoutplan.features.mainapp.ui.workout.PlansScreen
 import com.example.myworkoutplan.features.profile.ui.ProfileScreen
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
@@ -207,16 +206,7 @@ fun AdaptiveUI(){
                         ) {
                             val fabScaleMini = remember { Animatable(0f) }
                             val fabOffsetY = remember { Animatable(0f) }
-                            val fabScale = remember { Animatable(0f) }
                             val isOnHomeScreen = currentDestination?.route == Destination.Home::class.qualifiedName
-                            LaunchedEffect(Unit) {
-                                delay(150)
-                                // Animate both offset and scale in parallel
-                                fabScale.animateTo(
-                                    targetValue = 1f,
-                                    animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
-                                )
-                            }
                             LaunchedEffect(isOnHomeScreen) {
                                 val targetOffset = if (isOnHomeScreen) 66f else 0f
                                 val targetScale = if (isOnHomeScreen) 1f else 0f

@@ -3,12 +3,17 @@ package com.example.myworkoutplan.features.mainapp.ui.workout
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.myworkoutplan.features.mainapp.ui.PlanDestination
@@ -18,9 +23,24 @@ import com.example.myworkoutplan.features.mainapp.viewmodel.PlansViewModel
 @Composable
 fun PlansScreen(navController: NavController, viewModel: PlansViewModel = viewModel()) {
     val plans by viewModel.plans.collectAsState()
-
     Box(modifier = Modifier) {
         LazyColumn {
+            item {
+                Text(
+                    text = "List Of Plans",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+            item {
+                Text(
+                    text = "Push, Pull, Legs",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
             items(plans) { (item, icon) ->
                 DayCards(
                     workout = item,
