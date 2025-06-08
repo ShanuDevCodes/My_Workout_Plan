@@ -71,7 +71,6 @@ import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModel
 import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModelFactory
 import com.example.myworkoutplan.features.mainapp.data.items
 import com.example.myworkoutplan.features.mainapp.ui.homescreen.HomeScreen
-import com.example.myworkoutplan.features.mainapp.ui.homescreen.SwapWorkoutWeekDialog
 import com.example.myworkoutplan.features.mainapp.ui.plans_navigation.PlansScreenView
 import com.example.myworkoutplan.features.mainapp.ui.workout.PlansScreen
 import com.example.myworkoutplan.features.profile.ui.ProfileScreen
@@ -310,9 +309,6 @@ fun AdaptiveUI(){
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->
                     MainNavigation(innerPadding,rootNavController,workoutWeekViewModel)
-                    if (workoutWeekState.isSwapping) {
-                        SwapWorkoutWeekDialog(workoutWeekState, workoutWeekViewModel)
-                    }
                 }
             }
         }

@@ -55,6 +55,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.R
@@ -395,11 +396,17 @@ fun SwapWorkoutWeekDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        Text(
-                            text = "${DayOfWeek.of(day.dayOfWeek).name.lowercase().replaceFirstChar { it.uppercase() }} - ${day.workoutType}",
+                        TextButton(
+                            onClick = { selectedDay = day.dayOfWeek },
                             modifier = Modifier.weight(1f),
-                            color = MaterialTheme.colorScheme.secondary
-                        )
+                        ) {
+                            Text(
+                                text = "${DayOfWeek.of(day.dayOfWeek).name.lowercase().replaceFirstChar { it.uppercase() }} - ${day.workoutType}",
+                                modifier = Modifier.fillMaxWidth(),
+                                color = MaterialTheme.colorScheme.secondary,
+                                textAlign = TextAlign.Start
+                            )
+                        }
                         RadioButton(
                             selected = selectedDay == day.dayOfWeek,
                             onClick = { selectedDay = day.dayOfWeek },
