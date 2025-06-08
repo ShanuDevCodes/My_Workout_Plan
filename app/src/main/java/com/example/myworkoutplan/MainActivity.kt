@@ -2,6 +2,7 @@ package com.example.myworkoutplan
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -33,6 +34,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        requestedOrientation = if (!isTablet()) {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }else{
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
         enableEdgeToEdge()
         setContent {
             val dataStore = DataStoreManager(applicationContext)
@@ -66,5 +72,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    private fun isTablet(): Boolean {
+        return resources.configuration.smallestScreenWidthDp >= 600
     }
 }

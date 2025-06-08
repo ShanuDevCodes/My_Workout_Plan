@@ -1,9 +1,12 @@
 package com.example.myworkoutplan
 
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -15,8 +18,14 @@ import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModelFa
 import com.example.myworkoutplan.theme.MyWorkoutPlanTheme
 
 class SettingsActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = if (!isTablet()) {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }else{
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
         enableEdgeToEdge()
         setContent {
             val dataStore = DataStoreManager(applicationContext)
@@ -32,5 +41,8 @@ class SettingsActivity : ComponentActivity() {
                 SettingsScreen()
             }
         }
+    }
+    private fun isTablet(): Boolean {
+        return resources.configuration.smallestScreenWidthDp >= 600
     }
 }

@@ -3,6 +3,10 @@ package com.example.myworkoutplan.features.profile.ui
 import android.content.Intent
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,6 +50,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,6 +73,7 @@ import com.example.myworkoutplan.SettingsActivity
 import com.example.myworkoutplan.data.remote.firebaseauth.FirebaseEvent
 import com.example.myworkoutplan.data.remote.firebaseauth.FirebaseViewModel
 import com.example.myworkoutplan.features.profile.viewmodel.ProfileViewModel
+import java.util.Locale
 
 @Composable
 fun ProfileScreen() {
@@ -79,6 +88,51 @@ fun ProfileScreen() {
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     val viewModel : ProfileViewModel = viewModel()
+    var workoutCompletedTarget by remember { mutableIntStateOf(0) }
+    var currentStreakTarget by remember { mutableIntStateOf(0) }
+    var highestStreakTarget by remember { mutableIntStateOf(0) }
+    var timeSpentTarget by remember { mutableIntStateOf(0) }
+    var weeklyGoalTarget by remember { mutableIntStateOf(0) }
+
+    // Animate each stat
+    val workoutCompleted by animateIntAsState(
+        targetValue = workoutCompletedTarget,
+        animationSpec = tween(1000),
+        label = "WorkoutCompleted"
+    )
+
+    val currentStreak by animateIntAsState(
+        targetValue = currentStreakTarget,
+        animationSpec = tween(1000),
+        label = "CurrentStreak"
+    )
+
+    val highestStreak by animateIntAsState(
+        targetValue = highestStreakTarget,
+        animationSpec = tween(1000),
+        label = "HighestStreak"
+    )
+
+    val timeSpent by animateIntAsState(
+        targetValue = timeSpentTarget,
+        animationSpec = tween(1000),
+        label = "TimeSpent"
+    )
+
+    val weeklyGoal by animateIntAsState(
+        targetValue = weeklyGoalTarget,
+        animationSpec = tween(1000),
+        label = "WeeklyGoal"
+    )
+
+    // Launch effect to trigger animation after composition
+    LaunchedEffect(Unit) {
+        workoutCompletedTarget = 24
+        currentStreakTarget = 7
+        highestStreakTarget = 128
+        timeSpentTarget = 870
+        weeklyGoalTarget = 4
+    }
     LaunchedEffect(firebaseState.isError, firebaseState.error) {
         if (firebaseState.isError && firebaseState.error.isNotBlank()) {
             Toast.makeText(context, firebaseState.error, Toast.LENGTH_LONG).show()
@@ -196,15 +250,18 @@ fun ProfileScreen() {
                             )
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                StatItem(label = "Workouts Completed", value = "24")
-                                Spacer(Modifier.height(12.dp))
-                                StatItem(label = "Current Streak", value = "7 Days")
-                                Spacer(Modifier.height(12.dp))
-                                StatItem(label = "Highest Streak", value = "128 Days")
-                                Spacer(Modifier.height(12.dp))
-                                StatItem(label = "Time Spent", value = "14h 30m")
-                                Spacer(Modifier.height(12.dp))
-                                StatItem(label = "Weekly Goal", value = "4/5")
+                                val hours = timeSpent / 60
+                                val minutes = timeSpent % 60
+                                val formattedTime = String.format(Locale.getDefault(), "%02dh %02dm", hours, minutes)
+                                StatItem(label = "Workouts Completed", value = "$workoutCompleted")
+                                Spacer(Modifier.height(8.dp))
+                                StatItem(label = "Current Streak", value = "$currentStreak Days")
+                                Spacer(Modifier.height(8.dp))
+                                StatItem(label = "Highest Streak", value = "$highestStreak Days")
+                                Spacer(Modifier.height(8.dp))
+                                StatItem(label = "Time Spent", value = formattedTime)
+                                Spacer(Modifier.height(8.dp))
+                                StatItem(label = "Weekly Goal", value = "$weeklyGoal/5")
                             }
                         }
 
@@ -404,15 +461,18 @@ fun ProfileScreen() {
                                 )
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
-                                    StatItem(label = "Workouts Completed", value = "24")
-                                    Spacer(Modifier.height(12.dp))
-                                    StatItem(label = "Current Streak", value = "7 Days")
-                                    Spacer(Modifier.height(12.dp))
-                                    StatItem(label = "Highest Streak", value = "128 Days")
-                                    Spacer(Modifier.height(12.dp))
-                                    StatItem(label = "Time Spent", value = "14h 30m")
-                                    Spacer(Modifier.height(12.dp))
-                                    StatItem(label = "Weekly Goal", value = "4/5")
+                                    val hours = timeSpent / 60
+                                    val minutes = timeSpent % 60
+                                    val formattedTime = String.format(Locale.getDefault(), "%02dh %02dm", hours, minutes)
+                                    StatItem(label = "Workouts Completed", value = "$workoutCompleted")
+                                    Spacer(Modifier.height(8.dp))
+                                    StatItem(label = "Current Streak", value = "$currentStreak Days")
+                                    Spacer(Modifier.height(8.dp))
+                                    StatItem(label = "Highest Streak", value = "$highestStreak Days")
+                                    Spacer(Modifier.height(8.dp))
+                                    StatItem(label = "Time Spent", value = formattedTime)
+                                    Spacer(Modifier.height(8.dp))
+                                    StatItem(label = "Weekly Goal", value = "$weeklyGoal/5")
                                 }
                             }
 
@@ -561,6 +621,16 @@ fun StatItem(label: String, value: String) {
 @Composable
 fun WeeklyGoalProgress(current: Int, goal: Int) {
     val progress = (current.toFloat() / goal).coerceIn(0f, 1f)
+    val initialProgress = remember { mutableFloatStateOf(0f) }
+    LaunchedEffect(progress) {
+        initialProgress.floatValue = progress
+    }
+    val animatedProgress by animateFloatAsState(
+        targetValue = initialProgress.floatValue,
+        animationSpec = tween(800, easing = FastOutSlowInEasing),
+        label = "AnimatedProgress"
+    )
+
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -574,7 +644,7 @@ fun WeeklyGoalProgress(current: Int, goal: Int) {
         )
         Spacer(Modifier.height(4.dp))
         LinearProgressIndicator(
-            progress = { progress },
+            progress = { animatedProgress },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(8.dp),

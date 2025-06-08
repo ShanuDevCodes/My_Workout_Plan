@@ -1,5 +1,6 @@
 package com.example.myworkoutplan
 
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -28,6 +29,11 @@ class WorkoutActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = if (!isTablet()) {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }else{
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
         enableEdgeToEdge()
         setContent {
             val dataStore = DataStoreManager(applicationContext)
@@ -67,5 +73,8 @@ class WorkoutActivity : ComponentActivity() {
                 WorkoutSessionNav(workoutSessionViewModel)
             }
         }
+    }
+    private fun isTablet(): Boolean {
+        return resources.configuration.smallestScreenWidthDp >= 600
     }
 }

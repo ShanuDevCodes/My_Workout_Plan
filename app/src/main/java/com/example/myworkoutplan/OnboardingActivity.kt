@@ -21,10 +21,10 @@ class OnboardingActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!isTablet()) {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        requestedOrientation = if (!isTablet()) {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }else{
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
         enableEdgeToEdge()
         setContent {
