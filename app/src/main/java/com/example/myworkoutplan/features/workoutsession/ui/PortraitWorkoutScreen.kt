@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
@@ -177,14 +179,19 @@ fun PeekBottomSheetContent(
         ) {
             val isResting by workoutSessionViewModel.isRestingState.collectAsState()
             Button(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f),
                 onClick = onCompleteSet,
                 enabled = !isCompleted,
             ) {
                 Text(text = when {
                     isResting -> "Skip Rest"
                     else -> "Complete Set"
-                })
+                    },
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontSize = if (!isResting) 10.sp else 14.sp
+                    )
+                )
             }
 
             Spacer(modifier = Modifier.width(8.dp))
