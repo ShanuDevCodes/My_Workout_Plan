@@ -1,5 +1,6 @@
 [versions]
 agp = "8.10.1"
+animation = "1.8.2"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.7"
 kotlin = "2.0.21"
@@ -29,6 +30,7 @@ credentialsPlayServicesAuth = "1.5.0"
 googleid = "1.1.1"
 
 [libraries]
+androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }

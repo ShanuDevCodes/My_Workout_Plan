@@ -100,9 +100,9 @@ fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreen
                 style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.height(2.dp))
-            // Subtitle: smaller, lighter, secondary emphasis
             if (workoutWeekState.currentWorkoutDay?.workoutType != "Rest Day" ) {
+                Spacer(modifier = Modifier.height(2.dp))
+                // Subtitle: smaller, lighter, secondary emphasis
                 Text(
                     text = "Today's Workout",
                     style = MaterialTheme.typography.titleLarge,

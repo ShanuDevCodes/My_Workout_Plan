@@ -57,6 +57,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.LoginOrSignUpActivity
 import com.example.myworkoutplan.R
@@ -93,10 +94,26 @@ fun ProfileScreen() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 48.dp, start = 16.dp, end = 16.dp),
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Column(
+                    modifier = Modifier
+                        .zIndex(1f)
+                ) {
+                    Text(
+                        text = "Profile",
+                        style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+                    )
+                }
                 // Profile Image with Edit Icon
+                Spacer(modifier = Modifier.padding(top = 24.dp))
                 Box(
                     contentAlignment = Alignment.BottomEnd,
                     modifier = Modifier.size(110.dp)
@@ -263,193 +280,213 @@ fun ProfileScreen() {
         }
     } else {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center // ✅ This centers the Row in the screen
+            modifier = Modifier.fillMaxSize()
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(), // Full width Row
-                verticalAlignment = Alignment.CenterVertically // ✅ Align children vertically in Row
+            // Profile Header (Overlapping Top-Start)
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                    .zIndex(1f) // Ensure it's drawn above background/content
             ) {
-                // Left: Profile Section
-                Column(
-                    modifier = Modifier
-                        .weight(0.4f)
-                        .padding(horizontal = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center // ✅ Center content vertically in Column
+                Text(
+                    text = "Profile",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+                )
+            }
+
+            // Main content below
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box(
-                        contentAlignment = Alignment.BottomEnd,
-                        modifier = Modifier.size(110.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.rest),
-                            contentDescription = "Profile Picture",
-                            modifier = Modifier
-                                .size(200.dp)
-                                .clip(CircleShape)
-                        )
-                        IconButton(
-                            onClick = {},
-                            modifier = Modifier
-                                .size(32.dp)
-                                .background(MaterialTheme.colorScheme.primary, CircleShape)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Edit",
-                                tint = Color.White,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
-                    }
-
-                    Spacer(Modifier.height(16.dp))
-
-                    Text(
-                        text = userName,
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-
-                    Spacer(Modifier.height(8.dp))
-
-                    Box(
+                    // Left: Profile Section
+                    Column(
                         modifier = Modifier
-                            .background(
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .padding(horizontal = 20.dp, vertical = 8.dp),
+                            .weight(0.4f)
+                            .padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        Text(
-                            text = userEmail,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
-
-                // Right: Action Section
-                LazyColumn(
-                    modifier = Modifier
-                        .weight(0.6f)
-                        .fillMaxHeight()
-                        .padding(horizontal = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center // ✅ Center LazyColumn content
-                ) {
-                    item {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                            )
+                        Box(
+                            contentAlignment = Alignment.BottomEnd,
+                            modifier = Modifier.size(110.dp)
                         ) {
-                            WeeklyGoalProgress(current = 4, goal = 5)
-                        }
-
-                        Spacer(Modifier.height(24.dp))
-
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                            Image(
+                                painter = painterResource(R.drawable.rest),
+                                contentDescription = "Profile Picture",
+                                modifier = Modifier
+                                    .size(200.dp)
+                                    .clip(CircleShape)
                             )
-                        ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                StatItem(label = "Workouts Completed", value = "24")
-                                Spacer(Modifier.height(12.dp))
-                                StatItem(label = "Current Streak", value = "7 Days")
-                                Spacer(Modifier.height(12.dp))
-                                StatItem(label = "Highest Streak", value = "128 Days")
-                                Spacer(Modifier.height(12.dp))
-                                StatItem(label = "Time Spent", value = "14h 30m")
-                                Spacer(Modifier.height(12.dp))
-                                StatItem(label = "Weekly Goal", value = "4/5")
+                            IconButton(
+                                onClick = {},
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .background(MaterialTheme.colorScheme.primary, CircleShape)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Edit",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(18.dp)
+                                )
                             }
                         }
 
-                        Spacer(Modifier.height(24.dp))
+                        Spacer(Modifier.height(16.dp))
 
-                        Card(
+                        Text(
+                            text = userName,
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+
+                        Spacer(Modifier.height(8.dp))
+
+                        Box(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                            )
-                        ) {
-                            ProfileActionItem(
-                                icon = Icons.Default.Edit,
-                                label = "Edit Profile",
-                                onClick = {
-                                    if (currentUser == null) {
-                                        Toast.makeText(
-                                            context,
-                                            "Login to edit your profile",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    } else {
-                                        Toast.makeText(context, "Edit Profile", Toast.LENGTH_LONG)
-                                            .show()
-                                    }
-                                }
-                            )
-                            ProfileActionItem(
-                                icon = Icons.Default.DateRange,
-                                label = "History",
-                                onClick = {}
-                            )
-                            ProfileActionItem(
-                                icon = Icons.Default.Info,
-                                label = "Info",
-                                onClick = {}
-                            )
-                            ProfileActionItem(
-                                icon = Icons.Default.Settings,
-                                label = "Settings",
-                                onClick = {
-                                    context.startActivity(
-                                        Intent(
-                                            context,
-                                            SettingsActivity::class.java
-                                        )
-                                    )
-                                }
-                            )
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                            if (currentUser != null) {
-                                ProfileActionItem(
-                                    icon = Icons.AutoMirrored.Filled.ExitToApp,
-                                    label = "Logout",
-                                    onClick = {
-                                        viewModel.isLoggingOut = true
-                                    },
-                                    iconTint = Color(0xFFD32F2F),
-                                    textColor = Color(0xFFD32F2F),
+                                .background(
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                                    shape = RoundedCornerShape(12.dp)
                                 )
-                            } else {
+                                .padding(horizontal = 20.dp, vertical = 8.dp),
+                        ) {
+                            Text(
+                                text = userEmail,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+
+                    // Right: Action Section
+                    LazyColumn(
+                        modifier = Modifier
+                            .weight(0.6f)
+                            .fillMaxHeight()
+                            .padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        item {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                                )
+                            ) {
+                                WeeklyGoalProgress(current = 4, goal = 5)
+                            }
+
+                            Spacer(Modifier.height(24.dp))
+
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                                )
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    StatItem(label = "Workouts Completed", value = "24")
+                                    Spacer(Modifier.height(12.dp))
+                                    StatItem(label = "Current Streak", value = "7 Days")
+                                    Spacer(Modifier.height(12.dp))
+                                    StatItem(label = "Highest Streak", value = "128 Days")
+                                    Spacer(Modifier.height(12.dp))
+                                    StatItem(label = "Time Spent", value = "14h 30m")
+                                    Spacer(Modifier.height(12.dp))
+                                    StatItem(label = "Weekly Goal", value = "4/5")
+                                }
+                            }
+
+                            Spacer(Modifier.height(24.dp))
+
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                                )
+                            ) {
                                 ProfileActionItem(
-                                    icon = Icons.AutoMirrored.Filled.ExitToApp,
-                                    label = "Login",
+                                    icon = Icons.Default.Edit,
+                                    label = "Edit Profile",
+                                    onClick = {
+                                        if (currentUser == null) {
+                                            Toast.makeText(
+                                                context,
+                                                "Login to edit your profile",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Edit Profile",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
+                                )
+                                ProfileActionItem(
+                                    icon = Icons.Default.DateRange,
+                                    label = "History",
+                                    onClick = {}
+                                )
+                                ProfileActionItem(
+                                    icon = Icons.Default.Info,
+                                    label = "Info",
+                                    onClick = {}
+                                )
+                                ProfileActionItem(
+                                    icon = Icons.Default.Settings,
+                                    label = "Settings",
                                     onClick = {
                                         context.startActivity(
-                                            Intent(
-                                                context,
-                                                LoginOrSignUpActivity::class.java
-                                            )
+                                            Intent(context, SettingsActivity::class.java)
                                         )
-                                    },
-                                    iconTint = Color(0xFFD32F2F),
-                                    textColor = Color(0xFFD32F2F),
+                                    }
                                 )
+                                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                                if (currentUser != null) {
+                                    ProfileActionItem(
+                                        icon = Icons.AutoMirrored.Filled.ExitToApp,
+                                        label = "Logout",
+                                        onClick = {
+                                            viewModel.isLoggingOut = true
+                                        },
+                                        iconTint = Color(0xFFD32F2F),
+                                        textColor = Color(0xFFD32F2F),
+                                    )
+                                } else {
+                                    ProfileActionItem(
+                                        icon = Icons.AutoMirrored.Filled.ExitToApp,
+                                        label = "Login",
+                                        onClick = {
+                                            context.startActivity(
+                                                Intent(context, LoginOrSignUpActivity::class.java)
+                                            )
+                                        },
+                                        iconTint = Color(0xFFD32F2F),
+                                        textColor = Color(0xFFD32F2F),
+                                    )
+                                }
                             }
                         }
                     }

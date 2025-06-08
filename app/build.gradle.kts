@@ -89,4 +89,5 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 
     implementation(libs.androidx.material3.adaptive.navigation.suite)
+    implementation(libs.androidx.animation)
 }
