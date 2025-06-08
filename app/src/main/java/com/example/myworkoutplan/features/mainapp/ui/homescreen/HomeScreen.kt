@@ -92,7 +92,7 @@ fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreen
     Column {
         Column(
             modifier = Modifier
-                .padding(start = 16.dp, top = 16.dp, bottom = 8.dp, end = 20.dp)
+                .padding(start = 16.dp, top = 16.dp, bottom = 8.dp, end = 16.dp)
         ) {
             // Main greeting: prominent and friendly
             Text(

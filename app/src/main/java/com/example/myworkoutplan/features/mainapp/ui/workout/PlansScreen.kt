@@ -3,9 +3,12 @@ package com.example.myworkoutplan.features.mainapp.ui.workout
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +33,13 @@ fun PlansScreen(navController: NavController, viewModel: PlansViewModel = viewMo
                     text = "List Of Plans",
                     style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
                 )
             }
             item {
