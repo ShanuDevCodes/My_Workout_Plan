@@ -26,7 +26,7 @@ fun AddWorkoutDialog(
     onEvent: (WorkoutEvent) -> Unit
 ) {
     val categoryImages = mapOf(
-        "Push Day" to R.drawable.push_day,
+        "Push Day" to R.drawable.arms_day,
         "Pull Day" to R.drawable.pull_day,
         "Leg Day" to R.drawable.leg_day
     )
@@ -83,7 +83,7 @@ fun AddWorkoutDialog(
             FilledTonalButton(
                 onClick = {
                     onEvent(WorkoutEvent.SetWorkoutType(workoutCategory))
-                    onEvent(WorkoutEvent.SetWorkoutTypeImage(categoryImages[workoutCategory] ?: R.drawable.push_day))
+                    onEvent(WorkoutEvent.SetWorkoutTypeImage(categoryImages[workoutCategory] ?: R.drawable.arms_day))
                     if (state.exerciseName.isNotBlank()) {
                         onEvent(WorkoutEvent.SaveWorkout)
                     }

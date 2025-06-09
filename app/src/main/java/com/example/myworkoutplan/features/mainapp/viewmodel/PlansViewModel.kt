@@ -20,7 +20,7 @@ class PlansViewModel : ViewModel() {
     // Full Body Split
     private val _fullBodyPlans = MutableStateFlow(
         listOf(
-            "Full Body Day" to R.drawable.ai, // replace with appropriate image
+            "Full Body Day" to R.drawable.full_body_day, // replace with appropriate image
         )
     )
     val fullBodyPlans: StateFlow<List<Pair<String, Int>>> = _fullBodyPlans
@@ -28,8 +28,8 @@ class PlansViewModel : ViewModel() {
     // Upper Lower Split
     private val _upperLowerSplit = MutableStateFlow(
         listOf(
-            "Upper Body" to R.drawable.ai,  // replace with appropriate image
-            "Lower Body" to R.drawable.ai   // replace with appropriate image
+            "Upper Body" to R.drawable.upper_body,  // replace with appropriate image
+            "Lower Body" to R.drawable.lower_body   // replace with appropriate image
         )
     )
     val upperLowerSplit: StateFlow<List<Pair<String, Int>>> = _upperLowerSplit
@@ -37,11 +37,11 @@ class PlansViewModel : ViewModel() {
     // Bro Split
     private val _broSplit = MutableStateFlow(
         listOf(
-            "Chest Day" to R.drawable.ai,         // replace with appropriate image
-            "Back Day" to R.drawable.ai,           // replace with appropriate image
+            "Chest Day" to R.drawable.chest_day,         // replace with appropriate image
+            "Back Day" to R.drawable.back_day,           // replace with appropriate image
             "Leg Day" to R.drawable.leg_day,
-            "Shoulders Day" to R.drawable.ai, // replace with appropriate image
-            "Arms Day" to R.drawable.ai            // replace with appropriate image
+            "Shoulders Day" to R.drawable.shoulder_day, // replace with appropriate image
+            "Arms Day" to R.drawable.arms_day            // replace with appropriate image
         )
     )
     val broSplit: StateFlow<List<Pair<String, Int>>> = _broSplit
@@ -49,8 +49,8 @@ class PlansViewModel : ViewModel() {
     // Arnold Split
     private val _arnoldSplit = MutableStateFlow(
         listOf(
-            "Chest & Back" to R.drawable.ai,       // replace with appropriate image
-            "Arms & Shoulders" to R.drawable.ai, // replace with appropriate image
+            "Chest & Back" to R.drawable.chest_back_day,       // replace with appropriate image
+            "Arms & Shoulders" to R.drawable.arms_shoulder_day, // replace with appropriate image
             "Legs" to R.drawable.leg_day
         )
     )

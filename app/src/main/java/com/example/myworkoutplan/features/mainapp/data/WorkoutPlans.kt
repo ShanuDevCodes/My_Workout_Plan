@@ -34,22 +34,11 @@ val legWorkout = listOf(
 val allMuscleGroups = listOf(
     "Chest",
     "Triceps",
-    "Biceps",
     "Shoulders",
     "Back",
-    "Lats",
-    "Traps",
-    "Forearms",
-    "Core",
-    "Abs",
-    "Obliques",
-    "Lower Back",
+    "Biceps",
     "Quads",
-    "Hamstrings",
     "Glutes",
-    "Calves",
-    "Hip Flexors",
-    "Adductors",
-    "Abductors",
-    "Neck"
+    "Hamstrings",
+    "Calves"
 )
