@@ -94,8 +94,8 @@ sealed class Destination {
     data object Report : Destination()
 
     @Serializable
+    data object WorkoutList : Destination()
 
-    data object CustomWorkOut : Destination()
 }
 @Serializable
 sealed class PlanDestination{
@@ -340,8 +340,8 @@ fun MainNavigation(
             composable<Destination.Home> {
                 HomeScreen(workoutWeekViewModel)
             }
-            composable<Destination.CustomWorkOut> {
-                CustomWorkoutScreen()
+            composable<Destination.WorkoutList> {
+                WorkoutListScreen()
             }
             navigation<Destination.Plan>(
                 startDestination = PlanDestination.Plans,

@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -27,7 +28,9 @@ fun DayScreen(visible: Boolean, dayTitle: String, workoutViewModel: WorkoutViewM
     val dayScreenViewModel: DayScreenViewModel = viewModel()
     dayScreenViewModel.setDayTitle(dayTitle)
     val muscleGroups = dayScreenViewModel.muscleGroups
-    workoutViewModel.onEvent(WorkoutEvent.GetWorkoutsByMuscleGroup(muscleGroups))
+    LaunchedEffect(muscleGroups) {
+        workoutViewModel.onEvent(WorkoutEvent.GetWorkoutsByMuscleGroup(muscleGroups))
+    }
     Box {
         Column {
             AnimatedVisibility(

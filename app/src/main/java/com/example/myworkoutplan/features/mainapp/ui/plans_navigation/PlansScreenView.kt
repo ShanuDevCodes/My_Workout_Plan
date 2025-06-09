@@ -53,6 +53,15 @@ import com.example.myworkoutplan.features.mainapp.ui.workout.DayScreen
 import com.example.myworkoutplan.features.mainapp.ui.workout.DeleteScreen
 import com.example.myworkoutplan.features.mainapp.viewmodel.PlansScreenViewModel
 import kotlinx.coroutines.delay
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed class PlanScreenViewDestinations{
+    @Serializable
+    data object PlansScreenView: PlanScreenViewDestinations()
+    @Serializable
+    data object Delete: PlanScreenViewDestinations()
+}
 
 @SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
@@ -122,7 +131,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
 
     NavHost(
         navController = navController,
-        startDestination = "PlanScreenView",
+        startDestination = PlanScreenViewDestinations.PlansScreenView,
         enterTransition = {
             slideIntoContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
@@ -148,7 +157,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
             ) + fadeOut(targetAlpha = 0.9f)
         }
     ) {
-        composable("PlanScreenView") {
+        composable<PlanScreenViewDestinations.PlansScreenView> {
             Box(modifier = Modifier.fillMaxSize()) {
                 DayScreen(
                     visible = visible,
@@ -209,7 +218,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
                         }
                         FloatingActionButton(
                             onClick = {
-                                navController.navigate("Delete"){
+                                navController.navigate(PlanScreenViewDestinations.Delete){
                                     launchSingleTop = true
                                 }
                             },
@@ -253,7 +262,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
                 }
             }
         }
-        composable("Delete") {
+        composable<PlanScreenViewDestinations.Delete> {
             AnimatedVisibility(
                 visible = visible,
                 enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })

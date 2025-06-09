@@ -36,6 +36,8 @@ class DayScreenViewModel : ViewModel() {
             "Arms & Shoulders" -> listOf("Biceps", "Triceps", "Shoulders", "Forearms")
             "Legs" -> listOf("Quads", "Glutes", "Hamstrings", "Calves")
 
+            "All" -> listOf("Chest", "Triceps", "Shoulders", "Back", "Biceps", "Quads", "Glutes", "Hamstrings", "Calves")
+
             else -> emptyList()
         }
 
