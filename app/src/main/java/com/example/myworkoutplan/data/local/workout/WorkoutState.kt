@@ -1,7 +1,6 @@
 package com.example.myworkoutplan.data.local.workout
 
 data class WorkoutState(
-    val workoutObjectByType: List<WorkoutPlan> = emptyList(),
     val exerciseName: String = "",
     val imageResource: Int = 0,
     val workoutType: String = "",

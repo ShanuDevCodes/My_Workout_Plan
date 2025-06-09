@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.core.AppDatabase
 import com.example.myworkoutplan.core.DataStoreManager
+import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
 import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModel
@@ -57,12 +58,18 @@ class WorkoutActivity : ComponentActivity() {
             val workoutViewModel: WorkoutViewModel = viewModel(
                 factory = WorkoutViewModelFactory(workoutDao)
             )
-            val exerciseList by workoutViewModel.getExerciseNameAndImagePairsByType(workoutPlan)
-                .collectAsState(initial = emptyList())
+            val muscleGroups = when(workoutPlan) {
+                "Push Day" -> listOf("Chest", "Triceps", "Shoulders")
+                "Pull Day" -> listOf("Back", "Biceps")
+                "Leg Day" -> listOf("Quads", "Glutes", "Hamstrings", "Calves")
+                else -> emptyList()
+            }
+            workoutViewModel.onEvent(WorkoutEvent.GetWorkoutsByMuscleGroup(muscleGroups))
+            val workoutState by workoutViewModel.state.collectAsState()
             val currentWorkout by workoutSessionViewModel.currentWorkout.collectAsState()
-            LaunchedEffect(exerciseList, currentWorkout) {
-                if (exerciseList.isNotEmpty() && currentWorkout.isEmpty()) {
-                    workoutSessionViewModel.startSession(exerciseList)
+            LaunchedEffect(workoutState.workoutWithMuscleGroups, currentWorkout) {
+                if (workoutState.workoutWithMuscleGroups.isNotEmpty() && currentWorkout.isEmpty()) {
+                    workoutSessionViewModel.startSession(workoutState.workoutWithMuscleGroups)
                 }
             }
 

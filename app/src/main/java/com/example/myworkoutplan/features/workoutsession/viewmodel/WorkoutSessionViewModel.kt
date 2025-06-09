@@ -2,6 +2,7 @@ package com.example.myworkoutplan.features.workoutsession.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myworkoutplan.data.local.workout.WorkoutWithMuscles
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -74,14 +75,14 @@ class WorkoutSessionViewModel:ViewModel() {
     }
 
     // Initialize the session with a new exercise list
-    fun startSession(exerciseNames: List<Pair<String,Int>>) {
+    fun startSession(workoutWithMuscleGroups: List<WorkoutWithMuscles>) {
         if (sessionStarted) return
         sessionStarted = true
-        allExercises = exerciseNames.map { it.first }
+        allExercises = workoutWithMuscleGroups.map { it.workoutPlan.exerciseName }
         _completedWorkouts.value = emptyList()
-        if (exerciseNames.isNotEmpty()) {
-            _currentWorkout.value = exerciseNames.map { it.first }.first()
-            _upcomingWorkouts.value = exerciseNames.map { it.first }.drop(1)
+        if (workoutWithMuscleGroups.isNotEmpty()) {
+            _currentWorkout.value = workoutWithMuscleGroups.map { it.workoutPlan.exerciseName }.first()
+            _upcomingWorkouts.value = workoutWithMuscleGroups.map { it.workoutPlan.exerciseName }.drop(1)
         } else {
             _currentWorkout.value = ""
             _upcomingWorkouts.value = emptyList()

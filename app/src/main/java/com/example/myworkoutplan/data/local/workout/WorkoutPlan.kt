@@ -16,12 +16,6 @@ data class WorkoutPlan(
     @ColumnInfo(name = "image_resource")
     val imageResource: Int,
 
-    @ColumnInfo(name = "workout_type")
-    val workoutType: String,
-
-    @ColumnInfo(name = "workout_type_image")
-    val workoutTypeImage: Int,
-
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
 )

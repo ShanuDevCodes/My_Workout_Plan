@@ -3,12 +3,12 @@ package com.example.myworkoutplan.features.mainapp.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
-class DayScreenViewModel : ViewModel() {
-    private val _dayTitle = mutableStateOf("")
+class DeleteScreenViewModel: ViewModel() {
+    val _dayTitle = mutableStateOf("")
+
     fun setDayTitle(title: String) {
         _dayTitle.value = title
     }
-
     val muscleGroups: List<String>
         get() = when (_dayTitle.value) {
             "Push Day" -> listOf("Chest", "Triceps", "Shoulders")

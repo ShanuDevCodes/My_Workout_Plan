@@ -62,8 +62,6 @@ class WorkoutViewModel(
                     val workout = WorkoutPlan(
                         exerciseName = exerciseName,
                         imageResource = imageResource,
-                        workoutType = workoutType,
-                        workoutTypeImage = workoutTypeImage
                     )
                     dao.upsertWorkout(workout)
                     _state.update {
@@ -117,13 +115,6 @@ class WorkoutViewModel(
                 }
             }
 
-            is WorkoutEvent.GetWorkoutObjectByType -> {
-                viewModelScope.launch {
-                    dao.getWorkoutObjectByType(event.workoutType).collect { workoutList ->
-                        _state.update { it.copy(workoutObjectByType = workoutList) }
-                    }
-                }
-            }
 
             is WorkoutEvent.DeleteWorkout -> {
                 viewModelScope.launch {
@@ -147,13 +138,6 @@ class WorkoutViewModel(
         }
     }
 
-    fun getExerciseNameAndImagePairsByType(type: String): Flow<List<Pair<String, Int>>> {
-        return dao.getWorkoutsByType(type)
-            .map { list ->
-                list.map { it.workoutName to it.imageResource }
-            }
-    }
-
     suspend fun initialiseDB() {
         // Clear old data
         dao.deleteAllWorkouts()
@@ -171,16 +155,6 @@ class WorkoutViewModel(
             WorkoutPlan(
                 exerciseName = name,
                 imageResource = image,
-                workoutType = when {
-                    pushWorkout.any { it.first == name } -> "Push Day"
-                    pullWorkout.any { it.first == name } -> "Pull Day"
-                    else -> "Leg Day"
-                },
-                workoutTypeImage = when {
-                    pushWorkout.any { it.first == name } -> R.drawable.push_day
-                    pullWorkout.any { it.first == name } -> R.drawable.pull_day
-                    else -> R.drawable.leg_day
-                }
             ) to muscles
         }
 

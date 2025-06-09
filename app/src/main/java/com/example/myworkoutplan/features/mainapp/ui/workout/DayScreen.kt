@@ -16,18 +16,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
+import com.example.myworkoutplan.features.mainapp.viewmodel.DayScreenViewModel
 
 @Composable
 fun DayScreen(visible: Boolean, dayTitle: String, workoutViewModel: WorkoutViewModel) {
     val workoutState by workoutViewModel.state.collectAsState()
-    val muscleGroups = when(dayTitle) {
-        "Push Day" -> listOf("Chest", "Triceps", "Shoulders")
-        "Pull Day" -> listOf("Back", "Biceps")
-        "Leg Day" -> listOf("Quads", "Glutes", "Hamstrings", "Calves")
-        else -> emptyList()
-    }
+    val dayScreenViewModel: DayScreenViewModel = viewModel()
+    dayScreenViewModel.setDayTitle(dayTitle)
+    val muscleGroups = dayScreenViewModel.muscleGroups
     workoutViewModel.onEvent(WorkoutEvent.GetWorkoutsByMuscleGroup(muscleGroups))
     Box {
         Column {

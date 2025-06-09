@@ -11,7 +11,6 @@ sealed interface WorkoutEvent {
     data class DeleteWorkout(val workoutPlan: WorkoutPlan) : WorkoutEvent
     data class DeleteWorkoutByName(val workoutName: String) : WorkoutEvent
     data object ResetWorkoutDB: WorkoutEvent
-    data class GetWorkoutObjectByType(val workoutType: String) : WorkoutEvent
     data class GetWorkoutsByMuscleGroup(val muscleGroups: List<String>) : WorkoutEvent
     data class DeleteWorkoutByMuscleGroup(val workoutWithMuscles: WorkoutWithMuscles) : WorkoutEvent
 }
