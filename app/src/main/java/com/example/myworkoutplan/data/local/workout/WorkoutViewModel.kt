@@ -138,6 +138,12 @@ class WorkoutViewModel(
                     }
                 }
             }
+
+            is WorkoutEvent.DeleteWorkoutByMuscleGroup -> {
+                viewModelScope.launch {
+                    dao.deleteWorkoutById(event.workoutWithMuscles.workoutPlan.id)
+                }
+            }
         }
     }
 

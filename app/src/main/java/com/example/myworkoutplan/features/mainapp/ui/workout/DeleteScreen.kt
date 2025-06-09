@@ -19,7 +19,13 @@ import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 @Composable
 fun DeleteScreen(dayTitle: String,workoutViewModel: WorkoutViewModel) {
     val workoutState by workoutViewModel.state.collectAsState()
-    workoutViewModel.onEvent(WorkoutEvent.GetWorkoutObjectByType(dayTitle))
+    val muscleGroups = when(dayTitle) {
+        "Push Day" -> listOf("Chest", "Triceps", "Shoulders")
+        "Pull Day" -> listOf("Back", "Biceps")
+        "Leg Day" -> listOf("Quads", "Glutes", "Hamstrings", "Calves")
+        else -> emptyList()
+    }
+    workoutViewModel.onEvent(WorkoutEvent.GetWorkoutsByMuscleGroup(muscleGroups))
     Box {
         Column {
             LazyColumn {
@@ -31,7 +37,7 @@ fun DeleteScreen(dayTitle: String,workoutViewModel: WorkoutViewModel) {
                         modifier = Modifier.padding(16.dp)
                     )
                 }
-                items(workoutState.workoutObjectByType) { item ->
+                items(workoutState.workoutWithMuscleGroups) { item ->
                     DeleteCards(item,workoutViewModel)
                 }
             }

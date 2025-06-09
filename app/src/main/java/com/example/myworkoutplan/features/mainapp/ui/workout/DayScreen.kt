@@ -22,7 +22,13 @@ import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 @Composable
 fun DayScreen(visible: Boolean, dayTitle: String, workoutViewModel: WorkoutViewModel) {
     val workoutState by workoutViewModel.state.collectAsState()
-    workoutViewModel.onEvent(WorkoutEvent.GetWorkoutObjectByType(dayTitle))
+    val muscleGroups = when(dayTitle) {
+        "Push Day" -> listOf("Chest", "Triceps", "Shoulders")
+        "Pull Day" -> listOf("Back", "Biceps")
+        "Leg Day" -> listOf("Quads", "Glutes", "Hamstrings", "Calves")
+        else -> emptyList()
+    }
+    workoutViewModel.onEvent(WorkoutEvent.GetWorkoutsByMuscleGroup(muscleGroups))
     Box {
         Column {
             AnimatedVisibility(
@@ -39,7 +45,7 @@ fun DayScreen(visible: Boolean, dayTitle: String, workoutViewModel: WorkoutViewM
                         )
                     }
 
-                    items(workoutState.workoutObjectByType) { item ->
+                    items(workoutState.workoutWithMuscleGroups) { item ->
                         PlansCards(item)
                     }
                 }

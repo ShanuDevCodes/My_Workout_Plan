@@ -52,4 +52,7 @@ interface WorkoutDao {
 
     @Upsert
     suspend fun upsertWorkoutMuscleCrossRef(ref: WorkoutMuscleCrossRef): Long
+
+    @Query("DELETE FROM workout_plans WHERE id = :workoutId")
+    suspend fun deleteWorkoutById(workoutId: Int)
 }
