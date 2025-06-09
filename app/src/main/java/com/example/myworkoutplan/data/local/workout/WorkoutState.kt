@@ -7,5 +7,6 @@ data class WorkoutState(
     val workoutType: String = "",
     val workoutTypeImage: Int = 0,
     val isAddingWorkout: Boolean = false,
-    val nameAlreadyExists: Boolean = false
+    val nameAlreadyExists: Boolean = false,
+    val workoutWithMuscleGroups: List<WorkoutWithMuscles> = emptyList()
 )

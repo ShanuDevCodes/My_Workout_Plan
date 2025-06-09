@@ -3,30 +3,53 @@ package com.example.myworkoutplan.features.mainapp.data
 import com.example.myworkoutplan.R
 
 val pushWorkout = listOf(
-    "Bench Press" to R.drawable.bench_press,
-    "Shoulder Press" to R.drawable.shoulder_press,
-    "Inclined Bench Press" to R.drawable.incline_bench_press,
-    "Flyes" to R.drawable.shoulder_flyes,
-    "Pec Deck" to R.drawable.pec_deck,
-    "Tricep Push Down" to R.drawable.tricep_push_down,
-    "Tricep Extension" to R.drawable.tricep_extension
+    Triple("Bench Press", R.drawable.bench_press, listOf("Chest", "Triceps", "Shoulders")),
+    Triple("Shoulder Press", R.drawable.shoulder_press, listOf("Shoulders", "Triceps")),
+    Triple("Inclined Bench Press", R.drawable.incline_bench_press, listOf("Chest", "Shoulders")),
+    Triple("Flyes", R.drawable.shoulder_flyes, listOf("Chest")),
+    Triple("Pec Deck", R.drawable.pec_deck, listOf("Chest")),
+    Triple("Tricep Push Down", R.drawable.tricep_push_down, listOf("Triceps")),
+    Triple("Tricep Extension", R.drawable.tricep_extension, listOf("Triceps"))
 )
 
 val pullWorkout = listOf(
-    "Pull Up" to R.drawable.pull_up,
-    "Lat Pulldown" to R.drawable.lat_pulldown,
-    "Seated Cable Row" to R.drawable.seated_cable_row,
-    "T-Bar Row" to R.drawable.t_bar_row,
-    "Dumbbell Curl" to R.drawable.bicep_curl,
-    "Seated Dumbbell Curl" to R.drawable.seated_bicep_curl,
-    "Concentration Curl" to R.drawable.concentration_curls
+    Triple("Pull Up", R.drawable.pull_up, listOf("Back", "Biceps")),
+    Triple("Lat Pulldown", R.drawable.lat_pulldown, listOf("Back", "Biceps")),
+    Triple("Seated Cable Row", R.drawable.seated_cable_row, listOf("Back", "Biceps")),
+    Triple("T-Bar Row", R.drawable.t_bar_row, listOf("Back")),
+    Triple("Dumbbell Curl", R.drawable.bicep_curl, listOf("Biceps")),
+    Triple("Seated Dumbbell Curl", R.drawable.seated_bicep_curl, listOf("Biceps")),
+    Triple("Concentration Curl", R.drawable.concentration_curls, listOf("Biceps"))
 )
 
 val legWorkout = listOf(
-    "Squats" to R.drawable.squats,
-    "Leg Extension" to R.drawable.leg_extension,
-    "Leg Curl" to R.drawable.leg_curls,
-    "Close leg Press" to R.drawable.close_leg_press,
-    "Wide leg Press" to R.drawable.wide_leg_press,
-    "Calf Raise" to R.drawable.calf_raises,
+    Triple("Squats", R.drawable.squats, listOf("Quads", "Glutes", "Hamstrings")),
+    Triple("Leg Extension", R.drawable.leg_extension, listOf("Quads")),
+    Triple("Leg Curl", R.drawable.leg_curls, listOf("Hamstrings")),
+    Triple("Close leg Press", R.drawable.close_leg_press, listOf("Quads", "Glutes")),
+    Triple("Wide leg Press", R.drawable.wide_leg_press, listOf("Quads", "Glutes")),
+    Triple("Calf Raise", R.drawable.calf_raises, listOf("Calves"))
+)
+
+val allMuscleGroups = listOf(
+    "Chest",
+    "Triceps",
+    "Biceps",
+    "Shoulders",
+    "Back",
+    "Lats",
+    "Traps",
+    "Forearms",
+    "Core",
+    "Abs",
+    "Obliques",
+    "Lower Back",
+    "Quads",
+    "Hamstrings",
+    "Glutes",
+    "Calves",
+    "Hip Flexors",
+    "Adductors",
+    "Abductors",
+    "Neck"
 )

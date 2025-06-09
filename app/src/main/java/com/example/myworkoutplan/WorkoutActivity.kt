@@ -53,7 +53,7 @@ class WorkoutActivity : ComponentActivity() {
             }
             val workoutWeekState by workoutWeekViewModel.state.collectAsState()
             val workoutPlan = workoutWeekState.currentWorkoutDay?.workoutType?:"Rest Day"
-            val workoutDao = remember {db.workoutDao()}
+            val workoutDao = remember {db.WorkoutDao()}
             val workoutViewModel: WorkoutViewModel = viewModel(
                 factory = WorkoutViewModelFactory(workoutDao)
             )

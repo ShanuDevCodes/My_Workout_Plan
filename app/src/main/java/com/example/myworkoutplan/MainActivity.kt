@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val dataStore = DataStoreManager(applicationContext)
             val db = AppDatabase.getInstance(applicationContext)
-            val dao = db.workoutDao()
+            val dao = db.WorkoutDao()
             val workoutViewModel: WorkoutViewModel = viewModel(
                 factory = WorkoutViewModelFactory(dao)
             )

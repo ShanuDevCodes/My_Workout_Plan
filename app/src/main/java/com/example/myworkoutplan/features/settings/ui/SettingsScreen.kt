@@ -66,7 +66,7 @@ fun SettingsScreen() {
     val selectedThemeOption = settingsViewModel.selectedTheme
     val selectedDynamicColorOption = settingsViewModel.dynamicColorOption
     val db = remember { AppDatabase.getInstance(context) }
-    val dao = remember { db.workoutDao() }
+    val dao = remember { db.WorkoutDao() }
     val workoutViewModel: WorkoutViewModel = viewModel(
         factory = WorkoutViewModelFactory(dao)
     )

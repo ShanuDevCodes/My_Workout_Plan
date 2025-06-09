@@ -85,7 +85,7 @@ fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreen
     val context = LocalContext.current
     val db = remember { AppDatabase.getInstance(context) }
     val workoutWeekState by workoutWeekViewModel.state.collectAsState()
-    val workoutDao = remember {db.workoutDao()}
+    val workoutDao = remember {db.WorkoutDao()}
     val workoutViewModel: WorkoutViewModel = viewModel(
         factory = WorkoutViewModelFactory(workoutDao)
     )
