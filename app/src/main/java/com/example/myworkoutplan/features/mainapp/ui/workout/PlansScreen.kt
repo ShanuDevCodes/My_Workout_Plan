@@ -25,7 +25,11 @@ import com.example.myworkoutplan.features.mainapp.viewmodel.PlansViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PlansScreen(navController: NavController, viewModel: PlansViewModel = viewModel()) {
-    val plans by viewModel.plans.collectAsState()
+    val pplPlans by viewModel.pplPlans.collectAsState()
+    val fullBodyPlans by viewModel.fullBodyPlans.collectAsState()
+    val upperLowerSplit by viewModel.upperLowerSplit.collectAsState()
+    val broSplit by viewModel.broSplit.collectAsState()
+    val arnoldSplit by viewModel.arnoldSplit.collectAsState()
     Box(modifier = Modifier) {
         LazyColumn {
             item {
@@ -50,7 +54,83 @@ fun PlansScreen(navController: NavController, viewModel: PlansViewModel = viewMo
                     modifier = Modifier.padding(16.dp)
                 )
             }
-            items(plans) { (item, icon) ->
+            items(pplPlans) { (item, icon) ->
+                DayCards(
+                    workout = item,
+                    icon = icon,
+                    onClick = {
+                        navController.navigate(PlanDestination.Day(dayTitle = item)) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
+            item {
+                Text(
+                    text = "Full Body Split",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+            items(fullBodyPlans) { (item, icon) ->
+                DayCards(
+                    workout = item,
+                    icon = icon,
+                    onClick = {
+                        navController.navigate(PlanDestination.Day(dayTitle = item)) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
+            item {
+                Text(
+                    text = "Upper, Lower Split",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+            items(upperLowerSplit) { (item, icon) ->
+                DayCards(
+                    workout = item,
+                    icon = icon,
+                    onClick = {
+                        navController.navigate(PlanDestination.Day(dayTitle = item)) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
+            item {
+                Text(
+                    text = "Bro Split",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+            items(broSplit) { (item, icon) ->
+                DayCards(
+                    workout = item,
+                    icon = icon,
+                    onClick = {
+                        navController.navigate(PlanDestination.Day(dayTitle = item)) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
+            item {
+                Text(
+                    text = "Arnold Split",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+            items(arnoldSplit) { (item, icon) ->
                 DayCards(
                     workout = item,
                     icon = icon,
