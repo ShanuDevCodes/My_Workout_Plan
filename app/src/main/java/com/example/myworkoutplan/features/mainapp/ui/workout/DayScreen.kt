@@ -17,19 +17,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
-import com.example.myworkoutplan.features.mainapp.viewmodel.DayScreenViewModel
 
 @Composable
-fun DayScreen(visible: Boolean, dayTitle: String, workoutViewModel: WorkoutViewModel) {
+fun DayScreen(visible: Boolean, splitDayId : Int, workoutViewModel: WorkoutViewModel) {
     val workoutState by workoutViewModel.state.collectAsState()
-    val dayScreenViewModel: DayScreenViewModel = viewModel()
-    dayScreenViewModel.setDayTitle(dayTitle)
-    val muscleGroups = dayScreenViewModel.muscleGroups
-    LaunchedEffect(muscleGroups) {
-        workoutViewModel.onEvent(WorkoutEvent.GetWorkoutsByMuscleGroup(muscleGroups))
+    LaunchedEffect(Unit) {
+        workoutViewModel.onEvent(WorkoutEvent.GetWorkoutBySplitDay(splitDayId))
+        workoutViewModel.onEvent(WorkoutEvent.GetSplitDay(splitDayId))
     }
     Box {
         Column {
@@ -40,14 +36,14 @@ fun DayScreen(visible: Boolean, dayTitle: String, workoutViewModel: WorkoutViewM
                 LazyColumn {
                     item {
                         Text(
-                            dayTitle,
+                            text = workoutState.splitDay?.splitDayName?:"",
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.padding(16.dp)
                         )
                     }
 
-                    items(workoutState.workoutWithMuscleGroups) { item ->
+                    items(workoutState.workouts) { item ->
                         PlansCards(item)
                     }
                 }

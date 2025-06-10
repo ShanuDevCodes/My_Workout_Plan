@@ -182,7 +182,7 @@ fun SettingsScreen() {
                             }
                             item {
                                 Text(
-                                    "This will reset your workout list and cannot be undone.",
+                                    "This will reset your Workout list and cannot be undone.",
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     style = MaterialTheme.typography.bodyMedium,
                                     modifier = Modifier.padding(bottom = 8.dp)
@@ -249,7 +249,7 @@ fun ResetConfirmationDialog(
         },
         text = {
             Text(
-                text = "Are you sure you want to delete reset your workout list? This action cannot be undone.",
+                text = "Are you sure you want to delete reset your Workout list? This action cannot be undone.",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()

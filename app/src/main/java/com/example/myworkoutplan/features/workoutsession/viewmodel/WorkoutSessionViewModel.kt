@@ -89,7 +89,7 @@ class WorkoutSessionViewModel:ViewModel() {
         }
     }
 
-    // Call this when the user completes the current workout
+    // Call this when the user completes the current Workout
     private fun completeCurrentWorkout() {
         countLimit.value = 3
         val current = _currentWorkout.value.ifEmpty { return }

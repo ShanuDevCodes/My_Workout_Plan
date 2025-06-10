@@ -8,23 +8,22 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
-import com.example.myworkoutplan.features.mainapp.viewmodel.DeleteScreenViewModel
 
 @Composable
-fun DeleteScreen(dayTitle: String,workoutViewModel: WorkoutViewModel) {
+fun DeleteScreen(splitDayId : Int,workoutViewModel: WorkoutViewModel) {
     val workoutState by workoutViewModel.state.collectAsState()
-    val deleteScreenViewModel: DeleteScreenViewModel = viewModel()
-    deleteScreenViewModel.setDayTitle(dayTitle)
-    val muscleGroups = deleteScreenViewModel.muscleGroups
-    workoutViewModel.onEvent(WorkoutEvent.GetWorkoutsByMuscleGroup(muscleGroups))
+    LaunchedEffect(Unit) {
+        workoutViewModel.onEvent(WorkoutEvent.GetWorkoutBySplitDay(splitDayId))
+        workoutViewModel.onEvent(WorkoutEvent.GetSplitDay(splitDayId))
+    }
     Box {
         Column {
             LazyColumn {
@@ -36,8 +35,8 @@ fun DeleteScreen(dayTitle: String,workoutViewModel: WorkoutViewModel) {
                         modifier = Modifier.padding(16.dp)
                     )
                 }
-                items(workoutState.workoutWithMuscleGroups) { item ->
-                    DeleteCards(item,workoutViewModel)
+                items(workoutState.workouts) { item ->
+                    DeleteCards(workoutState.splitDay,item,workoutViewModel)
                 }
             }
         }

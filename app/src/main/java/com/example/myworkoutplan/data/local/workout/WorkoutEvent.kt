@@ -13,4 +13,12 @@ sealed interface WorkoutEvent {
     data object ResetWorkoutDB: WorkoutEvent
     data class GetWorkoutsByMuscleGroup(val muscleGroups: List<String>) : WorkoutEvent
     data class DeleteWorkoutByMuscleGroup(val workoutWithMuscles: WorkoutWithMuscles) : WorkoutEvent
+    data object GetAllWorkoutSplits : WorkoutEvent
+    data class GetAllSplitDaysForWorkoutSplit(val splitId: Int) : WorkoutEvent
+    data class GetWorkoutBySplitDay(val splitDayId: Int) : WorkoutEvent
+    data object GetAllSplitDays : WorkoutEvent
+    data class GetSplitDay(val splitDayId: Int) : WorkoutEvent
+    data object GetAllWorkouts : WorkoutEvent
+    data class DeleteWorkoutFromSplitDay(val splitDayId: Int, val workoutId: Int) : WorkoutEvent
+    data class GetSplit(val splitId: Int) : WorkoutEvent
 }

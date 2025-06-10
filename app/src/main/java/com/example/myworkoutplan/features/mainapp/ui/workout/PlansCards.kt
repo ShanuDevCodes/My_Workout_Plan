@@ -20,11 +20,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myworkoutplan.data.local.workout.WorkoutWithMuscles
+import com.example.myworkoutplan.data.local.workout.WorkoutPlan
 
 @Composable
 fun PlansCards(
-    workoutByMuscleGroup: WorkoutWithMuscles
+    workoutPlan: WorkoutPlan
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -40,14 +40,14 @@ fun PlansCards(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = workoutByMuscleGroup.workoutPlan.imageResource),
-                contentDescription = "${workoutByMuscleGroup.workoutPlan.exerciseName} icon",
+                painter = painterResource(id = workoutPlan.imageResource),
+                contentDescription = "${workoutPlan.exerciseName} icon",
                 modifier = Modifier.size(40.dp),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = workoutByMuscleGroup.workoutPlan.exerciseName,
+                text = workoutPlan.exerciseName,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Start, // Changed from Center to Start

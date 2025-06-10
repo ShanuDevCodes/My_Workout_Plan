@@ -65,7 +65,7 @@ sealed class PlanScreenViewDestinations{
 
 @SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
-fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel()) {
+fun PlansScreenView(splitDayId: Int,viewModel: PlansScreenViewModel = viewModel()) {
     // Animation for scale and vertical offset
     val fabScale = remember { Animatable(0f) }
     val fabScaleMini = remember { Animatable(0f) }
@@ -161,7 +161,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
             Box(modifier = Modifier.fillMaxSize()) {
                 DayScreen(
                     visible = visible,
-                    dayTitle = dayTitle,
+                    splitDayId = splitDayId,
                     workoutViewModel = workoutViewModel
                 )
                 if (isExpanded) {
@@ -256,7 +256,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
                 if (workoutState.isAddingWorkout) {
                     AddWorkoutDialog(
                         state = workoutState,
-                        workoutCategory = dayTitle,
+                        workoutCategory = "All",
                         onEvent = workoutViewModel::onEvent
                     )
                 }
@@ -268,7 +268,7 @@ fun PlansScreenView(dayTitle: String,viewModel: PlansScreenViewModel = viewModel
                 enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
             ) {
                 DeleteScreen(
-                    dayTitle = dayTitle,
+                    splitDayId = splitDayId,
                     workoutViewModel = workoutViewModel
                 )
             }

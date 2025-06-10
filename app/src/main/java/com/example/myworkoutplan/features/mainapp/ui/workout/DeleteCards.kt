@@ -22,6 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,19 +33,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myworkoutplan.data.local.workout.SplitDay
 import com.example.myworkoutplan.data.local.workout.WorkoutEvent
+import com.example.myworkoutplan.data.local.workout.WorkoutPlan
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
-import com.example.myworkoutplan.data.local.workout.WorkoutWithMuscles
 
 @Composable
 fun DeleteCards(
-    workoutByMuscleGroup: WorkoutWithMuscles,
+    splitDay: SplitDay?,
+    workoutPlan: WorkoutPlan,
     workoutViewModel: WorkoutViewModel
 ) {
+    val workoutState by workoutViewModel.state.collectAsState()
+    LaunchedEffect(Unit) {
+        workoutViewModel.onEvent(WorkoutEvent.GetSplit(splitDay!!.splitId))
+    }
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
@@ -58,14 +69,14 @@ fun DeleteCards(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = workoutByMuscleGroup.workoutPlan.imageResource),
-                contentDescription = "${workoutByMuscleGroup.workoutPlan.exerciseName} icon",
+                painter = painterResource(id = workoutPlan.imageResource),
+                contentDescription = "${workoutPlan.exerciseName} icon",
                 modifier = Modifier.size(40.dp),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = workoutByMuscleGroup.workoutPlan.exerciseName,
+                text = workoutPlan.exerciseName,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Start, // Changed from Center to Start
@@ -80,16 +91,18 @@ fun DeleteCards(
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete ${workoutByMuscleGroup.workoutPlan.exerciseName}",
+                    contentDescription = "Delete ${workoutPlan.exerciseName}",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
             }
             if (showDeleteDialog) {
                 DeleteConfirmationDialog(
-                    workoutName = workoutByMuscleGroup.workoutPlan.exerciseName,
+                    splitDayName = splitDay!!.splitDayName,
+                    split = workoutState.split!!.splitName,
+                    workoutName = workoutPlan.exerciseName,
                     onConfirm = {
-                        workoutViewModel.onEvent(WorkoutEvent.DeleteWorkoutByMuscleGroup(workoutByMuscleGroup))
+                        workoutViewModel.onEvent(WorkoutEvent.DeleteWorkoutFromSplitDay(splitDayId = splitDay.id, workoutId = workoutPlan.id))
                         showDeleteDialog = false
                     },
                     onDismiss = { showDeleteDialog = false }
@@ -101,6 +114,8 @@ fun DeleteCards(
 
 @Composable
 fun DeleteConfirmationDialog(
+    splitDayName: String,
+    split: String,
     workoutName: String,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
@@ -128,7 +143,36 @@ fun DeleteConfirmationDialog(
         },
         text = {
             Text(
-                text = "Are you sure you want to delete $workoutName? This action cannot be undone.",
+                text = buildAnnotatedString {
+                    append("Are you sure you want to delete ")
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary // Primary color
+                        )
+                    ) {
+                        append(workoutName)
+                    }
+                    append(" From ")
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        append(splitDayName)
+                    }
+                    append(" of ")
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        append(split)
+                    }
+                    append("?")
+                },
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()

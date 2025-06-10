@@ -4,13 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.features.mainapp.data.allMuscleGroups
-import com.example.myworkoutplan.features.mainapp.data.legWorkout
-import com.example.myworkoutplan.features.mainapp.data.pullWorkout
-import com.example.myworkoutplan.features.mainapp.data.pushWorkout
-import kotlinx.coroutines.flow.Flow
+import com.example.myworkoutplan.features.mainapp.data.allWorkout
+import com.example.myworkoutplan.features.mainapp.data.allWorkoutSplit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -51,7 +48,7 @@ class WorkoutViewModel(
                 }
 
                 viewModelScope.launch {
-                    // Check if workout already exists
+                    // Check if Workout already exists
                     val existingWorkout = dao.getWorkoutByName(exerciseName)
                     if (existingWorkout != null) {
                         // Update state to indicate the name already exists
@@ -85,28 +82,36 @@ class WorkoutViewModel(
                 }
             }
 
-            is WorkoutEvent.SetImageResource -> _state.update {
-                it.copy(
-                    imageResource = event.imageResource
-                )
+            is WorkoutEvent.SetImageResource -> {
+                _state.update {
+                    it.copy(
+                        imageResource = event.imageResource
+                    )
+                }
             }
 
-            is WorkoutEvent.SetWorkoutType -> _state.update {
-                it.copy(
-                    workoutType = event.workoutType
-                )
+            is WorkoutEvent.SetWorkoutType -> {
+                _state.update {
+                    it.copy(
+                        workoutType = event.workoutType
+                    )
+                }
             }
 
-            is WorkoutEvent.SetWorkoutTypeImage -> _state.update {
-                it.copy(
-                    workoutTypeImage = event.workoutTypeImage
-                )
+            is WorkoutEvent.SetWorkoutTypeImage -> {
+                _state.update {
+                    it.copy(
+                        workoutTypeImage = event.workoutTypeImage
+                    )
+                }
             }
 
-            WorkoutEvent.ShowDialog -> _state.update {
-                it.copy(
-                    isAddingWorkout = true
-                )
+            WorkoutEvent.ShowDialog -> {
+                _state.update {
+                    it.copy(
+                        isAddingWorkout = true
+                    )
+                }
             }
 
             WorkoutEvent.ResetWorkoutDB -> {
@@ -135,37 +140,135 @@ class WorkoutViewModel(
                     dao.deleteWorkoutById(event.workoutWithMuscles.workoutPlan.id)
                 }
             }
+
+            is WorkoutEvent.GetWorkoutBySplitDay -> {
+                viewModelScope.launch {
+                    dao.getWorkoutsBySplitDay(event.splitDayId).collect {workoutList->
+                        _state.update {
+                            it.copy(workouts = workoutList)
+                        }
+                    }
+                }
+            }
+
+            is WorkoutEvent.GetAllSplitDaysForWorkoutSplit -> {
+                viewModelScope.launch {
+                    dao.getSplitDaysForSplit(event.splitId).collect {splitDays->
+                        _state.update {
+                            it.copy(splitDays = splitDays)
+                        }
+                    }
+                }
+            }
+            WorkoutEvent.GetAllWorkoutSplits -> {
+                viewModelScope.launch {
+                    dao.getAllWorkoutSplits().collect {splits->
+                        _state.update {
+                            it.copy(workoutSplits = splits)
+                        }
+                    }
+                }
+            }
+
+            WorkoutEvent.GetAllSplitDays -> {
+                viewModelScope.launch {
+                    dao.getAllSplitDays().collect { splitDays ->
+                        _state.update {
+                            it.copy(splitDays = splitDays)
+                        }
+                    }
+                }
+            }
+
+            is WorkoutEvent.GetSplitDay -> {
+                viewModelScope.launch {
+                    dao.getSplitDaysBySplitId(event.splitDayId).collect { splitDay ->
+                        if (splitDay != null) {
+                            _state.update { it.copy(splitDay = splitDay) }
+                        } else {
+                            // Handle not found: maybe clear state or show a message
+                            _state.update { it.copy(splitDay = null) }
+                        }
+                    }
+                }
+            }
+
+            WorkoutEvent.GetAllWorkouts -> {
+                viewModelScope.launch {
+                    dao.getAllWorkouts().collect { workouts ->
+                        _state.update {
+                            it.copy(workouts = workouts)
+                        }
+                    }
+                }
+            }
+
+            is WorkoutEvent.DeleteWorkoutFromSplitDay -> {
+                viewModelScope.launch {
+                    dao.deleteSplitDayWorkoutCrossRefByWorkoutId(event.splitDayId, event.workoutId)
+                }
+            }
+
+            is WorkoutEvent.GetSplit -> {
+                viewModelScope.launch {
+                    dao.getWorkoutSplitsBySplitId(splitId = event.splitId).collect { splitDay ->
+                        if (splitDay != null) {
+                            _state.update { it.copy(split = splitDay) }
+                        } else {
+                            // Handle not found: maybe clear state or show a message
+                            _state.update { it.copy(split = null) }
+                        }
+                    }
+                }
+            }
         }
     }
 
     suspend fun initialiseDB() {
-        // Clear old data
+        // 1. Clear old data
+        dao.deleteAllWorkoutSplits()
         dao.deleteAllWorkouts()
         dao.deleteAllMuscleGroups()
+        dao.resetAllAutoIncrement()
 
-        // Insert all muscle groups first and keep a map of name -> id
+        // 2. Insert all muscle groups and keep a map of name -> id
         val muscleGroupIdMap = mutableMapOf<String, Long>()
         for (muscleName in allMuscleGroups) {
             val id = dao.upsertMuscleGroup(MuscleGroup(muscleName = muscleName))
             muscleGroupIdMap[muscleName] = id
         }
 
-        // Combine all workouts from push, pull, leg lists
-        val allWorkouts = (pushWorkout + pullWorkout + legWorkout).map { (name, image, muscles) ->
-            WorkoutPlan(
-                exerciseName = name,
-                imageResource = image,
-            ) to muscles
+        // 3. Insert all splits and keep a map of splitName -> id
+        val splitIdMap = mutableMapOf<String, Long>()
+        for ((splitName, _) in allWorkoutSplit) {
+            val id = dao.upsertWorkoutSplit(WorkoutSplit(splitName = splitName))
+            splitIdMap[splitName] = id
         }
 
-        // Insert workouts and their muscle group cross references
-        for ((workoutPlan, muscleGroups) in allWorkouts) {
-            val workoutId = dao.upsertWorkout(workoutPlan)
+        // 4. Insert all split days and keep a map of (splitName, splitDayName) -> splitDayId
+        val splitDayIdMap = mutableMapOf<Pair<String, String>, Long>()
+        for ((splitName, splitDays) in allWorkoutSplit) {
+            val splitId = splitIdMap[splitName] ?: error("Split not found: $splitName")
+            for ((splitDayName, splitDayImage) in splitDays) {
+                val id = dao.upsertSplitDay(SplitDay(splitDayName = splitDayName, splitDayImage = splitDayImage, splitId = splitId.toInt()))
+                splitDayIdMap[splitName to splitDayName] = id
+            }
+        }
 
-            for (muscleName in muscleGroups) {
+        // 5. Insert all workouts and their muscle group cross references
+        val workoutPlanIdMap = mutableMapOf<String, Long>()
+        for (workout in allWorkout) {
+            val workoutPlan = WorkoutPlan(
+                exerciseName = workout.name,
+                imageResource = workout.image
+            )
+            val workoutId = dao.upsertWorkout(workoutPlan)
+            workoutPlanIdMap[workout.name] = workoutId
+
+            // Insert muscle group cross refs
+            for (muscleName in workout.muscleGroups) {
                 val muscleId = muscleGroupIdMap[muscleName]
                     ?: throw IllegalStateException("Muscle group '$muscleName' not found in DB!")
-
                 dao.upsertWorkoutMuscleCrossRef(
                     WorkoutMuscleCrossRef(
                         workoutPlanId = workoutId.toInt(),
@@ -174,6 +277,20 @@ class WorkoutViewModel(
                 )
             }
         }
-    }
 
+        // 6. Insert split day ↔ workout cross refs
+        for (workout in allWorkout) {
+            val workoutId = workoutPlanIdMap[workout.name] ?: error("Workout not found: ${workout.name}")
+            for ((splitName, splitDayName) in workout.workoutSplit) {
+                val splitDayId = splitDayIdMap[splitName to splitDayName]
+                    ?: throw IllegalStateException("Split day '$splitDayName' for split '$splitName' not found in DB!")
+                dao.upsertSplitDayWorkoutCrossRef(
+                    SplitDayWorkoutCrossRef(
+                        splitDayId = splitDayId.toInt(),
+                        workoutPlanId = workoutId.toInt()
+                    )
+                )
+            }
+        }
+    }
 }

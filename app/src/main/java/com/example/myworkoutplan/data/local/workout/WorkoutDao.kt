@@ -25,6 +25,18 @@ interface WorkoutDao {
     @Query("DELETE FROM workout_plans")
     suspend fun deleteAllWorkouts()
 
+    @Query("DELETE FROM SplitDayWorkoutCrossRef")
+    suspend fun deleteAllSplitDayWorkoutCrossRefs()
+
+    @Query("DELETE FROM split_days")
+    suspend fun deleteAllSplitDays()
+
+    @Query("DELETE FROM workout_splits")
+    suspend fun deleteAllWorkoutSplits()
+
+    @Query("DELETE FROM workoutmusclecrossref")
+    suspend fun deleteAllWorkoutMuscleCrossRefs()
+
     @Transaction
     @Query("""
     SELECT DISTINCT wp.*
@@ -46,4 +58,46 @@ interface WorkoutDao {
 
     @Query("DELETE FROM workout_plans WHERE id = :workoutId")
     suspend fun deleteWorkoutById(workoutId: Int)
+
+    @Upsert
+    suspend fun upsertWorkoutSplit(split: WorkoutSplit): Long
+
+    @Upsert
+    suspend fun upsertSplitDay(splitDay: SplitDay): Long
+
+    @Upsert
+    suspend fun upsertSplitDayWorkoutCrossRef(crossRef: SplitDayWorkoutCrossRef)
+
+    @Query("SELECT * FROM workout_splits")
+    fun getAllWorkoutSplits(): Flow<List<WorkoutSplit>>
+
+    @Query("SELECT * FROM split_days")
+    fun getAllSplitDays(): Flow<List<SplitDay>>
+
+    @Query("SELECT * FROM split_days WHERE splitId = :splitId")
+    fun getSplitDaysForSplit(splitId: Int): Flow<List<SplitDay>>
+
+    @Transaction
+    @Query("""
+        SELECT wp.* FROM workout_plans AS wp
+        INNER JOIN splitdayworkoutcrossref AS crossRef
+            ON wp.id = crossRef.workoutPlanId
+        WHERE crossRef.splitDayId = :splitDayId
+    """)
+    fun getWorkoutsBySplitDay(splitDayId: Int): Flow<List<WorkoutPlan>>
+
+    @Query("SELECT * FROM SPLIT_DAYS WHERE id = :splitId")
+    fun getSplitDaysBySplitId(splitId: Int): Flow<SplitDay?>
+
+    @Query("SELECT * FROM workout_plans")
+    fun getAllWorkouts(): Flow<List<WorkoutPlan>>
+
+    @Query("DELETE FROM sqlite_sequence")
+    suspend fun resetAllAutoIncrement()
+
+    @Query("DELETE FROM SplitDayWorkoutCrossRef where workoutPlanId = :workoutId and splitDayId = :splitDayId")
+    suspend fun deleteSplitDayWorkoutCrossRefByWorkoutId(splitDayId: Int, workoutId: Int)
+
+    @Query("SELECT * FROM workout_splits WHERE id = :splitId")
+    fun getWorkoutSplitsBySplitId(splitId: Int): Flow<WorkoutSplit?>
 }

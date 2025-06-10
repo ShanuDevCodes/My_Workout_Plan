@@ -52,3 +52,51 @@ data class WorkoutMuscleCrossRef(
     val workoutPlanId: Int,
     val muscleId: Int
 )
+
+@Entity(tableName = "workout_splits")
+data class WorkoutSplit(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val splitName: String
+)
+
+@Entity(
+    tableName = "split_days",
+    foreignKeys = [
+        ForeignKey(
+            entity = WorkoutSplit::class,
+            parentColumns = ["id"],
+            childColumns = ["splitId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("splitId")]
+)
+data class SplitDay(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val splitDayName: String,
+    val splitDayImage: Int,
+    val splitId: Int
+)
+
+@Entity(
+    primaryKeys = ["splitDayId", "workoutPlanId"],
+    foreignKeys = [
+        ForeignKey(
+            entity = SplitDay::class,
+            parentColumns = ["id"],
+            childColumns = ["splitDayId"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = WorkoutPlan::class,
+            parentColumns = ["id"],
+            childColumns = ["workoutPlanId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("workoutPlanId")]
+)
+data class SplitDayWorkoutCrossRef(
+    val splitDayId: Int,
+    val workoutPlanId: Int
+)

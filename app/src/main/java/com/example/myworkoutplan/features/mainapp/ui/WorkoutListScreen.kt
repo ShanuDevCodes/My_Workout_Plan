@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,10 +23,8 @@ import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
 import com.example.myworkoutplan.features.mainapp.ui.workout.PlansCards
-import com.example.myworkoutplan.features.mainapp.viewmodel.DayScreenViewModel
 import com.example.myworkoutplan.features.mainapp.viewmodel.WorkoutListScreenViewModel
 import kotlinx.coroutines.delay
-import androidx.compose.runtime.getValue
 
 @Composable
 fun WorkoutListScreen(workoutListScreenViewModel: WorkoutListScreenViewModel = viewModel()){
@@ -36,15 +35,9 @@ fun WorkoutListScreen(workoutListScreenViewModel: WorkoutListScreenViewModel = v
         factory = WorkoutViewModelFactory(dao)
     )
     val workoutState by workoutViewModel.state.collectAsState()
-    val dayScreenViewModel: DayScreenViewModel = viewModel()
-    dayScreenViewModel.setDayTitle("All")
-    val muscleGroups = dayScreenViewModel.muscleGroups
-    LaunchedEffect(muscleGroups) {
-        workoutViewModel.onEvent(WorkoutEvent.GetWorkoutsByMuscleGroup(muscleGroups))
-    }
     LaunchedEffect(Unit) {
-        delay(300)
-        workoutListScreenViewModel.show()
+        delay(100)
+        workoutViewModel.onEvent(WorkoutEvent.GetAllWorkouts)
     }
     LazyColumn {
         item {
@@ -61,7 +54,7 @@ fun WorkoutListScreen(workoutListScreenViewModel: WorkoutListScreenViewModel = v
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
             )
         }
-        items(workoutState.workoutWithMuscleGroups) { item ->
+        items(workoutState.workouts) { item ->
             PlansCards(item)
         }
     }

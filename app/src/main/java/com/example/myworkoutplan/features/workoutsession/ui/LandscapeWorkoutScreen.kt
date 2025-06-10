@@ -191,7 +191,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                                     contentAlignment = Alignment.Center
                                 ){
                                     Text(
-                                        text = "No upcoming workout",
+                                        text = "No upcoming Workout",
                                         color = MaterialTheme.colorScheme.secondary,
                                         fontWeight = FontWeight.Normal
                                     )

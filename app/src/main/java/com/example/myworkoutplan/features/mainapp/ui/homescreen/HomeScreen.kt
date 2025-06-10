@@ -89,7 +89,9 @@ fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreen
     val workoutViewModel: WorkoutViewModel = viewModel(
         factory = WorkoutViewModelFactory(workoutDao)
     )
-    val title = workoutWeekState.currentWorkoutDay?.workoutType?:"Rest Day"
+//    val title = workoutWeekState.currentWorkoutDay?.workoutType?:"Rest Day"
+    val title = 2
+
     Column {
         Column(
             modifier = Modifier

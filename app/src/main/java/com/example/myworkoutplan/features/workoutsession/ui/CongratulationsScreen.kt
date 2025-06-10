@@ -71,7 +71,7 @@ fun CongratulationsScreen(workoutSessionViewModel: WorkoutSessionViewModel,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "You have completed your workout.\nKeep up the great work!",
+                    text = "You have completed your Workout.\nKeep up the great work!",
                     fontSize = 18.sp,
                     color = Color(0xFF01579B),
                     textAlign = TextAlign.Center,

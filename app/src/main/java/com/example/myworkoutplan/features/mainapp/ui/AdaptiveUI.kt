@@ -101,7 +101,7 @@ sealed class Destination {
 sealed class PlanDestination{
     @Serializable
     data class Day(
-        val dayTitle: String,
+        val splitDayId: Int,
     )
     @Serializable
     object Plans
@@ -399,7 +399,7 @@ fun MainNavigation(
                 }
                 composable<PlanDestination.Day> {
                     val args = it.toRoute<PlanDestination.Day>()
-                    PlansScreenView(args.dayTitle)
+                    PlansScreenView(args.splitDayId)
                 }
             }
             composable<Destination.Report> {
