@@ -41,7 +41,6 @@ class WorkoutViewModel(
                 val exerciseName = _state.value.exerciseName
                 val imageResource = R.drawable.weights
                 val workoutType = _state.value.workoutType
-                val workoutTypeImage = _state.value.workoutTypeImage
 
                 if (exerciseName.isBlank() || workoutType.isBlank()) {
                     return

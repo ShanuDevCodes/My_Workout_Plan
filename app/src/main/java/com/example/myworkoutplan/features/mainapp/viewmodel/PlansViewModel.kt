@@ -2,7 +2,6 @@ package com.example.myworkoutplan.features.mainapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myworkoutplan.R
 import com.example.myworkoutplan.data.local.workout.WorkoutSplit
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
