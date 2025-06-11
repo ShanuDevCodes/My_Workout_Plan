@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class WorkoutViewModel(
     private val dao: WorkoutDao
@@ -144,7 +145,7 @@ class WorkoutViewModel(
                 viewModelScope.launch {
                     dao.getWorkoutsBySplitDay(event.splitDayId).collect {workoutList->
                         _state.update {
-                            it.copy(workouts = workoutList)
+                            it.copy(workoutsInSplitDay = workoutList)
                         }
                     }
                 }
@@ -220,6 +221,17 @@ class WorkoutViewModel(
                     }
                 }
             }
+
+            is WorkoutEvent.UpsertWorkoutInSplitCrossRef -> {
+                viewModelScope.launch {
+                    dao.upsertSplitDayWorkoutCrossRef(
+                        SplitDayWorkoutCrossRef(
+                            splitDayId = event.splitDayId,
+                            workoutPlanId = event.workoutId
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -291,5 +303,12 @@ class WorkoutViewModel(
                 )
             }
         }
+    }
+
+    fun isWorkoutInSplitDay(workoutId: Int, splitDayId: Int): Boolean {
+        val splitDayWorkoutCrossRef = runBlocking {
+            dao.getSplitDayWorkoutCrossRef(splitDayId, workoutId)
+        }
+        return splitDayWorkoutCrossRef != null
     }
 }

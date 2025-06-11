@@ -1,8 +1,5 @@
 package com.example.myworkoutplan.features.mainapp.ui.workout
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -21,30 +18,34 @@ import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 
 @Composable
-fun DayScreen(visible: Boolean, splitDayId : Int, workoutViewModel: WorkoutViewModel) {
+fun AddToSplitScreen(splitDayId : Int, workoutViewModel: WorkoutViewModel) {
     val workoutState by workoutViewModel.state.collectAsState()
-    LaunchedEffect(Unit) {
+    LaunchedEffect(splitDayId) {
         workoutViewModel.onEvent(WorkoutEvent.GetWorkoutBySplitDay(splitDayId))
         workoutViewModel.onEvent(WorkoutEvent.GetSplitDay(splitDayId))
+        workoutViewModel.onEvent(WorkoutEvent.GetAllWorkouts)
     }
-    Box {
-        Column {
-            AnimatedVisibility(
-                visible = visible,
-                enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
-            ) {
+
+    LaunchedEffect(workoutState.splitDay?.splitId) {
+        workoutState.splitDay?.splitId?.let { splitId ->
+            workoutViewModel.onEvent(WorkoutEvent.GetSplit(splitId))
+        }
+    }
+
+    if (workoutState.splitDay != null && workoutState.split != null) {
+        Box {
+            Column {
                 LazyColumn {
                     item {
                         Text(
-                            text = workoutState.splitDay?.splitDayName?:"",
+                            text = "Add Workout To ${workoutState.splitDay!!.splitDayName} of ${workoutState.split!!.splitName}",
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.padding(16.dp)
                         )
                     }
-
-                    items(workoutState.workoutsInSplitDay) { item ->
-                        PlansCards(item)
+                    items(workoutState.workouts) { item ->
+                        AddToSplitCards(workoutState.splitDay, item, workoutViewModel)
                     }
                 }
             }

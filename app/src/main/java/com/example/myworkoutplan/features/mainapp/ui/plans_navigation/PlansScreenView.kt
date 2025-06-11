@@ -45,12 +45,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.core.AppDatabase
-import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
+import com.example.myworkoutplan.features.mainapp.ui.workout.AddToSplitScreen
 import com.example.myworkoutplan.features.mainapp.ui.workout.AddWorkoutDialog
 import com.example.myworkoutplan.features.mainapp.ui.workout.DayScreen
-import com.example.myworkoutplan.features.mainapp.ui.workout.DeleteScreen
+import com.example.myworkoutplan.features.mainapp.ui.workout.DeleteFromSplitScreen
 import com.example.myworkoutplan.features.mainapp.viewmodel.PlansScreenViewModel
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
@@ -61,6 +61,8 @@ sealed class PlanScreenViewDestinations{
     data object PlansScreenView: PlanScreenViewDestinations()
     @Serializable
     data object Delete: PlanScreenViewDestinations()
+    @Serializable
+    data object Add: PlanScreenViewDestinations()
 }
 
 @SuppressLint("UseOfNonLambdaOffsetOverload")
@@ -202,7 +204,9 @@ fun PlansScreenView(splitDayId: Int,viewModel: PlansScreenViewModel = viewModel(
                         // Main FAB (Add)
                         FloatingActionButton(
                             onClick = {
-                                workoutViewModel.onEvent(WorkoutEvent.ShowDialog)
+                                navController.navigate(PlanScreenViewDestinations.Add){
+                                    launchSingleTop = true
+                                }
                             },
                             modifier = Modifier
                                 .size(48.dp)
@@ -267,7 +271,18 @@ fun PlansScreenView(splitDayId: Int,viewModel: PlansScreenViewModel = viewModel(
                 visible = visible,
                 enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
             ) {
-                DeleteScreen(
+                DeleteFromSplitScreen(
+                    splitDayId = splitDayId,
+                    workoutViewModel = workoutViewModel
+                )
+            }
+        }
+        composable<PlanScreenViewDestinations.Add> {
+            AnimatedVisibility(
+                visible = visible,
+                enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
+            ) {
+                AddToSplitScreen(
                     splitDayId = splitDayId,
                     workoutViewModel = workoutViewModel
                 )

@@ -5,6 +5,7 @@ data class WorkoutState(
     val splitDay: SplitDay? = null,
     val splitDays: List<SplitDay> = emptyList(),
     val workoutSplits: List<WorkoutSplit> = emptyList(),
+    val workoutsInSplitDay: List<WorkoutPlan> = emptyList(),
     val workouts: List<WorkoutPlan> = emptyList(),
     val exerciseName: String = "",
     val imageResource: Int = 0,

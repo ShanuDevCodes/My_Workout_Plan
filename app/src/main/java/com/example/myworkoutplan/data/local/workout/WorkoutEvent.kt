@@ -21,4 +21,5 @@ sealed interface WorkoutEvent {
     data object GetAllWorkouts : WorkoutEvent
     data class DeleteWorkoutFromSplitDay(val splitDayId: Int, val workoutId: Int) : WorkoutEvent
     data class GetSplit(val splitId: Int) : WorkoutEvent
+    data class UpsertWorkoutInSplitCrossRef(val splitDayId: Int, val workoutId: Int) : WorkoutEvent
 }

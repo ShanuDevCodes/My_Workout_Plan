@@ -18,7 +18,7 @@ import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 
 @Composable
-fun DeleteScreen(splitDayId : Int,workoutViewModel: WorkoutViewModel) {
+fun DeleteFromSplitScreen(splitDayId : Int, workoutViewModel: WorkoutViewModel) {
     val workoutState by workoutViewModel.state.collectAsState()
     LaunchedEffect(Unit) {
         workoutViewModel.onEvent(WorkoutEvent.GetWorkoutBySplitDay(splitDayId))
@@ -29,14 +29,14 @@ fun DeleteScreen(splitDayId : Int,workoutViewModel: WorkoutViewModel) {
             LazyColumn {
                 item {
                     Text(
-                        text = "Delete Workout",
+                        text = "Delete Workout From Split",
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(16.dp)
                     )
                 }
-                items(workoutState.workouts) { item ->
-                    DeleteCards(workoutState.splitDay,item,workoutViewModel)
+                items(workoutState.workoutsInSplitDay) { item ->
+                    DeleteFromSplitCards(workoutState.splitDay,item,workoutViewModel)
                 }
             }
         }

@@ -46,7 +46,7 @@ import com.example.myworkoutplan.data.local.workout.WorkoutPlan
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 
 @Composable
-fun DeleteCards(
+fun DeleteFromSplitCards(
     splitDay: SplitDay?,
     workoutPlan: WorkoutPlan,
     workoutViewModel: WorkoutViewModel

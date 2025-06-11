@@ -100,4 +100,7 @@ interface WorkoutDao {
 
     @Query("SELECT * FROM workout_splits WHERE id = :splitId")
     fun getWorkoutSplitsBySplitId(splitId: Int): Flow<WorkoutSplit?>
+
+    @Query("SELECT * FROM splitdayworkoutcrossref where splitDayId = :splitDayId and workoutPlanId = :workoutId")
+    suspend fun getSplitDayWorkoutCrossRef(splitDayId: Int, workoutId: Int): SplitDayWorkoutCrossRef?
 }
