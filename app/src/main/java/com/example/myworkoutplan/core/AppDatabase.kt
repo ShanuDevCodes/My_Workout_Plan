@@ -6,7 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.myworkoutplan.data.local.workout.MuscleGroup
 import com.example.myworkoutplan.data.local.workout.SplitDay
+import com.example.myworkoutplan.data.local.workout.SplitDayWeekDayCrossRef
 import com.example.myworkoutplan.data.local.workout.SplitDayWorkoutCrossRef
+import com.example.myworkoutplan.data.local.workout.WeekDay
 import com.example.myworkoutplan.data.local.workout.WorkoutDao
 import com.example.myworkoutplan.data.local.workout.WorkoutMuscleCrossRef
 import com.example.myworkoutplan.data.local.workout.WorkoutPlan
@@ -15,7 +17,7 @@ import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeek
 import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekDao
 
 @Database(
-    entities = [WorkoutPlan::class, WorkoutWeek::class, MuscleGroup::class, WorkoutMuscleCrossRef::class, WorkoutSplit::class, SplitDay::class, SplitDayWorkoutCrossRef::class],
+    entities = [WorkoutPlan::class, WorkoutWeek::class, MuscleGroup::class, WorkoutMuscleCrossRef::class, WorkoutSplit::class, SplitDay::class, SplitDayWorkoutCrossRef::class, WeekDay::class, SplitDayWeekDayCrossRef::class],
     version = 3
 )
 abstract class AppDatabase : RoomDatabase() {

@@ -6,6 +6,8 @@ import com.example.myworkoutplan.R
 import com.example.myworkoutplan.features.mainapp.data.allMuscleGroups
 import com.example.myworkoutplan.features.mainapp.data.allWorkout
 import com.example.myworkoutplan.features.mainapp.data.allWorkoutSplit
+import com.example.myworkoutplan.features.mainapp.data.splitDayToWeekDays
+import com.example.myworkoutplan.features.mainapp.data.weekDays
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -237,6 +239,7 @@ class WorkoutViewModel(
 
     suspend fun initialiseDB() {
         // 1. Clear old data
+        dao.deleteAllWeekDays()
         dao.deleteAllWorkoutSplits()
         dao.deleteAllWorkouts()
         dao.deleteAllMuscleGroups()
@@ -299,6 +302,30 @@ class WorkoutViewModel(
                     SplitDayWorkoutCrossRef(
                         splitDayId = splitDayId.toInt(),
                         workoutPlanId = workoutId.toInt()
+                    )
+                )
+            }
+        }
+
+
+        // 7. Insert all week days and keep a map of dayName -> id
+        val weekDayIdMap = mutableMapOf<String, Long>()
+        for (dayName in weekDays) {
+            val id = dao.upsertWeekDay(WeekDay(dayName = dayName))
+            weekDayIdMap[dayName] = id
+        }
+
+        // 8. Insert split day ↔ week day cross refs
+        for ((splitName, splitDayName, weekDayNames) in splitDayToWeekDays) {
+            val splitDayId = splitDayIdMap[splitName to splitDayName]
+                ?: throw IllegalStateException("Split day '$splitDayName' for split '$splitName' not found in DB!")
+            for (weekDayName in weekDayNames) {
+                val weekDayId = weekDayIdMap[weekDayName]
+                    ?: throw IllegalStateException("Week day '$weekDayName' not found in DB!")
+                dao.upsertSplitDayWeekDayCrossRef(
+                    SplitDayWeekDayCrossRef(
+                        splitDayId = splitDayId.toInt(),
+                        weekDayId = weekDayId.toInt()
                     )
                 )
             }

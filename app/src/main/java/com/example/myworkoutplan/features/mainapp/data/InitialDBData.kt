@@ -65,12 +65,12 @@ val allWorkout = listOf(
     Workout("Dumbbell Curl", R.drawable.bicep_curl, listOf("Biceps"), listOf("Push,Pull,Legs Split" to "Pull Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
     Workout("Seated Dumbbell Curl", R.drawable.seated_bicep_curl, listOf("Biceps"), listOf("Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
     Workout("Concentration Curl", R.drawable.concentration_curls, listOf("Biceps"), listOf("Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
-    Workout("Squats", R.drawable.squats, listOf("Quads", "Glutes", "Hamstrings"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Leg Day", "Arnold Split" to "Legs Day")),
-    Workout("Leg Extension", R.drawable.leg_extension, listOf("Quads"), listOf("Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Leg Day", "Arnold Split" to "Legs Day")),
-    Workout("Leg Curl", R.drawable.leg_curls, listOf("Hamstrings"), listOf("Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Leg Day", "Arnold Split" to "Legs Day")),
-    Workout("Close leg Press", R.drawable.close_leg_press, listOf("Quads", "Glutes"), listOf("Bro Split" to "Leg Day", "Arnold Split" to "Legs Day")),
-    Workout("Wide leg Press", R.drawable.wide_leg_press, listOf("Quads", "Glutes"), listOf("Bro Split" to "Leg Day", "Arnold Split" to "Legs Day")),
-    Workout("Calf Raise", R.drawable.calf_raises, listOf("Calves"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Leg Day", "Arnold Split" to "Legs Day"))
+    Workout("Squats", R.drawable.squats, listOf("Quads", "Glutes", "Hamstrings"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
+    Workout("Leg Extension", R.drawable.leg_extension, listOf("Quads"), listOf("Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
+    Workout("Leg Curl", R.drawable.leg_curls, listOf("Hamstrings"), listOf("Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
+    Workout("Close leg Press", R.drawable.close_leg_press, listOf("Quads", "Glutes"), listOf("Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
+    Workout("Wide leg Press", R.drawable.wide_leg_press, listOf("Quads", "Glutes"), listOf("Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
+    Workout("Calf Raise", R.drawable.calf_raises, listOf("Calves"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day"))
 )
 
 
@@ -78,6 +78,43 @@ val allWorkoutSplit = listOf(
     ("Push,Pull,Legs Split" to listOf("Push Day" to R.drawable.push_day, "Pull Day" to R.drawable.pull_day, "Legs Day" to R.drawable.leg_day)),
     ("Full Body Split" to listOf("Full Body Day" to R.drawable.full_body_day)),
     ("Upper, Lower Body Split" to listOf("Upper Body Day" to R.drawable.upper_body, "Lower Body Day" to R.drawable.lower_body)),
-    ("Bro Split" to listOf("Chest Day" to R.drawable.chest_day,"Back Day" to R.drawable.back_day,"Leg Day" to R.drawable.leg_day,"Shoulder Day" to R.drawable.shoulder_day,"Arms Day" to R.drawable.arms_day)),
+    ("Bro Split" to listOf("Chest Day" to R.drawable.chest_day,"Back Day" to R.drawable.back_day,"Legs Day" to R.drawable.leg_day,"Shoulder Day" to R.drawable.shoulder_day,"Arms Day" to R.drawable.arms_day)),
     ("Arnold Split" to listOf("Chest & Back Day" to R.drawable.chest_back_day, "Arms & Shoulders Day" to R.drawable.arms_shoulder_day, "Legs Day" to R.drawable.leg_day))
+)
+
+val splitDayToWeekDays = listOf(
+    // Push, Pull, Legs Split
+    Triple("Push,Pull,Legs Split", "Push Day", listOf("Monday", "Thursday")),
+    Triple("Push,Pull,Legs Split", "Pull Day", listOf("Tuesday", "Friday")),
+    Triple("Push,Pull,Legs Split", "Legs Day", listOf("Wednesday", "Saturday")),
+
+    // Full Body Split
+    Triple("Full Body Split", "Full Body Day", listOf("Monday", "Wednesday", "Friday")),
+
+    // Upper, Lower Body Split
+    Triple("Upper, Lower Body Split", "Upper Body Day", listOf("Monday", "Thursday")),
+    Triple("Upper, Lower Body Split", "Lower Body Day", listOf("Tuesday", "Friday")),
+
+    // Bro Split
+    Triple("Bro Split", "Chest Day", listOf("Monday")),
+    Triple("Bro Split", "Back Day", listOf("Tuesday")),
+    Triple("Bro Split", "Legs Day", listOf("Wednesday")),
+    Triple("Bro Split", "Shoulder Day", listOf("Thursday")),
+    Triple("Bro Split", "Arms Day", listOf("Friday")),
+
+    // Arnold Split
+    Triple("Arnold Split", "Chest & Back Day", listOf("Monday", "Thursday")),
+    Triple("Arnold Split", "Arms & Shoulders Day", listOf("Tuesday", "Friday")),
+    Triple("Arnold Split", "Legs Day", listOf("Wednesday", "Saturday")),
+)
+
+
+val weekDays = listOf(
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
 )

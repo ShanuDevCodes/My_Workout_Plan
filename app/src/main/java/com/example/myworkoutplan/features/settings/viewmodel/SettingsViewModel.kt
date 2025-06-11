@@ -1,5 +1,7 @@
 package com.example.myworkoutplan.features.settings.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +10,7 @@ import com.example.myworkoutplan.theme.DynamicColorOption
 import com.example.myworkoutplan.theme.ThemeOptions
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 class SettingsViewModel(private val dataStore: DataStoreManager) : ViewModel() {
 
     private val _selectedTheme = mutableStateOf(ThemeOptions.SYSTEM_DEFAULT)

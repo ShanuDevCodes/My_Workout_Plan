@@ -103,4 +103,13 @@ interface WorkoutDao {
 
     @Query("SELECT * FROM splitdayworkoutcrossref where splitDayId = :splitDayId and workoutPlanId = :workoutId")
     suspend fun getSplitDayWorkoutCrossRef(splitDayId: Int, workoutId: Int): SplitDayWorkoutCrossRef?
+
+    @Query("DELETE FROM week_days")
+    suspend fun deleteAllWeekDays()
+
+    @Upsert
+    suspend fun upsertWeekDay(weekDay: WeekDay): Long
+
+    @Upsert
+    suspend fun upsertSplitDayWeekDayCrossRef(crossRef: SplitDayWeekDayCrossRef): Long
 }

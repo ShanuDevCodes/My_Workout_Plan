@@ -100,3 +100,32 @@ data class SplitDayWorkoutCrossRef(
     val splitDayId: Int,
     val workoutPlanId: Int
 )
+
+@Entity(tableName = "week_days")
+data class WeekDay(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val dayName: String // e.g., "Monday"
+)
+
+@Entity(
+    primaryKeys = ["splitDayId", "weekDayId"],
+    foreignKeys = [
+        ForeignKey(
+            entity = SplitDay::class,
+            parentColumns = ["id"],
+            childColumns = ["splitDayId"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = WeekDay::class,
+            parentColumns = ["id"],
+            childColumns = ["weekDayId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("weekDayId")]
+)
+data class SplitDayWeekDayCrossRef(
+    val splitDayId: Int,
+    val weekDayId: Int
+)

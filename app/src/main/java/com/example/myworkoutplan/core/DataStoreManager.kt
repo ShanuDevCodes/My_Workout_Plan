@@ -24,6 +24,7 @@ class DataStoreManager(private val context: Context) {
         val DYNAMIC_COLOR_KEY = stringPreferencesKey("dynamic_color_option")
         val FIRST_LAUNCH_KEY = booleanPreferencesKey("first_launch_done")
         val LAST_RESET_DATE_KEY = stringPreferencesKey("last_reset_date")
+        val WORKOUT_SPLIT_KEY = stringPreferencesKey("workout_split")
     }
 
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
@@ -65,6 +66,16 @@ class DataStoreManager(private val context: Context) {
     suspend fun setLastResetDate(date: LocalDate) {
         context.dataStore.edit { preferences ->
             preferences[LAST_RESET_DATE_KEY] = date.format(formatter)
+        }
+    }
+
+    val workoutSplitFlow: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[WORKOUT_SPLIT_KEY] ?: "Push,Pull,Legs Split"
+    }
+
+    suspend fun setWorkoutSplit(split: String) {
+        context.dataStore.edit { preferences ->
+            preferences[WORKOUT_SPLIT_KEY] = split
         }
     }
 }
