@@ -1,10 +1,13 @@
 package com.example.myworkoutplan.features.mainapp.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,9 +38,11 @@ fun WorkoutListScreen(workoutListScreenViewModel: WorkoutListScreenViewModel = v
         factory = WorkoutViewModelFactory(dao)
     )
     val workoutState by workoutViewModel.state.collectAsState()
+    val visible = workoutListScreenViewModel.visible
     LaunchedEffect(Unit) {
-        delay(100)
         workoutViewModel.onEvent(WorkoutEvent.GetAllWorkouts)
+        delay(100L)
+        workoutListScreenViewModel.show()
     }
     LazyColumn {
         item {
@@ -54,8 +59,20 @@ fun WorkoutListScreen(workoutListScreenViewModel: WorkoutListScreenViewModel = v
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
             )
         }
-        items(workoutState.workouts) { item ->
-            PlansCards(item)
+
+        if (workoutState.workouts.isNotEmpty()) {
+            item {
+                AnimatedVisibility(
+                    visible = visible,
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
+                ) {
+                    Column {
+                        workoutState.workouts.forEach { item ->
+                            PlansCards(item)
+                        }
+                    }
+                }
+            }
         }
     }
 }
