@@ -10,7 +10,6 @@ import com.example.myworkoutplan.core.DataStoreManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
