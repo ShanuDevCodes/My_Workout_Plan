@@ -19,6 +19,7 @@ class HomeScreenViewModel(dataStoreManager: DataStoreManager): ViewModel() {
     private val _dayOfWeek = MutableStateFlow(LocalDate.now().dayOfWeek.value)
     val dayOfWeek: StateFlow<Int> = _dayOfWeek.asStateFlow()
     val workoutSplitFlow = dataStoreManager.workoutSplitFlow
+    val workoutDayFlow = dataStoreManager.workoutDayFlow
 
     var visible by mutableStateOf(false)
         private set

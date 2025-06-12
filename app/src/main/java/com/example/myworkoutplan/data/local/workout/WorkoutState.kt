@@ -1,6 +1,7 @@
 package com.example.myworkoutplan.data.local.workout
 
 data class WorkoutState(
+    val currentSplitDay: SplitDay? = null,
     val split: WorkoutSplit? = null,
     val splitDay: SplitDay? = null,
     val splitDays: List<SplitDay> = emptyList(),
@@ -13,5 +14,5 @@ data class WorkoutState(
     val workoutTypeImage: Int = 0,
     val isAddingWorkout: Boolean = false,
     val nameAlreadyExists: Boolean = false,
-    val workoutWithMuscleGroups: List<WorkoutWithMuscles> = emptyList()
+    val workoutWithMuscleGroups: List<WorkoutWithMuscles> = emptyList(),
 )

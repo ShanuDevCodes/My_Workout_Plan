@@ -75,11 +75,11 @@ val allWorkout = listOf(
 
 
 val allWorkoutSplit = listOf(
-    ("Push,Pull,Legs Split" to listOf("Push Day" to R.drawable.push_day, "Pull Day" to R.drawable.pull_day, "Legs Day" to R.drawable.leg_day)),
-    ("Full Body Split" to listOf("Full Body Day" to R.drawable.full_body_day)),
-    ("Upper, Lower Body Split" to listOf("Upper Body Day" to R.drawable.upper_body, "Lower Body Day" to R.drawable.lower_body)),
-    ("Bro Split" to listOf("Chest Day" to R.drawable.chest_day,"Back Day" to R.drawable.back_day,"Legs Day" to R.drawable.leg_day,"Shoulder Day" to R.drawable.shoulder_day,"Arms Day" to R.drawable.arms_day)),
-    ("Arnold Split" to listOf("Chest & Back Day" to R.drawable.chest_back_day, "Arms & Shoulders Day" to R.drawable.arms_shoulder_day, "Legs Day" to R.drawable.leg_day))
+    ("Push,Pull,Legs Split" to listOf("Push Day" to R.drawable.push_day, "Pull Day" to R.drawable.pull_day, "Legs Day" to R.drawable.leg_day,"Rest Day" to R.drawable.weights)),
+    ("Full Body Split" to listOf("Full Body Day" to R.drawable.full_body_day,"Rest Day" to R.drawable.weights)),
+    ("Upper, Lower Body Split" to listOf("Upper Body Day" to R.drawable.upper_body, "Lower Body Day" to R.drawable.lower_body,"Rest Day" to R.drawable.weights)),
+    ("Bro Split" to listOf("Chest Day" to R.drawable.chest_day,"Back Day" to R.drawable.back_day,"Legs Day" to R.drawable.leg_day,"Shoulder Day" to R.drawable.shoulder_day,"Arms Day" to R.drawable.arms_day,"Rest Day" to R.drawable.weights)),
+    ("Arnold Split" to listOf("Chest & Back Day" to R.drawable.chest_back_day, "Arms & Shoulders Day" to R.drawable.arms_shoulder_day, "Legs Day" to R.drawable.leg_day,"Rest Day" to R.drawable.weights))
 )
 
 val splitDayToWeekDays = listOf(
@@ -87,13 +87,16 @@ val splitDayToWeekDays = listOf(
     Triple("Push,Pull,Legs Split", "Push Day", listOf("Monday", "Thursday")),
     Triple("Push,Pull,Legs Split", "Pull Day", listOf("Tuesday", "Friday")),
     Triple("Push,Pull,Legs Split", "Legs Day", listOf("Wednesday", "Saturday")),
+    Triple("Push,Pull,Legs Split", "Rest Day", listOf("Sunday")),
 
     // Full Body Split
     Triple("Full Body Split", "Full Body Day", listOf("Monday", "Wednesday", "Friday")),
+    Triple("Full Body Split", "Rest Day", listOf("Tuesday", "Thursday", "Saturday")),
 
     // Upper, Lower Body Split
     Triple("Upper, Lower Body Split", "Upper Body Day", listOf("Monday", "Thursday")),
     Triple("Upper, Lower Body Split", "Lower Body Day", listOf("Tuesday", "Friday")),
+    Triple("Upper, Lower Body Split", "Rest Day", listOf("Wednesday", "Saturday")),
 
     // Bro Split
     Triple("Bro Split", "Chest Day", listOf("Monday")),
@@ -101,11 +104,13 @@ val splitDayToWeekDays = listOf(
     Triple("Bro Split", "Legs Day", listOf("Wednesday")),
     Triple("Bro Split", "Shoulder Day", listOf("Thursday")),
     Triple("Bro Split", "Arms Day", listOf("Friday")),
+    Triple("Bro Split", "Rest Day", listOf("Saturday")),
 
     // Arnold Split
     Triple("Arnold Split", "Chest & Back Day", listOf("Monday", "Thursday")),
     Triple("Arnold Split", "Arms & Shoulders Day", listOf("Tuesday", "Friday")),
     Triple("Arnold Split", "Legs Day", listOf("Wednesday", "Saturday")),
+    Triple("Arnold Split", "Rest Day", listOf("Sunday"))
 )
 
 

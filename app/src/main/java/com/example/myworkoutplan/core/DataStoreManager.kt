@@ -11,7 +11,6 @@ import com.example.myworkoutplan.theme.DynamicColorOption
 import com.example.myworkoutplan.theme.ThemeOptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 private val Context.dataStore by preferencesDataStore(name = "settings")
@@ -23,8 +22,9 @@ class DataStoreManager(private val context: Context) {
         val THEME_KEY = stringPreferencesKey("theme_option")
         val DYNAMIC_COLOR_KEY = stringPreferencesKey("dynamic_color_option")
         val FIRST_LAUNCH_KEY = booleanPreferencesKey("first_launch_done")
-        val LAST_RESET_DATE_KEY = stringPreferencesKey("last_reset_date")
         val WORKOUT_SPLIT_KEY = stringPreferencesKey("workout_split")
+        val WORKOUT_DAY_KEY = stringPreferencesKey("workout_day")
+        val CURRENT_DATE_KEY = stringPreferencesKey("current_date")
     }
 
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
@@ -59,16 +59,6 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
-    fun getLastResetDate(): Flow<LocalDate?> = context.dataStore.data.map { preferences ->
-        preferences[LAST_RESET_DATE_KEY]?.let { LocalDate.parse(it, formatter) }
-    }
-
-    suspend fun setLastResetDate(date: LocalDate) {
-        context.dataStore.edit { preferences ->
-            preferences[LAST_RESET_DATE_KEY] = date.format(formatter)
-        }
-    }
-
     val workoutSplitFlow: Flow<String> = context.dataStore.data.map { preferences ->
         preferences[WORKOUT_SPLIT_KEY] ?: "Push,Pull,Legs Split"
     }
@@ -78,4 +68,25 @@ class DataStoreManager(private val context: Context) {
             preferences[WORKOUT_SPLIT_KEY] = split
         }
     }
+
+    val workoutDayFlow: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[WORKOUT_DAY_KEY] ?: "Push Day"
+    }
+
+    suspend fun setWorkoutDay(day: String) {
+        context.dataStore.edit { preferences ->
+            preferences[WORKOUT_DAY_KEY] = day
+        }
+    }
+
+    val currentDateFlow: Flow<String?> = context.dataStore.data.map { preferences ->
+        preferences[CURRENT_DATE_KEY]
+    }
+
+    suspend fun setCurrentDate(date: String) {
+        context.dataStore.edit { preferences ->
+            preferences[CURRENT_DATE_KEY] = date
+        }
+    }
+
 }

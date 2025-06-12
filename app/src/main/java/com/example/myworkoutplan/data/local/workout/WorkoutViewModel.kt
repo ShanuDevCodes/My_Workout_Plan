@@ -234,7 +234,6 @@ class WorkoutViewModel(
                     )
                 }
             }
-
             is WorkoutEvent.GetWorkoutPlansForSplitAndWeekDay -> {
                 viewModelScope.launch {
                     dao.getWorkoutPlansForSplitNameAndWeekDay(
@@ -253,6 +252,17 @@ class WorkoutViewModel(
                         weekDayId = event.weekDayID
                     ).collect { splitDay ->
                         _state.update { it.copy(splitDay = splitDay) }
+                    }
+                }
+            }
+
+            is WorkoutEvent.GetSplitDayForSplitAndDayName -> {
+                viewModelScope.launch {
+                    dao.getSplitDayForSplitAndDayName(
+                        splitName = event.splitName,
+                        splitDayName = event.splitDayName
+                    ).collect { splitDay ->
+                        _state.update { it.copy(currentSplitDay = splitDay) }
                     }
                 }
             }

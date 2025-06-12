@@ -55,6 +55,7 @@ import com.example.myworkoutplan.features.mainapp.ui.workout.DayScreen
 import com.example.myworkoutplan.features.mainapp.viewmodel.HomeScreenViewModel
 import com.example.myworkoutplan.features.mainapp.viewmodel.HomeScreenViewModelFactory
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 @SuppressLint("UseOfNonLambdaOffsetOverload")
 @RequiresApi(Build.VERSION_CODES.O)
@@ -77,12 +78,18 @@ fun HomeScreen() {
         factory = WorkoutViewModelFactory(workoutDao)
     )
     val dayOfWeek = viewModel.dayOfWeek.collectAsState()
-    val workoutSplit by viewModel.workoutSplitFlow.collectAsState(initial = "Push,Pull,Legs Split")
     val workoutState by workoutViewModel.state.collectAsState()
-    LaunchedEffect(Unit) {
-        workoutViewModel.onEvent(WorkoutEvent.GetSplitDayForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
-        workoutViewModel.onEvent(WorkoutEvent.GetWorkoutPlansForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
+    LaunchedEffect(viewModel.workoutDayFlow) {
+        val workoutSplit = viewModel.workoutSplitFlow.first()
+        val workoutDay = viewModel.workoutDayFlow.first()
+        workoutViewModel.onEvent(
+            WorkoutEvent.GetSplitDayForSplitAndDayName(
+                workoutSplit,
+                workoutDay
+            )
+        )
     }
+    val currentSplitDay = workoutState.currentSplitDay?.splitDayName?: "Rest Day"
 
     Column {
         Column(
@@ -95,7 +102,7 @@ fun HomeScreen() {
                 style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.primary
             )
-            if ( workoutState.splitDay != null ) {
+            if ( currentSplitDay != "Rest Day" ) {
                 Spacer(modifier = Modifier.height(2.dp))
                 // Subtitle: smaller, lighter, secondary emphasis
                 Text(
@@ -110,7 +117,7 @@ fun HomeScreen() {
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
             )
         }
-        if (workoutState.splitDay != null) {
+        if (currentSplitDay != "Rest Day") {
             val fabScaleMini = remember { Animatable(0f) }
             val fabOffsetY = remember { Animatable(0f) }
             val fabScale = remember { Animatable(0f) }
@@ -145,7 +152,7 @@ fun HomeScreen() {
             }
             Box(modifier = Modifier
                 .fillMaxSize()) {
-                DayScreen(visible,workoutState.splitDay!!.id, workoutViewModel)
+                DayScreen(visible,workoutState.currentSplitDay!!.id, workoutViewModel)
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

@@ -130,4 +130,15 @@ interface WorkoutDao {
     WHERE ws.splitName = :splitName AND sdwdcr.weekDayId = :weekDayId
 """)
     fun getSplitDayForSplitAndWeekDay(splitName: String, weekDayId: Int): Flow<SplitDay?>
+
+    @Query("""
+    SELECT sd.* FROM split_days AS sd
+    INNER JOIN workout_splits AS ws ON sd.splitId = ws.id
+    WHERE ws.splitName = :splitName AND sd.splitDayName = :splitDayName
+    LIMIT 1
+""")
+    fun getSplitDayForSplitAndDayName(
+        splitName: String,
+        splitDayName: String
+    ): Flow<SplitDay?>
 }
