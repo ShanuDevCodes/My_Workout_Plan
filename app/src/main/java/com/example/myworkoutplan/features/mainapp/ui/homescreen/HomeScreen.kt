@@ -170,21 +170,21 @@ fun HomeScreen() {
                 ) {
                     Box(contentAlignment = Alignment.BottomEnd) {
                         if (isPortrait) {
-                            FloatingActionButton(
-                                onClick = { /*workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog)*/ },
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .offset(y = fabOffsetY.value.dp)
-                                    .scale(fabScaleMini.value),
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                                elevation = FloatingActionButtonDefaults.elevation(2.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.shuffle),
-                                    contentDescription = "Swap",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
+//                            FloatingActionButton(
+//                                onClick = { workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog) },
+//                                modifier = Modifier
+//                                    .size(48.dp)
+//                                    .offset(y = fabOffsetY.value.dp)
+//                                    .scale(fabScaleMini.value),
+//                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+//                                elevation = FloatingActionButtonDefaults.elevation(2.dp)
+//                            ) {
+//                                Icon(
+//                                    painter = painterResource(id = R.drawable.shuffle),
+//                                    contentDescription = "Swap",
+//                                    modifier = Modifier.size(24.dp)
+//                                )
+//                            }
                             ExtendedFloatingActionButton(
                                 onClick = {
                                     context.startActivity(
@@ -338,23 +338,23 @@ fun HomeScreen() {
                             )
                         }
                     }
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            /*workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog)*/
-                        },
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.shuffle),
-                                contentDescription = "Swap",
-                                modifier = Modifier.size(24.dp)
-                            )
-                        },
-                        text = { Text("Swap") },
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        elevation = FloatingActionButtonDefaults.elevation(2.dp),
-                        modifier = Modifier
-                            .scale(fabScale.value),
-                    )
+//                    ExtendedFloatingActionButton(
+//                        onClick = {
+//                            workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog)
+//                        },
+//                        icon = {
+//                            Icon(
+//                                painter = painterResource(id = R.drawable.shuffle),
+//                                contentDescription = "Swap",
+//                                modifier = Modifier.size(24.dp)
+//                            )
+//                        },
+//                        text = { Text("Swap") },
+//                        containerColor = MaterialTheme.colorScheme.primary,
+//                        elevation = FloatingActionButtonDefaults.elevation(2.dp),
+//                        modifier = Modifier
+//                            .scale(fabScale.value),
+//                    )
 
                 }
             }

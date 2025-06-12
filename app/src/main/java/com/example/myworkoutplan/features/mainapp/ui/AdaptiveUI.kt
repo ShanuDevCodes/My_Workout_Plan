@@ -216,21 +216,21 @@ fun AdaptiveUI(){
                                 }
                             }
                             if (true) {
-                                FloatingActionButton(
-                                    onClick = {  },
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .offset(y = fabOffsetY.value.dp)
-                                        .scale(fabScaleMini.value),
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                                    elevation = FloatingActionButtonDefaults.elevation(2.dp)
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.shuffle),
-                                        contentDescription = "Swap",
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
+//                                FloatingActionButton(
+//                                    onClick = {  },
+//                                    modifier = Modifier
+//                                        .size(48.dp)
+//                                        .offset(y = fabOffsetY.value.dp)
+//                                        .scale(fabScaleMini.value),
+//                                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+//                                    elevation = FloatingActionButtonDefaults.elevation(2.dp)
+//                                ) {
+//                                    Icon(
+//                                        painter = painterResource(id = R.drawable.shuffle),
+//                                        contentDescription = "Swap",
+//                                        modifier = Modifier.size(24.dp)
+//                                    )
+//                                }
                                 FloatingActionButton(
                                     onClick = {
                                         context.startActivity(
