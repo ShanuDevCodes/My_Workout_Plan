@@ -18,6 +18,8 @@ import com.example.myworkoutplan.core.DataStoreManager
 import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
+import com.example.myworkoutplan.features.mainapp.viewmodel.HomeScreenViewModel
+import com.example.myworkoutplan.features.mainapp.viewmodel.HomeScreenViewModelFactory
 import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModel
 import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModelFactory
 import com.example.myworkoutplan.features.workoutsession.ui.WorkoutSessionNav
@@ -47,11 +49,20 @@ class WorkoutActivity : ComponentActivity() {
             val workoutViewModel: WorkoutViewModel = viewModel(
                 factory = WorkoutViewModelFactory(workoutDao)
             )
+            val homeScreenViewModel: HomeScreenViewModel = viewModel(
+                factory = HomeScreenViewModelFactory(dataStore)
+            )
+            val dayOfWeek = homeScreenViewModel.dayOfWeek.collectAsState()
+            val workoutSplit by homeScreenViewModel.workoutSplitFlow.collectAsState(initial = "Push,Pull,Legs Split")
             val workoutState by workoutViewModel.state.collectAsState()
+            LaunchedEffect(Unit) {
+                workoutViewModel.onEvent(WorkoutEvent.GetSplitDayForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
+                workoutViewModel.onEvent(WorkoutEvent.GetWorkoutPlansForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
+            }
             val currentWorkout by workoutSessionViewModel.currentWorkout.collectAsState()
-            LaunchedEffect(workoutState.workoutWithMuscleGroups, currentWorkout) {
-                if (workoutState.workoutWithMuscleGroups.isNotEmpty() && currentWorkout.isEmpty()) {
-                    workoutSessionViewModel.startSession(workoutState.workoutWithMuscleGroups)
+            LaunchedEffect(workoutState.workouts, currentWorkout) {
+                if (workoutState.workouts.isNotEmpty() && currentWorkout.isEmpty()) {
+                    workoutSessionViewModel.startSession(workoutState.workouts)
                 }
             }
 
