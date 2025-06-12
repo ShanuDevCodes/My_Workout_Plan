@@ -112,4 +112,22 @@ interface WorkoutDao {
 
     @Upsert
     suspend fun upsertSplitDayWeekDayCrossRef(crossRef: SplitDayWeekDayCrossRef): Long
+
+    @Query("""
+    SELECT wp.* FROM workout_plans AS wp
+    INNER JOIN splitdayworkoutcrossref AS sdwcr ON wp.id = sdwcr.workoutPlanId
+    INNER JOIN split_days AS sd ON sdwcr.splitDayId = sd.id
+    INNER JOIN workout_splits AS ws ON sd.splitId = ws.id
+    INNER JOIN splitdayweekdaycrossref AS sdwdcr ON sd.id = sdwdcr.splitDayId
+    WHERE ws.splitName = :splitName AND sdwdcr.weekDayId = :weekDayId
+""")
+    fun getWorkoutPlansForSplitNameAndWeekDay(splitName: String, weekDayId: Int): Flow<List<WorkoutPlan>>
+
+    @Query("""
+    SELECT * FROM split_days AS sd
+    INNER JOIN workout_splits AS ws ON sd.splitId = ws.id
+    INNER JOIN splitdayweekdaycrossref AS sdwdcr ON sd.id = sdwdcr.splitDayId
+    WHERE ws.splitName = :splitName AND sdwdcr.weekDayId = :weekDayId
+""")
+    fun getSplitDayForSplitAndWeekDay(splitName: String, weekDayId: Int): Flow<SplitDay?>
 }

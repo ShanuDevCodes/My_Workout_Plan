@@ -61,36 +61,44 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.WorkoutActivity
 import com.example.myworkoutplan.core.AppDatabase
+import com.example.myworkoutplan.core.DataStoreManager
+import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekEvent
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekState
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModel
 import com.example.myworkoutplan.data.remote.firebaseauth.FirebaseViewModel
 import com.example.myworkoutplan.features.mainapp.ui.workout.DayScreen
 import com.example.myworkoutplan.features.mainapp.viewmodel.HomeScreenViewModel
+import com.example.myworkoutplan.features.mainapp.viewmodel.HomeScreenViewModelFactory
 import kotlinx.coroutines.delay
 import java.time.DayOfWeek
 
 @SuppressLint("UseOfNonLambdaOffsetOverload")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreenViewModel = viewModel()) {
+fun HomeScreen() {
+    val context = LocalContext.current
+    val dataStoreManager= remember { DataStoreManager(context) }
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     val firebaseViewModel: FirebaseViewModel = viewModel()
     val userName = firebaseViewModel.currentUser.value?.displayName ?: "Guest"
+    val viewModel: HomeScreenViewModel = viewModel(
+        factory = HomeScreenViewModelFactory(dataStoreManager)
+    )
     val greeting = viewModel.greeting
     val visible = viewModel.visible
-    val context = LocalContext.current
     val db = remember { AppDatabase.getInstance(context) }
-    val workoutWeekState by workoutWeekViewModel.state.collectAsState()
     val workoutDao = remember {db.WorkoutDao()}
     val workoutViewModel: WorkoutViewModel = viewModel(
         factory = WorkoutViewModelFactory(workoutDao)
     )
-//    val title = workoutWeekState.currentWorkoutDay?.workoutType?:"Rest Day"
-    val title = 2
+    val dayOfWeek = viewModel.dayOfWeek.collectAsState()
+    val workoutSplit by viewModel.workoutSplitFlow.collectAsState(initial = "Push,Pull,Legs Split")
+    val workoutState by workoutViewModel.state.collectAsState()
+    LaunchedEffect(Unit) {
+        workoutViewModel.onEvent(WorkoutEvent.GetSplitDayForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
+        workoutViewModel.onEvent(WorkoutEvent.GetWorkoutPlansForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
+    }
 
     Column {
         Column(
@@ -103,7 +111,7 @@ fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreen
                 style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.primary
             )
-            if (workoutWeekState.currentWorkoutDay?.workoutType != "Rest Day" ) {
+            if ( workoutState.splitDay != null ) {
                 Spacer(modifier = Modifier.height(2.dp))
                 // Subtitle: smaller, lighter, secondary emphasis
                 Text(
@@ -118,7 +126,7 @@ fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreen
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
             )
         }
-        if (workoutWeekState.currentWorkoutDay?.workoutType != "Rest Day") {
+        if (workoutState.splitDay != null) {
             val fabScaleMini = remember { Animatable(0f) }
             val fabOffsetY = remember { Animatable(0f) }
             val fabScale = remember { Animatable(0f) }
@@ -153,7 +161,7 @@ fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreen
             }
             Box(modifier = Modifier
                 .fillMaxSize()) {
-                DayScreen(visible,title, workoutViewModel)
+                DayScreen(visible,workoutState.splitDay!!.id, workoutViewModel)
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -163,7 +171,7 @@ fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreen
                     Box(contentAlignment = Alignment.BottomEnd) {
                         if (isPortrait) {
                             FloatingActionButton(
-                                onClick = { workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog) },
+                                onClick = { /*workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog)*/ },
                                 modifier = Modifier
                                     .size(48.dp)
                                     .offset(y = fabOffsetY.value.dp)
@@ -332,7 +340,7 @@ fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreen
                     }
                     ExtendedFloatingActionButton(
                         onClick = {
-                            workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog)
+                            /*workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog)*/
                         },
                         icon = {
                             Icon(
@@ -352,94 +360,94 @@ fun HomeScreen(workoutWeekViewModel: WorkoutWeekViewModel, viewModel: HomeScreen
             }
         }
     }
-    if (workoutWeekState.isSwapping) {
-        SwapWorkoutWeekDialog(workoutWeekState, workoutWeekViewModel)
-    }
+//    if (workoutWeekState.isSwapping) {
+//        SwapWorkoutWeekDialog(workoutWeekState, workoutWeekViewModel)
+//    }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun SwapWorkoutWeekDialog(
-    state: WorkoutWeekState,
-    viewModel: WorkoutWeekViewModel,
-){
-    val workoutDays = state.availableSwapDays
-    var selectedDay by remember { mutableIntStateOf(0) }
-
-    AlertDialog(
-        onDismissRequest = { viewModel.onEvent(WorkoutWeekEvent.HideSwapDialog) },
-        title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "Swap Today's Workout With",
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.weight(1f) // Text takes up all available space
-                )
-                IconButton(
-                    onClick = { /* handle click */ },
-                    modifier = Modifier // No weight; aligns to end of Row
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Settings"
-                    )
-                }
-            }
-        },
-        text = {
-            Column {
-                workoutDays.forEach { day ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        TextButton(
-                            onClick = { selectedDay = day.dayOfWeek },
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text(
-                                text = "${DayOfWeek.of(day.dayOfWeek).name.lowercase().replaceFirstChar { it.uppercase() }} - ${day.workoutType}",
-                                modifier = Modifier.fillMaxWidth(),
-                                color = MaterialTheme.colorScheme.secondary,
-                                textAlign = TextAlign.Start
-                            )
-                        }
-                        RadioButton(
-                            selected = selectedDay == day.dayOfWeek,
-                            onClick = { selectedDay = day.dayOfWeek },
-                            colors = RadioButtonDefaults.colors(
-                                selectedColor = MaterialTheme.colorScheme.primary,
-                                unselectedColor = MaterialTheme.colorScheme.secondary
-                            )
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            FilledTonalButton(
-                onClick = {
-                    viewModel.onEvent(WorkoutWeekEvent.SwapWorkoutWeek(selectedDay))
-                    viewModel.onEvent(WorkoutWeekEvent.HideSwapDialog)
-                },
-                colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ),
-                enabled = selectedDay != 0
-            ) {
-                Text("Confirm")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = { viewModel.onEvent(WorkoutWeekEvent.HideSwapDialog) }) {
-                Text("Cancel")
-            }
-        }
-    )
-}
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Composable
+//fun SwapWorkoutWeekDialog(
+//    state: WorkoutWeekState,
+//    viewModel: WorkoutWeekViewModel,
+//){
+//    val workoutDays = state.availableSwapDays
+//    var selectedDay by remember { mutableIntStateOf(0) }
+//
+//    AlertDialog(
+//        onDismissRequest = { viewModel.onEvent(WorkoutWeekEvent.HideSwapDialog) },
+//        title = {
+//            Row(
+//                verticalAlignment = Alignment.CenterVertically,
+//                modifier = Modifier.fillMaxWidth()
+//            ) {
+//                Text(
+//                    text = "Swap Today's Workout With",
+//                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+//                    color = MaterialTheme.colorScheme.primary,
+//                    modifier = Modifier.weight(1f) // Text takes up all available space
+//                )
+//                IconButton(
+//                    onClick = { /* handle click */ },
+//                    modifier = Modifier // No weight; aligns to end of Row
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.Settings,
+//                        contentDescription = "Settings"
+//                    )
+//                }
+//            }
+//        },
+//        text = {
+//            Column {
+//                workoutDays.forEach { day ->
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                    ) {
+//                        TextButton(
+//                            onClick = { selectedDay = day.dayOfWeek },
+//                            modifier = Modifier.weight(1f),
+//                        ) {
+//                            Text(
+//                                text = "${DayOfWeek.of(day.dayOfWeek).name.lowercase().replaceFirstChar { it.uppercase() }} - ${day.workoutType}",
+//                                modifier = Modifier.fillMaxWidth(),
+//                                color = MaterialTheme.colorScheme.secondary,
+//                                textAlign = TextAlign.Start
+//                            )
+//                        }
+//                        RadioButton(
+//                            selected = selectedDay == day.dayOfWeek,
+//                            onClick = { selectedDay = day.dayOfWeek },
+//                            colors = RadioButtonDefaults.colors(
+//                                selectedColor = MaterialTheme.colorScheme.primary,
+//                                unselectedColor = MaterialTheme.colorScheme.secondary
+//                            )
+//                        )
+//                    }
+//                }
+//            }
+//        },
+//        confirmButton = {
+//            FilledTonalButton(
+//                onClick = {
+//                    viewModel.onEvent(WorkoutWeekEvent.SwapWorkoutWeek(selectedDay))
+//                    viewModel.onEvent(WorkoutWeekEvent.HideSwapDialog)
+//                },
+//                colors = ButtonDefaults.filledTonalButtonColors(
+//                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+//                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+//                ),
+//                enabled = selectedDay != 0
+//            ) {
+//                Text("Confirm")
+//            }
+//        },
+//        dismissButton = {
+//            TextButton(onClick = { viewModel.onEvent(WorkoutWeekEvent.HideSwapDialog) }) {
+//                Text("Cancel")
+//            }
+//        }
+//    )
+//}

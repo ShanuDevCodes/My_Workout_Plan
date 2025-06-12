@@ -18,8 +18,6 @@ import com.example.myworkoutplan.core.DataStoreManager
 import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModel
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModelFactory
 import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModel
 import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModelFactory
 import com.example.myworkoutplan.features.workoutsession.ui.WorkoutSessionNav
@@ -45,26 +43,10 @@ class WorkoutActivity : ComponentActivity() {
             val dynamicColorOption by remember { derivedStateOf { settingsViewModel.dynamicColorOption } }
             val workoutSessionViewModel: WorkoutSessionViewModel = viewModel()
             val db = remember { AppDatabase.getInstance(applicationContext) }
-            val workoutWeekDao = db.WorkoutWeekDao()
-            val workoutWeekViewModel: WorkoutWeekViewModel = viewModel(
-                factory = WorkoutWeekViewModelFactory(dataStore, workoutWeekDao)
-            )
-            LaunchedEffect(Unit) {
-                workoutWeekViewModel.getDay()
-            }
-            val workoutWeekState by workoutWeekViewModel.state.collectAsState()
-            val workoutPlan = workoutWeekState.currentWorkoutDay?.workoutType?:"Rest Day"
             val workoutDao = remember {db.WorkoutDao()}
             val workoutViewModel: WorkoutViewModel = viewModel(
                 factory = WorkoutViewModelFactory(workoutDao)
             )
-            val muscleGroups = when(workoutPlan) {
-                "Push Day" -> listOf("Chest", "Triceps", "Shoulders")
-                "Pull Day" -> listOf("Back", "Biceps")
-                "Leg Day" -> listOf("Quads", "Glutes", "Hamstrings", "Calves")
-                else -> emptyList()
-            }
-            workoutViewModel.onEvent(WorkoutEvent.GetWorkoutsByMuscleGroup(muscleGroups))
             val workoutState by workoutViewModel.state.collectAsState()
             val currentWorkout by workoutSessionViewModel.currentWorkout.collectAsState()
             LaunchedEffect(workoutState.workoutWithMuscleGroups, currentWorkout) {

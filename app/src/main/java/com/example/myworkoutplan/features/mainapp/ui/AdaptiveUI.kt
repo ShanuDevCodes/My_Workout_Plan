@@ -66,9 +66,6 @@ import com.example.myworkoutplan.R
 import com.example.myworkoutplan.WorkoutActivity
 import com.example.myworkoutplan.core.AppDatabase
 import com.example.myworkoutplan.core.DataStoreManager
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekEvent
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModel
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekViewModelFactory
 import com.example.myworkoutplan.features.mainapp.data.items
 import com.example.myworkoutplan.features.mainapp.ui.homescreen.HomeScreen
 import com.example.myworkoutplan.features.mainapp.ui.plans_navigation.PlansScreenView
@@ -119,14 +116,6 @@ fun AdaptiveUI(){
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     val dataStore = remember { DataStoreManager(context) }
     val db = remember { AppDatabase.getInstance(context) }
-    val dao = db.WorkoutWeekDao()
-    val workoutWeekViewModel: WorkoutWeekViewModel = viewModel(
-        factory = WorkoutWeekViewModelFactory(dataStore, dao)
-    )
-    val workoutWeekState by workoutWeekViewModel.state.collectAsState()
-    LaunchedEffect(Unit) {
-        workoutWeekViewModel.getDay()
-    }
     if (isPortrait) {
         Surface(
             modifier = Modifier
@@ -178,7 +167,7 @@ fun AdaptiveUI(){
                     }
                 },
             ) { innerPadding ->
-                MainNavigation(innerPadding,rootNavController,workoutWeekViewModel)
+                MainNavigation(innerPadding,rootNavController)
             }
         }
     }else{
@@ -226,9 +215,9 @@ fun AdaptiveUI(){
                                     }
                                 }
                             }
-                            if (workoutWeekState.currentWorkoutDay?.workoutType != "Rest Day") {
+                            if (true) {
                                 FloatingActionButton(
-                                    onClick = { workoutWeekViewModel.onEvent(WorkoutWeekEvent.ShowSwapDialog) },
+                                    onClick = {  },
                                     modifier = Modifier
                                         .size(48.dp)
                                         .offset(y = fabOffsetY.value.dp)
@@ -308,7 +297,7 @@ fun AdaptiveUI(){
                     containerColor = MaterialTheme.colorScheme.background,
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->
-                    MainNavigation(innerPadding,rootNavController,workoutWeekViewModel)
+                    MainNavigation(innerPadding,rootNavController)
                 }
             }
         }
@@ -320,7 +309,6 @@ fun AdaptiveUI(){
 fun MainNavigation(
     innerPadding: PaddingValues,
     rootNavController: NavHostController,
-    workoutWeekViewModel: WorkoutWeekViewModel
 ) {
     Box(
         modifier = Modifier
@@ -338,7 +326,7 @@ fun MainNavigation(
             },
         ) {
             composable<Destination.Home> {
-                HomeScreen(workoutWeekViewModel)
+                HomeScreen()
             }
             composable<Destination.WorkoutList> {
                 WorkoutListScreen()

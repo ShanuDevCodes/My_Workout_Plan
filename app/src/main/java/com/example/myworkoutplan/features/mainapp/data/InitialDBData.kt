@@ -110,11 +110,11 @@ val splitDayToWeekDays = listOf(
 
 
 val weekDays = listOf(
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
+    1 to "Monday",
+    2 to "Tuesday",
+    3 to "Wednesday",
+    4 to "Thursday",
+    5 to "Friday",
+    6 to "Saturday",
+    7 to "Sunday"
 )

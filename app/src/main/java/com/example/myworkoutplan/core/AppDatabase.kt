@@ -13,15 +13,12 @@ import com.example.myworkoutplan.data.local.workout.WorkoutDao
 import com.example.myworkoutplan.data.local.workout.WorkoutMuscleCrossRef
 import com.example.myworkoutplan.data.local.workout.WorkoutPlan
 import com.example.myworkoutplan.data.local.workout.WorkoutSplit
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeek
-import com.example.myworkoutplan.data.local.workoutweek.WorkoutWeekDao
 
 @Database(
-    entities = [WorkoutPlan::class, WorkoutWeek::class, MuscleGroup::class, WorkoutMuscleCrossRef::class, WorkoutSplit::class, SplitDay::class, SplitDayWorkoutCrossRef::class, WeekDay::class, SplitDayWeekDayCrossRef::class],
+    entities = [WorkoutPlan::class, MuscleGroup::class, WorkoutMuscleCrossRef::class, WorkoutSplit::class, SplitDay::class, SplitDayWorkoutCrossRef::class, WeekDay::class, SplitDayWeekDayCrossRef::class],
     version = 3
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun WorkoutWeekDao(): WorkoutWeekDao
     abstract fun WorkoutDao(): WorkoutDao
     companion object {
         @Volatile

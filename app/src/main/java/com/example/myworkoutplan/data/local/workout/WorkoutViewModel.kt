@@ -234,6 +234,28 @@ class WorkoutViewModel(
                     )
                 }
             }
+
+            is WorkoutEvent.GetWorkoutPlansForSplitAndWeekDay -> {
+                viewModelScope.launch {
+                    dao.getWorkoutPlansForSplitNameAndWeekDay(
+                        splitName = event.splitName,
+                        weekDayId = event.weekDayID
+                    ).collect { workoutPlans ->
+                        _state.update { it.copy(workouts = workoutPlans) }
+                    }
+                }
+            }
+
+            is WorkoutEvent.GetSplitDayForSplitAndWeekDay -> {
+                viewModelScope.launch {
+                    dao.getSplitDayForSplitAndWeekDay(
+                        splitName = event.splitName,
+                        weekDayId = event.weekDayID
+                    ).collect { splitDay ->
+                        _state.update { it.copy(splitDay = splitDay) }
+                    }
+                }
+            }
         }
     }
 
@@ -310,9 +332,9 @@ class WorkoutViewModel(
 
         // 7. Insert all week days and keep a map of dayName -> id
         val weekDayIdMap = mutableMapOf<String, Long>()
-        for (dayName in weekDays) {
-            val id = dao.upsertWeekDay(WeekDay(dayName = dayName))
-            weekDayIdMap[dayName] = id
+        for (day in weekDays) {
+            val id = dao.upsertWeekDay(WeekDay(id = day.first,dayName = day.second))
+            weekDayIdMap[day.second] = id
         }
 
         // 8. Insert split day ↔ week day cross refs

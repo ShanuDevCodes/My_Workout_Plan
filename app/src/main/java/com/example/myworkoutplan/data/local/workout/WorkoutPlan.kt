@@ -103,7 +103,8 @@ data class SplitDayWorkoutCrossRef(
 
 @Entity(tableName = "week_days")
 data class WeekDay(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey
+    val id: Int = 0,
     val dayName: String // e.g., "Monday"
 )
 
