@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -28,6 +29,7 @@ import com.example.myworkoutplan.data.local.workout.SplitDay
 import com.example.myworkoutplan.data.local.workout.WorkoutEvent
 import com.example.myworkoutplan.data.local.workout.WorkoutPlan
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
+import androidx.compose.runtime.getValue
 
 @Composable
 fun AddToSplitCards(
@@ -35,7 +37,11 @@ fun AddToSplitCards(
     workoutPlan: WorkoutPlan,
     workoutViewModel: WorkoutViewModel
 ) {
-    if(!workoutViewModel.isWorkoutInSplitDay(workoutPlan.id, splitDay!!.id)) {
+    val isWorkoutInSplit by workoutViewModel.isWorkoutInSplitDay(
+        workoutPlan.id,
+        splitDay!!.id
+    ).collectAsState(initial = false)
+    if(!isWorkoutInSplit) {
         Card(
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),

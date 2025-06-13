@@ -20,7 +20,7 @@ import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 @Composable
 fun AddToSplitScreen(splitDayId : Int, workoutViewModel: WorkoutViewModel) {
     val workoutState by workoutViewModel.state.collectAsState()
-    LaunchedEffect(splitDayId) {
+    LaunchedEffect(Unit) {
         workoutViewModel.onEvent(WorkoutEvent.GetWorkoutBySplitDay(splitDayId))
         workoutViewModel.onEvent(WorkoutEvent.GetSplitDay(splitDayId))
         workoutViewModel.onEvent(WorkoutEvent.GetAllWorkouts)

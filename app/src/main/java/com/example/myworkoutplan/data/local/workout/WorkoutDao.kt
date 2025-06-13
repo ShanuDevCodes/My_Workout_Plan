@@ -156,4 +156,7 @@ interface WorkoutDao {
         splitName: String,
         splitDayName: String
     ): Flow<List<WorkoutPlan>>
+
+    @Query("SELECT COUNT(*) FROM splitdayworkoutcrossref WHERE splitDayId = :splitDayId AND workoutPlanId = :workoutId")
+    fun isWorkoutInSplitDayFlow(splitDayId: Int, workoutId: Int): Flow<Int>
 }

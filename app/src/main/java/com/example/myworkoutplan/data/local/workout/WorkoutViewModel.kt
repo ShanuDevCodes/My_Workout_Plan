@@ -8,8 +8,10 @@ import com.example.myworkoutplan.features.mainapp.data.allWorkout
 import com.example.myworkoutplan.features.mainapp.data.allWorkoutSplit
 import com.example.myworkoutplan.features.mainapp.data.splitDayToWeekDays
 import com.example.myworkoutplan.features.mainapp.data.weekDays
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -383,10 +385,8 @@ class WorkoutViewModel(
         }
     }
 
-    fun isWorkoutInSplitDay(workoutId: Int, splitDayId: Int): Boolean {
-        val splitDayWorkoutCrossRef = runBlocking {
-            dao.getSplitDayWorkoutCrossRef(splitDayId, workoutId)
-        }
-        return splitDayWorkoutCrossRef != null
+    fun isWorkoutInSplitDay(workoutId: Int, splitDayId: Int): Flow<Boolean> {
+        return dao.isWorkoutInSplitDayFlow(splitDayId, workoutId)
+            .map { count -> count > 0 }
     }
 }

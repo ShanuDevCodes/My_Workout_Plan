@@ -48,7 +48,6 @@ import com.example.myworkoutplan.core.AppDatabase
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
 import com.example.myworkoutplan.features.mainapp.ui.workout.AddToSplitScreen
-import com.example.myworkoutplan.features.mainapp.ui.workout.AddWorkoutDialog
 import com.example.myworkoutplan.features.mainapp.ui.workout.DayScreen
 import com.example.myworkoutplan.features.mainapp.ui.workout.DeleteFromSplitScreen
 import com.example.myworkoutplan.features.mainapp.viewmodel.PlansScreenViewModel
@@ -256,13 +255,6 @@ fun PlansScreenView(splitDayId: Int,viewModel: PlansScreenViewModel = viewModel(
                             )
                         }
                     }
-                }
-                if (workoutState.isAddingWorkout) {
-                    AddWorkoutDialog(
-                        state = workoutState,
-                        workoutCategory = "All",
-                        onEvent = workoutViewModel::onEvent
-                    )
                 }
             }
         }
