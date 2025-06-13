@@ -25,4 +25,6 @@ sealed interface WorkoutEvent {
     data class GetWorkoutPlansForSplitAndWeekDay(val splitName: String, val weekDayID: Int) : WorkoutEvent
     data class GetSplitDayForSplitAndWeekDay(val splitName: String, val weekDayID: Int) : WorkoutEvent
     data class GetSplitDayForSplitAndDayName(val splitName: String, val splitDayName: String) : WorkoutEvent
+    data class GetWorkoutSplitByName(val splitName: String) : WorkoutEvent
+    data class GetWorkoutPlansForSplitAndDay(val splitName: String, val splitDayName: String) : WorkoutEvent
 }

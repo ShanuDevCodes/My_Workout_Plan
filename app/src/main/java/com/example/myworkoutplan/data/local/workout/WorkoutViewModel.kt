@@ -266,6 +266,25 @@ class WorkoutViewModel(
                     }
                 }
             }
+
+            is WorkoutEvent.GetWorkoutSplitByName -> {
+                viewModelScope.launch {
+                    dao.getWorkoutSplitByName(event.splitName).collect { split ->
+                        _state.update { it.copy(split = split) }
+                    }
+                }
+            }
+
+            is WorkoutEvent.GetWorkoutPlansForSplitAndDay -> {
+                viewModelScope.launch {
+                    dao.getWorkoutPlansForSplitAndDay(
+                        splitName = event.splitName,
+                        splitDayName = event.splitDayName
+                    ).collect { fetchedWorkouts ->
+                        _state.update { it.copy(workouts = fetchedWorkouts) }
+                    }
+                }
+            }
         }
     }
 

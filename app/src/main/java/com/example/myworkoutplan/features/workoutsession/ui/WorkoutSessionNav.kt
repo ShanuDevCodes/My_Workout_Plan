@@ -60,7 +60,6 @@ fun WorkoutSessionNav(workoutSessionViewModel: WorkoutSessionViewModel) {
         }
         composable<Congratulation> {
             CongratulationsScreen(
-                workoutSessionViewModel = workoutSessionViewModel,
                 onDismiss = {
                     (context as? Activity)?.finish()
                 }

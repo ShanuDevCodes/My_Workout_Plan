@@ -25,6 +25,7 @@ import com.example.myworkoutplan.features.settings.viewmodel.SettingsViewModelFa
 import com.example.myworkoutplan.features.workoutsession.ui.WorkoutSessionNav
 import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
 import com.example.myworkoutplan.theme.MyWorkoutPlanTheme
+import kotlinx.coroutines.flow.first
 
 class WorkoutActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -53,11 +54,15 @@ class WorkoutActivity : ComponentActivity() {
                 factory = HomeScreenViewModelFactory(dataStore)
             )
             val dayOfWeek = homeScreenViewModel.dayOfWeek.collectAsState()
-            val workoutSplit by homeScreenViewModel.workoutSplitFlow.collectAsState(initial = "Push,Pull,Legs Split")
+//            val workoutSplit by homeScreenViewModel.workoutSplitFlow.collectAsState(initial = "Push,Pull,Legs Split")
             val workoutState by workoutViewModel.state.collectAsState()
+
             LaunchedEffect(Unit) {
-                workoutViewModel.onEvent(WorkoutEvent.GetSplitDayForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
-                workoutViewModel.onEvent(WorkoutEvent.GetWorkoutPlansForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
+                val workoutSplit = homeScreenViewModel.workoutSplitFlow.first()
+                val workoutDay = homeScreenViewModel.workoutDayFlow.first()
+                workoutViewModel.onEvent(WorkoutEvent.GetWorkoutPlansForSplitAndDay(workoutSplit,workoutDay))
+//                workoutViewModel.onEvent(WorkoutEvent.GetSplitDayForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
+//                workoutViewModel.onEvent(WorkoutEvent.GetWorkoutPlansForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
             }
             val currentWorkout by workoutSessionViewModel.currentWorkout.collectAsState()
             LaunchedEffect(workoutState.workouts, currentWorkout) {

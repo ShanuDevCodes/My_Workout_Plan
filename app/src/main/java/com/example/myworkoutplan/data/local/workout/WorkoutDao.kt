@@ -101,6 +101,9 @@ interface WorkoutDao {
     @Query("SELECT * FROM workout_splits WHERE id = :splitId")
     fun getWorkoutSplitsBySplitId(splitId: Int): Flow<WorkoutSplit?>
 
+    @Query("SELECT * From workout_splits WHERE splitName = :splitName")
+    fun getWorkoutSplitByName(splitName: String): Flow<WorkoutSplit?>
+
     @Query("SELECT * FROM splitdayworkoutcrossref where splitDayId = :splitDayId and workoutPlanId = :workoutId")
     suspend fun getSplitDayWorkoutCrossRef(splitDayId: Int, workoutId: Int): SplitDayWorkoutCrossRef?
 
@@ -141,4 +144,16 @@ interface WorkoutDao {
         splitName: String,
         splitDayName: String
     ): Flow<SplitDay?>
+
+    @Query("""
+    SELECT wp.* FROM workout_plans wp
+    INNER JOIN splitdayworkoutcrossref sdwcr ON wp.id = sdwcr.workoutPlanId
+    INNER JOIN split_days sd ON sdwcr.splitDayId = sd.id
+    INNER JOIN workout_splits ws ON sd.splitId = ws.id
+    WHERE ws.splitName = :splitName AND sd.splitDayName = :splitDayName
+""")
+    fun getWorkoutPlansForSplitAndDay(
+        splitName: String,
+        splitDayName: String
+    ): Flow<List<WorkoutPlan>>
 }

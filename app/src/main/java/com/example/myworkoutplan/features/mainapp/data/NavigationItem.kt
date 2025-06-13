@@ -2,15 +2,11 @@ package com.example.myworkoutplan.features.mainapp.data
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assessment
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocalLibrary
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Assessment
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocalLibrary
 import androidx.compose.material.icons.outlined.Menu

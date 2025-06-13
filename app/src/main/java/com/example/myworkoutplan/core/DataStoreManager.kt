@@ -70,7 +70,7 @@ class DataStoreManager(private val context: Context) {
     }
 
     val workoutDayFlow: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[WORKOUT_DAY_KEY] ?: "Push Day"
+        preferences[WORKOUT_DAY_KEY] ?: "Rest Day"
     }
 
     suspend fun setWorkoutDay(day: String) {

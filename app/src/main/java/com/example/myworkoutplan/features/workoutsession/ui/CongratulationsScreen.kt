@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
 
 @Composable
-fun CongratulationsScreen(workoutSessionViewModel: WorkoutSessionViewModel,
+fun CongratulationsScreen(
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
@@ -53,14 +53,6 @@ fun CongratulationsScreen(workoutSessionViewModel: WorkoutSessionViewModel,
                     .widthIn(max = 360.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-//                 Optional: Add a trophy or celebration image
-//                 Replace with your own resource if available
-//                 Image(
-//                     painter = painterResource(id = R.drawable.ic_trophy),
-//                     contentDescription = null,
-//                     modifier = Modifier.size(80.dp)
-//                 )
-
                 Text(
                     text = "Congratulations!",
                     fontSize = 32.sp,

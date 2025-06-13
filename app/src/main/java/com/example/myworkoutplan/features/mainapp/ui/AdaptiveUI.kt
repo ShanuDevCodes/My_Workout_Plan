@@ -22,12 +22,14 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -39,15 +41,18 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -59,14 +64,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.WorkoutActivity
-import com.example.myworkoutplan.core.AppDatabase
 import com.example.myworkoutplan.core.DataStoreManager
 import com.example.myworkoutplan.features.mainapp.data.items
 import com.example.myworkoutplan.features.mainapp.ui.homescreen.HomeScreen
 import com.example.myworkoutplan.features.mainapp.ui.plans_navigation.PlansScreenView
 import com.example.myworkoutplan.features.mainapp.ui.workout.PlansScreen
+import com.example.myworkoutplan.features.mainapp.viewmodel.HomeScreenViewModel
+import com.example.myworkoutplan.features.mainapp.viewmodel.HomeScreenViewModelFactory
 import com.example.myworkoutplan.features.profile.ui.ProfileScreen
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
@@ -110,7 +115,10 @@ fun AdaptiveUI(){
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     val dataStore = remember { DataStoreManager(context) }
-    val db = remember { AppDatabase.getInstance(context) }
+    val homeScreenViewModel: HomeScreenViewModel = viewModel(
+        factory = HomeScreenViewModelFactory(dataStore)
+    )
+    val workoutDay = homeScreenViewModel.workoutDayFlow.collectAsState(initial = "Rest Day")
     if (isPortrait) {
         Surface(
             modifier = Modifier
@@ -162,7 +170,7 @@ fun AdaptiveUI(){
                     }
                 },
             ) { innerPadding ->
-                MainNavigation(innerPadding,rootNavController)
+                MainNavigation(innerPadding,rootNavController,homeScreenViewModel)
             }
         }
     }else{
@@ -187,65 +195,118 @@ fun AdaptiveUI(){
                                 .padding(top = 20.dp),
                             contentAlignment = Alignment.TopCenter
                         ) {
+                            val fabScale = remember { Animatable(0f) }
                             val fabScaleMini = remember { Animatable(0f) }
                             val fabOffsetY = remember { Animatable(0f) }
                             val isOnHomeScreen = currentDestination?.route == Destination.Home::class.qualifiedName
-                            LaunchedEffect(isOnHomeScreen) {
-                                val targetOffset = if (isOnHomeScreen) 66f else 0f
-                                val targetScale = if (isOnHomeScreen) 1f else 0f
+                            val shouldShowFab = isOnHomeScreen && workoutDay.value != "Rest Day"
 
-                                // Animate both in parallel
-                                coroutineScope {
+                            LaunchedEffect(isOnHomeScreen, workoutDay.value) {
+                                if (isOnHomeScreen && workoutDay.value!= "Rest Day") {
+                                    // Appearing sequence: Main FAB first, then swap FAB
+                                    launch {
+                                        fabScale.animateTo(
+                                            targetValue = 1f,
+                                            animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                        )
+                                    }.join() // Wait for main FAB to finish
+
+                                    // Then animate swap FAB
                                     launch {
                                         fabOffsetY.animateTo(
-                                            targetValue = targetOffset,
+                                            targetValue = 66f,
                                             animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
                                         )
                                     }
                                     launch {
                                         fabScaleMini.animateTo(
-                                            targetValue = targetScale,
+                                            targetValue = 1f,
                                             animationSpec = tween(durationMillis = 230, easing = FastOutSlowInEasing)
+                                        )
+                                    }
+                                } else if(!isOnHomeScreen && workoutDay.value != "Rest Day") {
+                                    // Disappearing sequence: Swap FAB first, then main FAB
+                                    launch {
+                                        fabOffsetY.animateTo(
+                                            targetValue = 0f,
+                                            animationSpec = tween(
+                                                durationMillis = 300,
+                                                easing = FastOutSlowInEasing
+                                            )
+                                        )
+                                    }
+                                    launch {
+                                        fabScaleMini.animateTo(
+                                            targetValue = 0f,
+                                            animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+                                        )
+                                    }.join() // Wait for swap FAB to finish
+                                } else if(workoutDay.value == "Rest Day") {
+                                    // Disappearing sequence: Swap FAB first, then main FAB
+                                    launch {
+                                        fabOffsetY.animateTo(
+                                            targetValue = 0f,
+                                            animationSpec = tween(
+                                                durationMillis = 300,
+                                                easing = FastOutSlowInEasing
+                                            )
+                                        )
+                                    }
+                                    launch {
+                                        fabScaleMini.animateTo(
+                                            targetValue = 0f,
+                                            animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+                                        )
+                                    }.join() // Wait for swap FAB to finish
+
+                                    // Then animate main FAB
+                                    launch {
+                                        fabScale.animateTo(
+                                            targetValue = 0f,
+                                            animationSpec = tween(
+                                                durationMillis = 300,
+                                                easing = FastOutSlowInEasing
+                                            )
                                         )
                                     }
                                 }
                             }
-                            if (true) {
-//                                FloatingActionButton(
-//                                    onClick = {  },
-//                                    modifier = Modifier
-//                                        .size(48.dp)
-//                                        .offset(y = fabOffsetY.value.dp)
-//                                        .scale(fabScaleMini.value),
-//                                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-//                                    elevation = FloatingActionButtonDefaults.elevation(2.dp)
-//                                ) {
-//                                    Icon(
-//                                        painter = painterResource(id = R.drawable.shuffle),
-//                                        contentDescription = "Swap",
-//                                        modifier = Modifier.size(24.dp)
-//                                    )
-//                                }
-                                FloatingActionButton(
-                                    onClick = {
-                                        context.startActivity(
-                                            Intent(
-                                                context,
-                                                WorkoutActivity::class.java
-                                            )
+
+                            FloatingActionButton(
+                                onClick = { homeScreenViewModel.showDialog() },
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .offset(y = fabOffsetY.value.dp)
+                                    .scale(fabScaleMini.value),
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                elevation = FloatingActionButtonDefaults.elevation(2.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.shuffle),
+                                    contentDescription = "Swap",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+
+                            FloatingActionButton(
+                                onClick = {
+                                    context.startActivity(
+                                        Intent(
+                                            context,
+                                            WorkoutActivity::class.java
                                         )
-                                    },
-                                    modifier = Modifier,
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.start_button),
-                                        contentDescription = "Start",
-                                        modifier = Modifier.size(34.dp),
-                                        tint = MaterialTheme.colorScheme.onPrimary
                                     )
-                                }
+                                },
+                                modifier = Modifier.scale(fabScale.value),
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.start_button),
+                                    contentDescription = "Start",
+                                    modifier = Modifier.size(34.dp),
+                                    tint = MaterialTheme.colorScheme.onPrimary
+                                )
                             }
                         }
 
@@ -292,7 +353,7 @@ fun AdaptiveUI(){
                     containerColor = MaterialTheme.colorScheme.background,
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->
-                    MainNavigation(innerPadding,rootNavController)
+                    MainNavigation(innerPadding,rootNavController,homeScreenViewModel)
                 }
             }
         }
@@ -304,6 +365,7 @@ fun AdaptiveUI(){
 fun MainNavigation(
     innerPadding: PaddingValues,
     rootNavController: NavHostController,
+    homeScreenViewModel: HomeScreenViewModel
 ) {
     Box(
         modifier = Modifier
@@ -321,7 +383,7 @@ fun MainNavigation(
             },
         ) {
             composable<Destination.Home> {
-                HomeScreen()
+                HomeScreen(homeScreenViewModel)
             }
             composable<Destination.WorkoutList> {
                 WorkoutListScreen()
