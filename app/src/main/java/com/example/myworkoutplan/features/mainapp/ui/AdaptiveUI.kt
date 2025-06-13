@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.FloatingActionButton
@@ -290,6 +291,17 @@ fun AdaptiveUI(){
                                     }
                                 }else if(isOnAllWorkoutsScreen){
                                     if (workoutDay.value != "Rest Day") {
+                                        if(fabScale.value == 0f) {
+                                            launch {
+                                                fabScale.animateTo(
+                                                    targetValue = 1f,
+                                                    animationSpec = tween(
+                                                        durationMillis = 200,
+                                                        easing = FastOutSlowInEasing
+                                                    )
+                                                )
+                                            }.join()
+                                        }
                                         if(fabScaleMini.value == 1f) {
                                             launch {
                                                 fabOffsetY.animateTo(
@@ -417,8 +429,8 @@ fun AdaptiveUI(){
                                 elevation = FloatingActionButtonDefaults.elevation(2.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "Edit All Workout List",
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "Add Custom Workout In List",
                                     modifier = Modifier.size(24.dp)
                                 )
                             }
