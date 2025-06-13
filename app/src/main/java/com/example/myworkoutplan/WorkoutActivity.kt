@@ -53,16 +53,12 @@ class WorkoutActivity : ComponentActivity() {
             val homeScreenViewModel: HomeScreenViewModel = viewModel(
                 factory = HomeScreenViewModelFactory(dataStore)
             )
-            val dayOfWeek = homeScreenViewModel.dayOfWeek.collectAsState()
-//            val workoutSplit by homeScreenViewModel.workoutSplitFlow.collectAsState(initial = "Push,Pull,Legs Split")
             val workoutState by workoutViewModel.state.collectAsState()
 
             LaunchedEffect(Unit) {
                 val workoutSplit = homeScreenViewModel.workoutSplitFlow.first()
                 val workoutDay = homeScreenViewModel.workoutDayFlow.first()
                 workoutViewModel.onEvent(WorkoutEvent.GetWorkoutPlansForSplitAndDay(workoutSplit,workoutDay))
-//                workoutViewModel.onEvent(WorkoutEvent.GetSplitDayForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
-//                workoutViewModel.onEvent(WorkoutEvent.GetWorkoutPlansForSplitAndWeekDay(workoutSplit,dayOfWeek.value))
             }
             val currentWorkout by workoutSessionViewModel.currentWorkout.collectAsState()
             LaunchedEffect(workoutState.workouts, currentWorkout) {

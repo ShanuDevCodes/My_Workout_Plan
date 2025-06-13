@@ -199,8 +199,6 @@ fun AdaptiveUI(){
                             val fabScaleMini = remember { Animatable(0f) }
                             val fabOffsetY = remember { Animatable(0f) }
                             val isOnHomeScreen = currentDestination?.route == Destination.Home::class.qualifiedName
-                            val shouldShowFab = isOnHomeScreen && workoutDay.value != "Rest Day"
-
                             LaunchedEffect(isOnHomeScreen, workoutDay.value) {
                                 if (isOnHomeScreen && workoutDay.value!= "Rest Day") {
                                     // Appearing sequence: Main FAB first, then swap FAB

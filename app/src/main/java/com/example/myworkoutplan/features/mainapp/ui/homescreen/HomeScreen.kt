@@ -385,7 +385,7 @@ fun SwapWorkoutWeekDialog(
     workoutViewModel: WorkoutViewModel,
 ){
     val workoutState by workoutViewModel.state.collectAsState()
-    var selectedDay by remember { mutableIntStateOf(0) }
+    var selectedDay by remember { mutableIntStateOf(-1) }
 
     LaunchedEffect(Unit) {
         val workoutSplit = homeScreenViewModel.workoutSplitFlow.first()
@@ -411,15 +411,6 @@ fun SwapWorkoutWeekDialog(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(
-                    onClick = { /* handle click */ },
-                    modifier = Modifier
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Settings"
-                    )
-                }
             }
         },
         text = {
@@ -484,7 +475,7 @@ fun SwapWorkoutWeekDialog(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
-                enabled = workoutState.splitDays.isNotEmpty() && selectedDay < workoutState.splitDays.size
+                enabled = workoutState.splitDays.isNotEmpty() && selectedDay < workoutState.splitDays.size && selectedDay > -1
             ) {
                 Text("Confirm")
             }
