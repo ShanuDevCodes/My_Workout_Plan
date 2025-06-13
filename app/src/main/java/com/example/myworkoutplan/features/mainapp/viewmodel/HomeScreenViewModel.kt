@@ -19,7 +19,6 @@ import java.time.LocalTime
 class HomeScreenViewModel(private val dataStoreManager: DataStoreManager): ViewModel() {
     val greeting: String = getGreetingForTime()
     private val _dayOfWeek = MutableStateFlow(LocalDate.now().dayOfWeek.value)
-    val dayOfWeek: StateFlow<Int> = _dayOfWeek.asStateFlow()
     val workoutSplitFlow = dataStoreManager.workoutSplitFlow
     val workoutDayFlow = dataStoreManager.workoutDayFlow
     private val _dialogVisible = MutableStateFlow(false)

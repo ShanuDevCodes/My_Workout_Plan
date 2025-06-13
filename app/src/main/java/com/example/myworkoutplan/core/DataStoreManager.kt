@@ -11,7 +11,6 @@ import com.example.myworkoutplan.theme.DynamicColorOption
 import com.example.myworkoutplan.theme.ThemeOptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.time.format.DateTimeFormatter
 
 private val Context.dataStore by preferencesDataStore(name = "settings")
 
