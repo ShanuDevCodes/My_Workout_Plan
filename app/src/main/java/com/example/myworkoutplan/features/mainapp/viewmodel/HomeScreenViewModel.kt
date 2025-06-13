@@ -12,13 +12,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 class HomeScreenViewModel(private val dataStoreManager: DataStoreManager): ViewModel() {
     val greeting: String = getGreetingForTime()
-    private val _dayOfWeek = MutableStateFlow(LocalDate.now().dayOfWeek.value)
     val workoutSplitFlow = dataStoreManager.workoutSplitFlow
     val workoutDayFlow = dataStoreManager.workoutDayFlow
     private val _dialogVisible = MutableStateFlow(false)
