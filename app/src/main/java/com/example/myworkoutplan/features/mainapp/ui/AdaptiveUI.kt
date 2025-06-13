@@ -27,6 +27,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -198,74 +200,193 @@ fun AdaptiveUI(){
                             val fabScale = remember { Animatable(0f) }
                             val fabScaleMini = remember { Animatable(0f) }
                             val fabOffsetY = remember { Animatable(0f) }
+                            val fabScaleMiniWorkoutList = remember { Animatable(0f) }
+                            val fabOffsetYWorkoutList = remember { Animatable(0f) }
                             val isOnHomeScreen = currentDestination?.route == Destination.Home::class.qualifiedName
-                            LaunchedEffect(isOnHomeScreen, workoutDay.value) {
-                                if (isOnHomeScreen && workoutDay.value!= "Rest Day") {
-                                    // Appearing sequence: Main FAB first, then swap FAB
-                                    launch {
-                                        fabScale.animateTo(
-                                            targetValue = 1f,
-                                            animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                                        )
-                                    }.join() // Wait for main FAB to finish
+                            val isOnAllWorkoutsScreen = currentDestination?.route == Destination.WorkoutList::class.qualifiedName
+                            LaunchedEffect(isOnHomeScreen, workoutDay.value, isOnAllWorkoutsScreen) {
+                                if (isOnHomeScreen){
+                                    if ( workoutDay.value != "Rest Day" ){
+                                        if(fabScale.value == 0f) {
+                                            launch {
+                                                fabScale.animateTo(
+                                                    targetValue = 1f,
+                                                    animationSpec = tween(
+                                                        durationMillis = 200,
+                                                        easing = FastOutSlowInEasing
+                                                    )
+                                                )
+                                            }.join() // Wait for main FAB to finish
+                                        }
+                                        if (fabScaleMiniWorkoutList.value == 1f) {
+                                            launch {
+                                                fabOffsetYWorkoutList.animateTo(
+                                                    targetValue = 0f,
+                                                    animationSpec = tween(
+                                                        durationMillis = 300,
+                                                        easing = FastOutSlowInEasing
+                                                    )
+                                                )
+                                            }
+                                            launch {
+                                                fabScaleMiniWorkoutList.animateTo(
+                                                    targetValue = 0f,
+                                                    animationSpec = tween(
+                                                        durationMillis = 300,
+                                                        easing = FastOutSlowInEasing
+                                                    )
+                                                )
+                                            }.join()
+                                        }
+                                        // Then animate swap FAB
+                                        launch {
+                                            fabOffsetY.animateTo(
+                                                targetValue = 66f,
+                                                animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                            )
+                                        }
+                                        launch {
+                                            fabScaleMini.animateTo(
+                                                targetValue = 1f,
+                                                animationSpec = tween(durationMillis = 230, easing = FastOutSlowInEasing)
+                                            )
+                                        }
+                                    }else{
+                                        launch {
+                                            fabScaleMiniWorkoutList.animateTo(
+                                                targetValue = 0f,
+                                                animationSpec = tween(
+                                                    durationMillis = 200,
+                                                    easing = FastOutSlowInEasing
+                                                )
+                                            )
+                                        }
+                                        launch {
+                                            fabOffsetY.animateTo(
+                                                targetValue = 0f,
+                                                animationSpec = tween(
+                                                    durationMillis = 300,
+                                                    easing = FastOutSlowInEasing
+                                                )
+                                            )
+                                        }
+                                        launch {
+                                            fabScaleMini.animateTo(
+                                                targetValue = 0f,
+                                                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+                                            )
+                                        }.join() // Wait for swap FAB to finish
 
-                                    // Then animate swap FAB
-                                    launch {
-                                        fabOffsetY.animateTo(
-                                            targetValue = 66f,
-                                            animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                                        )
-                                    }
-                                    launch {
-                                        fabScaleMini.animateTo(
-                                            targetValue = 1f,
-                                            animationSpec = tween(durationMillis = 230, easing = FastOutSlowInEasing)
-                                        )
-                                    }
-                                } else if(!isOnHomeScreen && workoutDay.value != "Rest Day") {
-                                    // Disappearing sequence: Swap FAB first, then main FAB
-                                    launch {
-                                        fabOffsetY.animateTo(
-                                            targetValue = 0f,
-                                            animationSpec = tween(
-                                                durationMillis = 300,
-                                                easing = FastOutSlowInEasing
+                                        // Then animate main FAB
+                                        launch {
+                                            fabScale.animateTo(
+                                                targetValue = 0f,
+                                                animationSpec = tween(
+                                                    durationMillis = 300,
+                                                    easing = FastOutSlowInEasing
+                                                )
                                             )
-                                        )
+                                        }
                                     }
-                                    launch {
-                                        fabScaleMini.animateTo(
-                                            targetValue = 0f,
-                                            animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
-                                        )
-                                    }.join() // Wait for swap FAB to finish
-                                } else if(workoutDay.value == "Rest Day") {
-                                    // Disappearing sequence: Swap FAB first, then main FAB
-                                    launch {
-                                        fabOffsetY.animateTo(
-                                            targetValue = 0f,
-                                            animationSpec = tween(
-                                                durationMillis = 300,
-                                                easing = FastOutSlowInEasing
+                                }else if(isOnAllWorkoutsScreen){
+                                    if (workoutDay.value != "Rest Day") {
+                                        if(fabScaleMini.value == 1f) {
+                                            launch {
+                                                fabOffsetY.animateTo(
+                                                    targetValue = 0f,
+                                                    animationSpec = tween(
+                                                        durationMillis = 300,
+                                                        easing = FastOutSlowInEasing
+                                                    )
+                                                )
+                                            }
+                                            launch {
+                                                fabScaleMini.animateTo(
+                                                    targetValue = 0f,
+                                                    animationSpec = tween(
+                                                        durationMillis = 300,
+                                                        easing = FastOutSlowInEasing
+                                                    )
+                                                )
+                                            }.join()
+                                        }
+                                        launch {
+                                            fabScaleMiniWorkoutList.animateTo(
+                                                targetValue = 1f,
+                                                animationSpec = tween(
+                                                    durationMillis = 230,
+                                                    easing = FastOutSlowInEasing
+                                                )
                                             )
-                                        )
+                                        }
+                                        launch {
+                                            fabOffsetYWorkoutList.animateTo(
+                                                targetValue = 66f,
+                                                animationSpec = tween(
+                                                    durationMillis = 200,
+                                                    easing = FastOutSlowInEasing
+                                                )
+                                            )
+                                        }
+                                    }else{
+                                        launch {
+                                            fabScaleMiniWorkoutList.animateTo(
+                                                targetValue = 1f,
+                                                animationSpec = tween(
+                                                    durationMillis = 230,
+                                                    easing = FastOutSlowInEasing
+                                                )
+                                            )
+                                        }
                                     }
-                                    launch {
-                                        fabScaleMini.animateTo(
-                                            targetValue = 0f,
-                                            animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
-                                        )
-                                    }.join() // Wait for swap FAB to finish
-
-                                    // Then animate main FAB
-                                    launch {
-                                        fabScale.animateTo(
-                                            targetValue = 0f,
-                                            animationSpec = tween(
-                                                durationMillis = 300,
-                                                easing = FastOutSlowInEasing
+                                }else {
+                                    if (workoutDay.value != "Rest Day") {
+                                        launch {
+                                            fabOffsetY.animateTo(
+                                                targetValue = 0f,
+                                                animationSpec = tween(
+                                                    durationMillis = 300,
+                                                    easing = FastOutSlowInEasing
+                                                )
                                             )
-                                        )
+                                        }
+                                        launch {
+                                            fabScaleMini.animateTo(
+                                                targetValue = 0f,
+                                                animationSpec = tween(
+                                                    durationMillis = 300,
+                                                    easing = FastOutSlowInEasing
+                                                )
+                                            )
+                                        }
+                                        launch {
+                                            fabOffsetYWorkoutList.animateTo(
+                                                targetValue = 0f,
+                                                animationSpec = tween(
+                                                    durationMillis = 300,
+                                                    easing = FastOutSlowInEasing
+                                                )
+                                            )
+                                        }
+                                        launch {
+                                            fabScaleMiniWorkoutList.animateTo(
+                                                targetValue = 0f,
+                                                animationSpec = tween(
+                                                    durationMillis = 300,
+                                                    easing = FastOutSlowInEasing
+                                                )
+                                            )
+                                        }
+                                    }else{
+                                        launch {
+                                            fabScaleMiniWorkoutList.animateTo(
+                                                targetValue = 0f,
+                                                animationSpec = tween(
+                                                    durationMillis = 230,
+                                                    easing = FastOutSlowInEasing
+                                                )
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -282,6 +403,22 @@ fun AdaptiveUI(){
                                 Icon(
                                     painter = painterResource(id = R.drawable.shuffle),
                                     contentDescription = "Swap",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+
+                            FloatingActionButton(
+                                onClick = { TODO() },
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .offset(y = fabOffsetYWorkoutList.value.dp)
+                                    .scale(fabScaleMiniWorkoutList.value),
+                                containerColor = if (workoutDay.value != "Rest Day")MaterialTheme.colorScheme.surfaceContainerHighest else MaterialTheme.colorScheme.primary,
+                                elevation = FloatingActionButtonDefaults.elevation(2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Edit All Workout List",
                                     modifier = Modifier.size(24.dp)
                                 )
                             }

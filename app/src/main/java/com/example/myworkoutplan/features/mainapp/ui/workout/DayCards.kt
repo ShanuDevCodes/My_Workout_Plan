@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.sp
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DayCards(workout: String, icon: Int,onClick: () -> Unit){
+    val painter = painterResource(id = icon)
+
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
@@ -44,7 +46,7 @@ fun DayCards(workout: String, icon: Int,onClick: () -> Unit){
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = icon),
+                painter = painter,
                 contentDescription = "$workout icon",
                 modifier = Modifier.size(40.dp),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)

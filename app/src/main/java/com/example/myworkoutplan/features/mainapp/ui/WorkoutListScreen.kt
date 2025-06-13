@@ -41,7 +41,7 @@ fun WorkoutListScreen(workoutListScreenViewModel: WorkoutListScreenViewModel = v
     val visible = workoutListScreenViewModel.visible
     LaunchedEffect(Unit) {
         workoutViewModel.onEvent(WorkoutEvent.GetAllWorkouts)
-        delay(100L)
+        delay(200L)
         workoutListScreenViewModel.show()
     }
     LazyColumn {
