@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class WorkoutViewModel(
     private val dao: WorkoutDao
@@ -46,6 +45,7 @@ class WorkoutViewModel(
                 val exerciseName = _state.value.exerciseName
                 val imageResource = R.drawable.weights
                 val workoutType = _state.value.workoutType
+                val isBodyWeight = _state.value.isBodyWeight
 
                 if (exerciseName.isBlank() || workoutType.isBlank()) {
                     return
@@ -63,6 +63,7 @@ class WorkoutViewModel(
                     val workout = WorkoutPlan(
                         exerciseName = exerciseName,
                         imageResource = imageResource,
+                        isBodyWeight = isBodyWeight
                     )
                     dao.upsertWorkout(workout)
                     _state.update {
@@ -82,6 +83,14 @@ class WorkoutViewModel(
                 _state.update {
                     it.copy(
                         exerciseName = event.exerciseName
+                    )
+                }
+            }
+
+            is WorkoutEvent.SetIsBodyWeight -> {
+                _state.update {
+                    it.copy(
+                        isBodyWeight = event.isBodyWeight
                     )
                 }
             }
@@ -327,7 +336,8 @@ class WorkoutViewModel(
         for (workout in allWorkout) {
             val workoutPlan = WorkoutPlan(
                 exerciseName = workout.name,
-                imageResource = workout.image
+                imageResource = workout.image,
+                isBodyWeight = workout.isBodyWeight
             )
             val workoutId = dao.upsertWorkout(workoutPlan)
             workoutPlanIdMap[workout.name] = workoutId

@@ -9,6 +9,7 @@ data class WorkoutState(
     val workoutsInSplitDay: List<WorkoutPlan> = emptyList(),
     val workouts: List<WorkoutPlan> = emptyList(),
     val exerciseName: String = "",
+    val isBodyWeight: Boolean = false,
     val imageResource: Int = 0,
     val workoutType: String = "",
     val workoutTypeImage: Int = 0,

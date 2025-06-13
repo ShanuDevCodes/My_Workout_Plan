@@ -4,6 +4,7 @@ import com.example.myworkoutplan.R
 
 data class Workout(
     val name: String,
+    val isBodyWeight: Boolean,
     val image: Int,
     val muscleGroups: List<String>,
     val workoutSplit: List<Pair<String,String>>
@@ -51,26 +52,26 @@ val allMuscleGroups = listOf(
 )
 
 val allWorkout = listOf(
-    Workout("Bench Press", R.drawable.bench_press, listOf("Chest", "Triceps", "Shoulders"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Push Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Chest Day", "Arnold Split" to "Chest & Back Day")),
-    Workout("Shoulder Press", R.drawable.shoulder_press, listOf("Shoulders", "Triceps"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Push Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Shoulder Day", "Arnold Split" to "Arms & Shoulders Day")),
-    Workout("Inclined Bench Press", R.drawable.incline_bench_press, listOf("Chest", "Shoulders"), listOf("Push,Pull,Legs Split" to "Push Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Chest Day", "Arnold Split" to "Chest & Back Day")),
-    Workout("Flyes", R.drawable.shoulder_flyes, listOf("Chest"), listOf("Bro Split" to "Chest Day", "Arnold Split" to "Arms & Shoulders Day")),
-    Workout("Pec Deck", R.drawable.pec_deck, listOf("Chest"), listOf("Bro Split" to "Chest Day")),
-    Workout("Tricep Push Down", R.drawable.tricep_push_down, listOf("Triceps"), listOf("Push,Pull,Legs Split" to "Push Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
-    Workout("Tricep Extension", R.drawable.tricep_extension, listOf("Triceps"), listOf("Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
-    Workout("Pull Up", R.drawable.pull_up, listOf("Back", "Biceps"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Pull Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Back Day", "Arnold Split" to "Chest & Back Day")),
-    Workout("Lat Pulldown", R.drawable.lat_pulldown, listOf("Back", "Biceps"), listOf("Push,Pull,Legs Split" to "Pull Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Back Day", "Arnold Split" to "Chest & Back Day")),
-    Workout("Seated Cable Row", R.drawable.seated_cable_row, listOf("Back", "Biceps"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Pull Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Back Day", "Arnold Split" to "Chest & Back Day")),
-    Workout("T-Bar Row", R.drawable.t_bar_row, listOf("Back"), listOf("Bro Split" to "Back Day", "Arnold Split" to "Chest & Back Day")),
-    Workout("Dumbbell Curl", R.drawable.bicep_curl, listOf("Biceps"), listOf("Push,Pull,Legs Split" to "Pull Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
-    Workout("Seated Dumbbell Curl", R.drawable.seated_bicep_curl, listOf("Biceps"), listOf("Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
-    Workout("Concentration Curl", R.drawable.concentration_curls, listOf("Biceps"), listOf("Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
-    Workout("Squats", R.drawable.squats, listOf("Quads", "Glutes", "Hamstrings"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
-    Workout("Leg Extension", R.drawable.leg_extension, listOf("Quads"), listOf("Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
-    Workout("Leg Curl", R.drawable.leg_curls, listOf("Hamstrings"), listOf("Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
-    Workout("Close leg Press", R.drawable.close_leg_press, listOf("Quads", "Glutes"), listOf("Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
-    Workout("Wide leg Press", R.drawable.wide_leg_press, listOf("Quads", "Glutes"), listOf("Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
-    Workout("Calf Raise", R.drawable.calf_raises, listOf("Calves"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day"))
+    Workout("Bench Press",false, R.drawable.bench_press, listOf("Chest", "Triceps", "Shoulders"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Push Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Chest Day", "Arnold Split" to "Chest & Back Day")),
+    Workout("Shoulder Press",false, R.drawable.shoulder_press, listOf("Shoulders", "Triceps"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Push Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Shoulder Day", "Arnold Split" to "Arms & Shoulders Day")),
+    Workout("Inclined Bench Press",false, R.drawable.incline_bench_press, listOf("Chest", "Shoulders"), listOf("Push,Pull,Legs Split" to "Push Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Chest Day", "Arnold Split" to "Chest & Back Day")),
+    Workout("Flyes",false, R.drawable.shoulder_flyes, listOf("Chest"), listOf("Bro Split" to "Chest Day", "Arnold Split" to "Arms & Shoulders Day")),
+    Workout("Pec Deck",false, R.drawable.pec_deck, listOf("Chest"), listOf("Bro Split" to "Chest Day")),
+    Workout("Tricep Push Down",false, R.drawable.tricep_push_down, listOf("Triceps"), listOf("Push,Pull,Legs Split" to "Push Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
+    Workout("Tricep Extension",false, R.drawable.tricep_extension, listOf("Triceps"), listOf("Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
+    Workout("Pull Up",true, R.drawable.pull_up, listOf("Back", "Biceps"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Pull Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Back Day", "Arnold Split" to "Chest & Back Day")),
+    Workout("Lat Pulldown",false, R.drawable.lat_pulldown, listOf("Back", "Biceps"), listOf("Push,Pull,Legs Split" to "Pull Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Back Day", "Arnold Split" to "Chest & Back Day")),
+    Workout("Seated Cable Row",false, R.drawable.seated_cable_row, listOf("Back", "Biceps"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Pull Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Back Day", "Arnold Split" to "Chest & Back Day")),
+    Workout("T-Bar Row",false, R.drawable.t_bar_row, listOf("Back"), listOf("Bro Split" to "Back Day", "Arnold Split" to "Chest & Back Day")),
+    Workout("Dumbbell Curl",false, R.drawable.bicep_curl, listOf("Biceps"), listOf("Push,Pull,Legs Split" to "Pull Day", "Upper, Lower Body Split" to "Upper Body Day", "Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
+    Workout("Seated Dumbbell Curl",false, R.drawable.seated_bicep_curl, listOf("Biceps"), listOf("Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
+    Workout("Concentration Curl",false, R.drawable.concentration_curls, listOf("Biceps"), listOf("Bro Split" to "Arms Day", "Arnold Split" to "Arms & Shoulders Day")),
+    Workout("Squats",true, R.drawable.squats, listOf("Quads", "Glutes", "Hamstrings"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
+    Workout("Leg Extension",false, R.drawable.leg_extension, listOf("Quads"), listOf("Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
+    Workout("Leg Curl",false, R.drawable.leg_curls, listOf("Hamstrings"), listOf("Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
+    Workout("Close leg Press",false, R.drawable.close_leg_press, listOf("Quads", "Glutes"), listOf("Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
+    Workout("Wide leg Press",false, R.drawable.wide_leg_press, listOf("Quads", "Glutes"), listOf("Bro Split" to "Legs Day", "Arnold Split" to "Legs Day")),
+    Workout("Calf Raise",true, R.drawable.calf_raises, listOf("Calves"), listOf("Full Body Split" to "Full Body Day", "Push,Pull,Legs Split" to "Legs Day", "Upper, Lower Body Split" to "Lower Body Day", "Bro Split" to "Legs Day", "Arnold Split" to "Legs Day"))
 )
 
 

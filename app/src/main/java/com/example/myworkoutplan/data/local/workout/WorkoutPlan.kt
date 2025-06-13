@@ -16,6 +16,9 @@ data class WorkoutPlan(
     @ColumnInfo(name = "image_resource")
     val imageResource: Int,
 
+    @ColumnInfo(name = "is_body_weight")
+    val isBodyWeight: Boolean,
+
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
 )
