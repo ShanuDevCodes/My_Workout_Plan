@@ -56,7 +56,7 @@ fun SkippedWorkoutDialog(
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             ) {
-                Text("Restart Session")
+                Text("Restart")
             }
         },
         dismissButton = {
