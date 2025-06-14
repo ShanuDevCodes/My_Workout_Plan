@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,10 +19,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -29,16 +37,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.colorspace.Connector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
 
@@ -51,10 +68,31 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
     val completedWorkouts by workoutSessionViewModel.completedWorkouts.collectAsState()
     val exitDialog by workoutSessionViewModel.exitDialog.collectAsState()
     val lazyListState = rememberLazyListState()
+    var isScrollingDown by remember { mutableStateOf(false) }
+
+    LaunchedEffect(lazyListState) {
+        var previousIndex = 0
+        var previousScrollOffset = 0
+
+        snapshotFlow {
+            lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset
+        }.collect { (currentIndex, currentScrollOffset) ->
+
+            isScrollingDown = if (currentIndex != previousIndex) {
+                currentIndex > previousIndex
+            } else {
+                currentScrollOffset > previousScrollOffset
+            }
+
+            previousIndex = currentIndex
+            previousScrollOffset = currentScrollOffset
+        }
+    }
+
     val showExtended by remember {
         derivedStateOf {
-            lazyListState.firstVisibleItemIndex == 0 &&
-                    lazyListState.firstVisibleItemScrollOffset < 100 // Collapse after 100dp scroll
+            // Always expanded at top, otherwise based on scroll direction
+            lazyListState.firstVisibleItemIndex == 0 || !isScrollingDown
         }
     }
     BackHandler {
