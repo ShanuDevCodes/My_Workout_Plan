@@ -24,9 +24,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("boolean", "LOG_RECOMPOSITION", "true")
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            buildConfigField("boolean", "LOG_RECOMPOSITION", "false")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -42,6 +46,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true // ✅ THIS IS MISSING — ADD THIS LINE
     }
 }
 

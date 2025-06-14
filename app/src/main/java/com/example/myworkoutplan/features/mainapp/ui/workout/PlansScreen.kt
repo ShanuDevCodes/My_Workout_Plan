@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -37,16 +38,19 @@ import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
 import com.example.myworkoutplan.features.mainapp.ui.PlanDestination
 import com.example.myworkoutplan.features.mainapp.viewmodel.PlansViewModel
-import com.google.firebase.BuildConfig
+import com.example.myworkoutplan.BuildConfig
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PlansScreen(navController: NavController, viewModel: PlansViewModel = viewModel()) {
     val recomposeCount = remember { mutableIntStateOf(0) }
-    recomposeCount.intValue++
 
-    if (BuildConfig.DEBUG) {
-        Log.d("Performance", "Screen recomposed ${recomposeCount.intValue} times")
+    SideEffect {
+        recomposeCount.intValue++
+
+        if (BuildConfig.LOG_RECOMPOSITION) {
+            Log.d("Performance", "Screen recomposed ${recomposeCount.intValue} times")
+        }
     }
     val context = LocalContext.current
     val db = remember { AppDatabase.getInstance(context) }
