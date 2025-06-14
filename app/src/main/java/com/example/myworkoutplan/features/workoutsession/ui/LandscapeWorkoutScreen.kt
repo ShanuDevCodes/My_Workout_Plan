@@ -47,6 +47,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myworkoutplan.data.local.workout.WorkoutPlan
 import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
 import kotlinx.coroutines.launch
 
@@ -158,7 +159,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                                 val count by workoutSessionViewModel.countState.collectAsState()
                                 val countLimit by workoutSessionViewModel.countLimitState.collectAsState()
                                 WorkoutRow(
-                                    workoutName = workoutName,
+                                    workoutName = workoutName?.exerciseName?:"",
                                     count = count,
                                     showCircle = !isCompleted,
                                     countLimit = countLimit
@@ -183,7 +184,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                                 containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             )
                         ) {
-                            val upcomingWorkouts: List<String> by workoutSessionViewModel.upcomingWorkouts.collectAsState()
+                            val upcomingWorkouts: List<WorkoutPlan> by workoutSessionViewModel.upcomingWorkouts.collectAsState()
                             if (upcomingWorkouts.isEmpty()){
                                 Box(
                                     modifier = Modifier
@@ -202,7 +203,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                                 ) {
                                     items(upcomingWorkouts) { item ->
                                         WorkoutRow(
-                                            workoutName = item,
+                                            workoutName = item.exerciseName,
                                             showCircle = false
                                         )
                                     }
@@ -246,7 +247,7 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                                 ) {
                                     items(completedWorkouts) { item ->
                                         WorkoutRow(
-                                            workoutName = item.first,
+                                            workoutName = item.first.exerciseName,
                                             showSetCount = true,
                                             setCount = item.second
                                         )

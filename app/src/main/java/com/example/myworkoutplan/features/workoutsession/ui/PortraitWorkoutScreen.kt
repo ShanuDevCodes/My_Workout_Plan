@@ -47,6 +47,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myworkoutplan.data.local.workout.WorkoutPlan
 import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
 import kotlinx.coroutines.launch
 
@@ -240,7 +241,7 @@ fun PeekBottomSheetContent(
                 val count by workoutSessionViewModel.countState.collectAsState()
                 val countLimit by workoutSessionViewModel.countLimitState.collectAsState()
                 WorkoutRow(
-                    workoutName = workoutName,
+                    workoutName = workoutName?.exerciseName?:"",
                     count = count,
                     showCircle = !isCompleted,
                     countLimit = countLimit
@@ -267,13 +268,13 @@ fun PeekBottomSheetContent(
             )
         ) {
             Column {
-                val upcomingWorkouts: List<String> by workoutSessionViewModel.upcomingWorkouts.collectAsState()
+                val upcomingWorkouts: List<WorkoutPlan> by workoutSessionViewModel.upcomingWorkouts.collectAsState()
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(upcomingWorkouts) {  item ->
                         WorkoutRow(
-                            workoutName = item,
+                            workoutName = item.exerciseName,
                             showCircle = false
                         )
                     }
@@ -305,7 +306,7 @@ fun PeekBottomSheetContent(
                 ) {
                     items(completedWorkouts) {  item ->
                         WorkoutRow(
-                            workoutName = item.first,
+                            workoutName = item.first.exerciseName,
                             showSetCount = true,
                             setCount = item.second
                         )

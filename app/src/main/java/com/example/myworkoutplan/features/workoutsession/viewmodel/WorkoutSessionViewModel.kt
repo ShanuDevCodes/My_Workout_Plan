@@ -12,18 +12,18 @@ class WorkoutSessionViewModel:ViewModel() {
 
     private var sessionStarted = false
 
-    private var allExercises: List<String> = emptyList()
+    private var allExercises: List<WorkoutPlan> = emptyList()
 
 
     // StateFlows for UI observation
-    private val _currentWorkout = MutableStateFlow<String>("")
-    val currentWorkout: StateFlow<String> = _currentWorkout
+    private val _currentWorkout = MutableStateFlow<WorkoutPlan?>(null)
+    val currentWorkout: StateFlow<WorkoutPlan?> = _currentWorkout
 
-    private val _upcomingWorkouts = MutableStateFlow<List<String>>(emptyList())
-    val upcomingWorkouts: StateFlow<List<String>> = _upcomingWorkouts
+    private val _upcomingWorkouts = MutableStateFlow<List<WorkoutPlan>>(emptyList())
+    val upcomingWorkouts: StateFlow<List<WorkoutPlan>> = _upcomingWorkouts
 
-    private val _completedWorkouts = MutableStateFlow<List<Pair<String,Int>>>(emptyList())
-    val completedWorkouts: StateFlow<List<Pair<String,Int>>> = _completedWorkouts
+    private val _completedWorkouts = MutableStateFlow<List<Pair<WorkoutPlan,Int>>>(emptyList())
+    val completedWorkouts: StateFlow<List<Pair<WorkoutPlan,Int>>> = _completedWorkouts
 
     private val count: MutableStateFlow<Int> = MutableStateFlow(0)
     val countState: StateFlow<Int> = count
@@ -78,13 +78,13 @@ class WorkoutSessionViewModel:ViewModel() {
     fun startSession(workoutPlan: List<WorkoutPlan>) {
         if (sessionStarted) return
         sessionStarted = true
-        allExercises = workoutPlan.map { it.exerciseName }
+        allExercises = workoutPlan.map { it }
         _completedWorkouts.value = emptyList()
         if (workoutPlan.isNotEmpty()) {
-            _currentWorkout.value = workoutPlan.map { it.exerciseName }.first()
-            _upcomingWorkouts.value = workoutPlan.map { it.exerciseName }.drop(1)
+            _currentWorkout.value = workoutPlan.map { it }.first()
+            _upcomingWorkouts.value = workoutPlan.map { it }.drop(1)
         } else {
-            _currentWorkout.value = ""
+            _currentWorkout.value = null
             _upcomingWorkouts.value = emptyList()
         }
     }
@@ -92,7 +92,7 @@ class WorkoutSessionViewModel:ViewModel() {
     // Call this when the user completes the current Workout
     private fun completeCurrentWorkout() {
         countLimit.value = 3
-        val current = _currentWorkout.value.ifEmpty { return }
+        val current = _currentWorkout.value ?: return
         val updatedList = _completedWorkouts.value.toMutableList()
         updatedList.add(current to count.value)
         _completedWorkouts.value = updatedList
@@ -101,7 +101,7 @@ class WorkoutSessionViewModel:ViewModel() {
             _currentWorkout.value = _upcomingWorkouts.value.first()
             _upcomingWorkouts.value = _upcomingWorkouts.value.drop(1)
         } else {
-            _currentWorkout.value = ""
+            _currentWorkout.value = null
             isRunning.value = false
             _isCompleted.value = true
             count.value = 0
@@ -123,7 +123,7 @@ class WorkoutSessionViewModel:ViewModel() {
 
     fun skipWorkout(){
         if (count.value > 0){
-            val current = _currentWorkout.value.ifEmpty { return }
+            val current = _currentWorkout.value?: return
             val updatedList = _completedWorkouts.value.toMutableList()
             updatedList.add(current to count.value)
             _completedWorkouts.value = updatedList
@@ -136,7 +136,7 @@ class WorkoutSessionViewModel:ViewModel() {
             _currentWorkout.value = _upcomingWorkouts.value.first()
             _upcomingWorkouts.value = _upcomingWorkouts.value.drop(1)
         } else {
-            _currentWorkout.value = ""
+            _currentWorkout.value = null
             isRunning.value = false
             _isCompleted.value = true
             count.value = 0

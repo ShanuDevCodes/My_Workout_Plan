@@ -62,7 +62,7 @@ class WorkoutActivity : ComponentActivity() {
             }
             val currentWorkout by workoutSessionViewModel.currentWorkout.collectAsState()
             LaunchedEffect(workoutState.workouts, currentWorkout) {
-                if (workoutState.workouts.isNotEmpty() && currentWorkout.isEmpty()) {
+                if (workoutState.workouts.isNotEmpty() && currentWorkout == null) {
                     workoutSessionViewModel.startSession(workoutState.workouts)
                 }
             }
