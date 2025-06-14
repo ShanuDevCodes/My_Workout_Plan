@@ -20,9 +20,16 @@ import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessio
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object WorkoutSession
-@Serializable
-data object Congratulation
+sealed class  WorkoutSessionDestination {
+    @Serializable
+    data object WorkoutSession: WorkoutSessionDestination()
+
+    @Serializable
+    data object LogWorkout: WorkoutSessionDestination()
+
+    @Serializable
+    data object Congratulation:  WorkoutSessionDestination()
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -33,7 +40,7 @@ fun WorkoutSessionNav(workoutSessionViewModel: WorkoutSessionViewModel) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = WorkoutSession,
+        startDestination = WorkoutSessionDestination.WorkoutSession,
         enterTransition = {
             slideIntoContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
@@ -47,18 +54,29 @@ fun WorkoutSessionNav(workoutSessionViewModel: WorkoutSessionViewModel) {
             ) + fadeOut(targetAlpha = 0.9f)
         }
     ){
-        composable<WorkoutSession> {
+        composable< WorkoutSessionDestination.WorkoutSession> {
             if (isPortrait){
                 PortraitWorkoutScreen(workoutSessionViewModel, onCompleted = {
-                    navController.navigate(Congratulation)
+                    navController.navigate(WorkoutSessionDestination.LogWorkout){
+                        launchSingleTop
+                    }
                 })
             }else {
                 LandscapeWorkoutScreen(workoutSessionViewModel, onCompleted = {
-                    navController.navigate(Congratulation)
+                    navController.navigate(WorkoutSessionDestination.LogWorkout){
+                        launchSingleTop
+                    }
                 })
             }
         }
-        composable<Congratulation> {
+        composable< WorkoutSessionDestination.LogWorkout > {
+            LogWorkoutScreen(workoutSessionViewModel, onConfirm = {
+                navController.navigate(WorkoutSessionDestination.Congratulation){
+                    launchSingleTop
+                }
+            })
+        }
+        composable< WorkoutSessionDestination.Congratulation> {
             CongratulationsScreen(
                 onDismiss = {
                     (context as? Activity)?.finish()

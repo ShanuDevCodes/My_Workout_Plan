@@ -1,15 +1,15 @@
 package com.example.myworkoutplan.features.mainapp.data
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.automirrored.outlined.Article
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocalLibrary
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocalLibrary
-import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.myworkoutplan.features.mainapp.ui.Destination
@@ -30,8 +30,8 @@ val items = listOf(
     ),
     BottomNavigationItem(
         title = "Plans",
-        selectedIcon = Icons.Filled.Menu,
-        unselectedIcon = Icons.Outlined.Menu,
+        selectedIcon = Icons.AutoMirrored.Filled.Article,
+        unselectedIcon = Icons.AutoMirrored.Outlined.Article,
         destination = Destination.Plan
     ),
     BottomNavigationItem(

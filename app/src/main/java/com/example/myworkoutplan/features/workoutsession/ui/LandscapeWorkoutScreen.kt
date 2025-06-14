@@ -1,6 +1,7 @@
 package com.example.myworkoutplan.features.workoutsession.ui
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
@@ -47,6 +48,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myworkoutplan.WorkoutActivity
 import com.example.myworkoutplan.data.local.workout.WorkoutPlan
 import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
 import kotlinx.coroutines.launch
@@ -61,13 +63,20 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
     val restTimeInMillis by workoutSessionViewModel.restTimeInMillisState.collectAsState()
     val scope = rememberCoroutineScope()
     val isCompleted by workoutSessionViewModel.isCompleted.collectAsState()
+    val exitDialogVisible by workoutSessionViewModel.exitDialog.collectAsState()
+    val skippedWorkoutDialogVisible by workoutSessionViewModel.skippedWorkoutDialog.collectAsState()
+
     LaunchedEffect(isCompleted) {
         if (isCompleted) {
-            onCompleted()
+            if (workoutSessionViewModel.completedWorkouts.value.isNotEmpty()) {
+                onCompleted()
+            } else {
+                workoutSessionViewModel.showSkippedWorkoutDialog()
+            }
         }
     }
     BackHandler {
-        (context as? Activity)?.finish()
+        workoutSessionViewModel.showExitDialog()
     }
 
     Box(modifier = Modifier
@@ -319,6 +328,31 @@ fun LandscapeWorkoutScreen(workoutSessionViewModel:WorkoutSessionViewModel, onCo
                     )
                 }
             }
+        }
+        if (exitDialogVisible){
+            ExitWarningDialog(
+                title = "Workout Session",
+                onDismiss = {
+                    workoutSessionViewModel.dismissExitDialog()
+                },
+                onConfirm = {
+                    workoutSessionViewModel.dismissExitDialog()
+                    (context as? Activity)?.finish()
+                }
+            )
+        }
+        if (skippedWorkoutDialogVisible){
+            SkippedWorkoutDialog(
+                onRetryWorkout = {
+                    workoutSessionViewModel.hideSkippedWorkoutDialog()
+                    context.startActivity(Intent(context, WorkoutActivity::class.java))
+                    (context as? Activity)?.finish()
+                },
+                onEndSession = {
+                    workoutSessionViewModel.hideSkippedWorkoutDialog()
+                    (context as? Activity)?.finish()
+                }
+            )
         }
     }
 }

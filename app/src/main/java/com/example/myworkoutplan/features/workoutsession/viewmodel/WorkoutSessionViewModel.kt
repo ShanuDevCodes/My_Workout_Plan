@@ -47,6 +47,28 @@ class WorkoutSessionViewModel:ViewModel() {
     private val _isCompleted = MutableStateFlow(false)
     val isCompleted: StateFlow<Boolean> = _isCompleted
 
+    private val _exitDialog = MutableStateFlow(false)
+    val exitDialog: StateFlow<Boolean> = _exitDialog
+
+    private val _skippedWorkoutDialog = MutableStateFlow(false)
+    val skippedWorkoutDialog: StateFlow<Boolean> = _skippedWorkoutDialog
+
+    fun showExitDialog() {
+        _exitDialog.value = true
+    }
+
+    fun dismissExitDialog() {
+        _exitDialog.value = false
+    }
+
+    fun showSkippedWorkoutDialog() {
+        _skippedWorkoutDialog.value = true
+    }
+
+    fun hideSkippedWorkoutDialog() {
+        _skippedWorkoutDialog.value = false
+    }
+
     init {
         viewModelScope.launch {
             while (true) {
