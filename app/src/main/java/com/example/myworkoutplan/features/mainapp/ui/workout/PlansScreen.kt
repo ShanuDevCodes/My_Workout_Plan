@@ -1,7 +1,6 @@
 package com.example.myworkoutplan.features.mainapp.ui.workout
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -18,11 +17,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -38,7 +35,6 @@ import com.example.myworkoutplan.data.local.workout.WorkoutViewModel
 import com.example.myworkoutplan.data.local.workout.WorkoutViewModelFactory
 import com.example.myworkoutplan.features.mainapp.ui.PlanDestination
 import com.example.myworkoutplan.features.mainapp.viewmodel.PlansViewModel
-import com.example.myworkoutplan.BuildConfig
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
