@@ -43,15 +43,6 @@ import com.example.myworkoutplan.BuildConfig
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PlansScreen(navController: NavController, viewModel: PlansViewModel = viewModel()) {
-    val recomposeCount = remember { mutableIntStateOf(0) }
-
-    SideEffect {
-        recomposeCount.intValue++
-
-        if (BuildConfig.LOG_RECOMPOSITION) {
-            Log.d("Performance", "Screen recomposed ${recomposeCount.intValue} times")
-        }
-    }
     val context = LocalContext.current
     val db = remember { AppDatabase.getInstance(context) }
     val dao = remember { db.WorkoutDao() }
