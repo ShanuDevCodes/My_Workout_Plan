@@ -44,11 +44,18 @@ val allMuscleGroups = listOf(
     "Triceps",
     "Shoulders",
     "Back",
+    "Lower back",
     "Biceps",
     "Quads",
     "Glutes",
     "Hamstrings",
-    "Calves"
+    "Calves",
+    "Forearms",
+    "Traps",
+    "Lats",
+    "Abs",
+    "Side Abs",
+    "Neck",
 )
 
 val allWorkout = listOf(
