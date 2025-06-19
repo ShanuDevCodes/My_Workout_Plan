@@ -100,6 +100,7 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
     ) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background,
+            contentWindowInsets = WindowInsets.systemBars,
             bottomBar = {
                 if (isPortrait) {
                     BottomAppBar {
@@ -111,7 +112,7 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp)
+                                .padding(start = 8.dp, end = 8.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.Send,
@@ -136,7 +137,6 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
             Box(modifier = Modifier
                 .padding(innerPadding)
                 .padding(start = 16.dp, end = 16.dp)
-                .consumeWindowInsets(innerPadding)
                 .fillMaxSize()
             ) {
                 LazyColumn(
