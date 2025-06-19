@@ -8,6 +8,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+data class WorkoutSetLog(
+    val setNumber: Int,
+    val weight: String,
+    val reps: String,
+    val isBodyWeight: Boolean
+)
+
 class WorkoutSessionViewModel:ViewModel() {
 
     private var sessionStarted = false
@@ -52,6 +59,9 @@ class WorkoutSessionViewModel:ViewModel() {
 
     private val _skippedWorkoutDialog = MutableStateFlow(false)
     val skippedWorkoutDialog: StateFlow<Boolean> = _skippedWorkoutDialog
+
+    private val _workoutLog = MutableStateFlow<Map<WorkoutPlan, List<WorkoutSetLog>>>(emptyMap())
+    val workoutLog: StateFlow<Map<WorkoutPlan, List<WorkoutSetLog>>> = _workoutLog
 
     fun showExitDialog() {
         _exitDialog.value = true
@@ -173,7 +183,23 @@ class WorkoutSessionViewModel:ViewModel() {
             count.value = 0
         }
     }
+
     fun countLimitIncrease(){
         countLimit.value++
     }
+
+    fun updateSetLog(workout: WorkoutPlan, setLog: WorkoutSetLog) {
+        val currentLogs = _workoutLog.value.toMutableMap()
+        val logsForWorkout = currentLogs[workout]?.toMutableList() ?: mutableListOf()
+        // Replace or add the set log for the setNumber
+        val existingIndex = logsForWorkout.indexOfFirst { it.setNumber == setLog.setNumber }
+        if (existingIndex >= 0) {
+            logsForWorkout[existingIndex] = setLog
+        } else {
+            logsForWorkout.add(setLog)
+        }
+        currentLogs[workout] = logsForWorkout
+        _workoutLog.value = currentLogs
+    }
+
 }

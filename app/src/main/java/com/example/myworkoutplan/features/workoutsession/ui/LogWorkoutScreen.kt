@@ -2,16 +2,24 @@ package com.example.myworkoutplan.features.workoutsession.ui
 
 import android.app.Activity
 import android.content.res.Configuration
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -45,6 +53,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
+
+import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSetLog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,12 +100,13 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
     ) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background,
-            contentWindowInsets = WindowInsets.systemBars,
             bottomBar = {
                 if (isPortrait) {
                     BottomAppBar {
                         Button(
                             onClick = {
+                                val currentLog = workoutSessionViewModel.workoutLog.value
+                                Log.d("WorkoutLog", "Current log on submit: $currentLog")
                                 onConfirm()
                             },
                             modifier = Modifier
@@ -117,6 +128,7 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
                     }
                 }
             },
+            modifier = Modifier.imePadding()
         ) {innerPadding->
             val flattenedList = completedWorkouts.flatMap { (workout, sets) ->
                 listOf(workout to null) + (1..sets).map { setNumber -> workout to setNumber }
@@ -124,10 +136,13 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
             Box(modifier = Modifier
                 .padding(innerPadding)
                 .padding(start = 16.dp, end = 16.dp)
+                .consumeWindowInsets(innerPadding)
                 .fillMaxSize()
             ) {
                 LazyColumn(
-                    state = lazyListState
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    state = lazyListState,
                 ) {
                     item {
                         Text(
@@ -154,7 +169,51 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                         } else {
-                            WorkoutSetCard(setNumber = setNumber)
+                            val workoutLogs by workoutSessionViewModel.workoutLog.collectAsState()
+                            val setLog =
+                                workoutLogs[workout]?.firstOrNull { it.setNumber == setNumber }
+                            WorkoutSetCard(
+                                setNumber = setNumber,
+                                weight = setLog?.weight ?: "",
+                                reps = setLog?.reps ?: "",
+                                isBodyWeight = setLog?.isBodyWeight ?: false,
+                                onWeightChange = { newWeight ->
+                                    workoutSessionViewModel.updateSetLog(
+                                        workout,
+                                        setLog?.copy(weight = newWeight)
+                                            ?: WorkoutSetLog(
+                                                setNumber = setNumber,
+                                                weight = newWeight,
+                                                reps = "",
+                                                isBodyWeight = false
+                                            )
+                                    )
+                                },
+                                onRepsChange = { newReps ->
+                                    workoutSessionViewModel.updateSetLog(
+                                        workout,
+                                        setLog?.copy(reps = newReps)
+                                            ?: WorkoutSetLog(
+                                                setNumber = setNumber,
+                                                weight = "",
+                                                reps = newReps,
+                                                isBodyWeight = false
+                                            )
+                                    )
+                                },
+                                onBodyWeightToggle = { isChecked ->
+                                    workoutSessionViewModel.updateSetLog(
+                                        workout,
+                                        setLog?.copy(isBodyWeight = isChecked)
+                                            ?: WorkoutSetLog(
+                                                setNumber = setNumber,
+                                                weight = "",
+                                                reps = "",
+                                                isBodyWeight = isChecked
+                                            )
+                                    )
+                                }
+                            )
                         }
                     }
                 }
@@ -167,6 +226,8 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
                     if (!isPortrait) {
                         ExtendedFloatingActionButton(
                             onClick = {
+                                val currentLog = workoutSessionViewModel.workoutLog.value
+                                Log.d("WorkoutLog", "Current log on submit: $currentLog")
                                 onConfirm()
                             },
                             icon = {

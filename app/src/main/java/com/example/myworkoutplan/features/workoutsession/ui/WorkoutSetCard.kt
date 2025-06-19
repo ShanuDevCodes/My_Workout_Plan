@@ -16,10 +16,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,10 +26,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun WorkoutSetCard(setNumber: Int) {
-    var weight by rememberSaveable { mutableStateOf("") }
-    var reps by rememberSaveable { mutableStateOf("") }
-
+fun WorkoutSetCard(
+    setNumber: Int,
+    weight: String,
+    reps: String,
+    isBodyWeight: Boolean,
+    onWeightChange: (String) -> Unit,
+    onRepsChange: (String) -> Unit,
+    onBodyWeightToggle: (Boolean) -> Unit
+) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
@@ -64,11 +65,12 @@ fun WorkoutSetCard(setNumber: Int) {
                 value = weight,
                 onValueChange = { newValue ->
                     // Only allow numbers and decimal point
-                    if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d*$"))) {
-                        weight = newValue
+                    if (newValue.matches(Regex("^\\d*\\.?\\d*$"))) {
+                        onWeightChange(newValue)
                     }
                 },
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f),
                 shape = RoundedCornerShape(8.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.Transparent,
@@ -109,11 +111,12 @@ fun WorkoutSetCard(setNumber: Int) {
                 value = reps,
                 onValueChange = { newValue ->
                     // Only allow whole numbers
-                    if (newValue.isEmpty() || newValue.matches(Regex("^\\d+$"))) {
-                        reps = newValue
+                    if (newValue.matches(Regex("^\\d+$"))) {
+                        onRepsChange(newValue)
                     }
                 },
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f),
                 shape = RoundedCornerShape(8.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.Transparent,
@@ -147,6 +150,11 @@ fun WorkoutSetCard(setNumber: Int) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.weight(0.8f) // Less weight for unit labels
             )
+
+//            Checkbox(
+//                checked = isBodyWeight,
+//                onCheckedChange = { onBodyWeightToggle(it) }
+//            )
         }
     }
 }
