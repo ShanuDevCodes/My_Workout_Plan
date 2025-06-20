@@ -81,6 +81,7 @@ fun WorkoutSetCard(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 singleLine = true,
                 textStyle = LocalTextStyle.current.copy(
+                    color = MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Medium
                 ),
@@ -88,7 +89,8 @@ fun WorkoutSetCard(
                     Text(
                         text = "0",
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
             )
@@ -127,6 +129,7 @@ fun WorkoutSetCard(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
                 textStyle = LocalTextStyle.current.copy(
+                    color = MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Medium
                 ),
@@ -134,7 +137,8 @@ fun WorkoutSetCard(
                     Text(
                         text = "0",
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
             )

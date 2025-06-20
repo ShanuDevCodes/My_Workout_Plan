@@ -10,7 +10,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.core.DataStoreManager
 import com.example.myworkoutplan.features.settings.ui.SettingsScreen

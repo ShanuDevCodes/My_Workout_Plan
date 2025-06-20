@@ -94,7 +94,8 @@ fun WorkoutSessionNav(workoutSessionViewModel: WorkoutSessionViewModel) {
                 CongratulationsScreen(
                     onDismiss = {
                         (context as? Activity)?.finish()
-                    }
+                    },
+                    workoutSessionViewModel=workoutSessionViewModel
                 )
             }
         }

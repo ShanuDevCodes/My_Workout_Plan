@@ -11,8 +11,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.core.view.WindowCompat
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.core.AppDatabase
 import com.example.myworkoutplan.core.DataStoreManager
@@ -55,16 +56,17 @@ class WorkoutActivity : ComponentActivity() {
                 factory = HomeScreenViewModelFactory(dataStore)
             )
             val workoutState by workoutViewModel.state.collectAsState()
-
+            var workoutSplit by remember { mutableStateOf("") }
+            var workoutDay by remember { mutableStateOf("") }
             LaunchedEffect(Unit) {
-                val workoutSplit = homeScreenViewModel.workoutSplitFlow.first()
-                val workoutDay = homeScreenViewModel.workoutDayFlow.first()
+                workoutSplit = homeScreenViewModel.workoutSplitFlow.first()
+                workoutDay = homeScreenViewModel.workoutDayFlow.first()
                 workoutViewModel.onEvent(WorkoutEvent.GetWorkoutPlansForSplitAndDay(workoutSplit,workoutDay))
             }
             val currentWorkout by workoutSessionViewModel.currentWorkout.collectAsState()
             LaunchedEffect(workoutState.workouts, currentWorkout) {
                 if (workoutState.workouts.isNotEmpty() && currentWorkout == null) {
-                    workoutSessionViewModel.startSession(workoutState.workouts)
+                    workoutSessionViewModel.startSession(workoutPlan = workoutState.workouts, workoutSplit = workoutSplit,workoutDay = workoutDay)
                 }
             }
 

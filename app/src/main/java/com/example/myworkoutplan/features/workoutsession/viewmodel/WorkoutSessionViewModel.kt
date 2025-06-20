@@ -63,6 +63,12 @@ class WorkoutSessionViewModel:ViewModel() {
     private val _workoutLog = MutableStateFlow<Map<WorkoutPlan, List<WorkoutSetLog>>>(emptyMap())
     val workoutLog: StateFlow<Map<WorkoutPlan, List<WorkoutSetLog>>> = _workoutLog
 
+    private val _workoutSplit = MutableStateFlow("")
+    var workoutSplit: StateFlow<String> = _workoutSplit
+
+    private val _workoutDay = MutableStateFlow("")
+    val workoutDay: StateFlow<String> = _workoutDay
+
     fun showExitDialog() {
         _exitDialog.value = true
     }
@@ -107,9 +113,11 @@ class WorkoutSessionViewModel:ViewModel() {
     }
 
     // Initialize the session with a new exercise list
-    fun startSession(workoutPlan: List<WorkoutPlan>) {
+    fun startSession(workoutPlan: List<WorkoutPlan>,workoutSplit:String,workoutDay:String) {
         if (sessionStarted) return
         sessionStarted = true
+        _workoutSplit.value = workoutSplit
+        _workoutDay.value = workoutDay
         allExercises = workoutPlan.map { it }
         _completedWorkouts.value = emptyList()
         if (workoutPlan.isNotEmpty()) {
