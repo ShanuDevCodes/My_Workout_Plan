@@ -1,6 +1,5 @@
 package com.example.myworkoutplan.features.workoutsession.ui
 
-import CongratulationsScreen
 import android.app.Activity
 import android.content.res.Configuration
 import android.os.Build

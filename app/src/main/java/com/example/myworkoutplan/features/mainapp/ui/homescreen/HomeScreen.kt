@@ -2,8 +2,12 @@ package com.example.myworkoutplan.features.mainapp.ui.homescreen
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
@@ -57,6 +61,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.R
 import com.example.myworkoutplan.WorkoutActivity
@@ -96,6 +101,20 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
             workoutState.currentSplitDay?.splitDayName ?: "Rest Day"
         }
     }
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            context.startActivity(Intent(context, WorkoutActivity::class.java))
+        } else {
+            Toast.makeText(
+                context,
+                "Notifications are disabled. You can enable them from settings.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     // This will trigger whenever workoutSplit OR workoutDay changes
     LaunchedEffect(workoutSplit, workoutDay) {
         if (workoutSplit.isNotEmpty() && workoutDay.isNotEmpty()) {
@@ -197,12 +216,21 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                             }
                             ExtendedFloatingActionButton(
                                 onClick = {
-                                    context.startActivity(
-                                        Intent(
-                                            context,
-                                            WorkoutActivity::class.java
-                                        )
-                                    )
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                        if (ContextCompat.checkSelfPermission(
+                                                context,
+                                                android.Manifest.permission.POST_NOTIFICATIONS
+                                            ) != PackageManager.PERMISSION_GRANTED
+                                        ) {
+                                            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                                        } else {
+                                            val intent = Intent(context, WorkoutActivity::class.java)
+                                            context.startActivity(intent)
+                                        }
+                                    } else {
+                                        val intent = Intent(context, WorkoutActivity::class.java)
+                                        context.startActivity(intent)
+                                    }
                                 },
                                 icon = {
                                     Icon(

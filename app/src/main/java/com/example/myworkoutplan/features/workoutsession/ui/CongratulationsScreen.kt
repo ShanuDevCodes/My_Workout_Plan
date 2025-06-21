@@ -1,4 +1,5 @@
-import android.app.Activity
+package com.example.myworkoutplan.features.workoutsession.ui
+
 import android.content.res.Configuration
 import android.os.Build
 import androidx.activity.compose.BackHandler
@@ -53,7 +54,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.myworkoutplan.R
-import com.example.myworkoutplan.features.workoutsession.ui.FormatTime
 import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
 import java.time.LocalDate
 
@@ -100,7 +100,7 @@ fun CongratulationsScreen(
         }
     }
     BackHandler {
-        (context as? Activity)?.finish()
+        onDismiss()
     }
     Surface {
         Scaffold(
@@ -110,7 +110,7 @@ fun CongratulationsScreen(
                     BottomAppBar {
                         Button(
                             onClick = {
-                                (context as? Activity)?.finish()
+                                onDismiss()
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -390,7 +390,7 @@ fun CongratulationsScreen(
                                     ) {
                                         ExtendedFloatingActionButton(
                                             onClick = {
-                                                (context as? Activity)?.finish()
+                                                onDismiss()
                                             },
                                             icon = {
                                                 Icon(

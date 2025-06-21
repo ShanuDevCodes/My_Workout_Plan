@@ -97,7 +97,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
     private fun isTablet(): Boolean {
         return resources.configuration.smallestScreenWidthDp >= 600
     }

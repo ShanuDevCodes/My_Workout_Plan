@@ -1,5 +1,6 @@
 package com.example.myworkoutplan
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -14,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myworkoutplan.core.AppDatabase
 import com.example.myworkoutplan.core.DataStoreManager
@@ -29,8 +31,29 @@ import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessio
 import com.example.myworkoutplan.theme.MyWorkoutPlanTheme
 import kotlinx.coroutines.flow.first
 
+@RequiresApi(Build.VERSION_CODES.O)
 class WorkoutActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
+    private var isFinishingActivity = false
+    override fun finish() {
+        isFinishingActivity = true
+        super.finish()
+    }
+    override fun onStart() {
+        super.onStart()
+        isFinishingActivity = false // Reset
+        stopForegroundService() // App is in foreground again — remove persistent notification
+    }
+    override fun onStop() {
+        super.onStop()
+        if (!isFinishingActivity) {
+            startForegroundService() // User backgrounded app — show persistent notification
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopForegroundService()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = if (!isTablet()) {
@@ -80,5 +103,12 @@ class WorkoutActivity : ComponentActivity() {
     }
     private fun isTablet(): Boolean {
         return resources.configuration.smallestScreenWidthDp >= 600
+    }
+    private fun startForegroundService() {
+        val intent = Intent(this, WorkoutForegroundService::class.java)
+        ContextCompat.startForegroundService(this, intent)
+    }
+    private fun stopForegroundService() {
+        stopService(Intent(this, WorkoutForegroundService::class.java))
     }
 }

@@ -2,8 +2,12 @@ package com.example.myworkoutplan.features.mainapp.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.Animatable
@@ -54,6 +58,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -121,6 +126,20 @@ fun AdaptiveUI(){
         factory = HomeScreenViewModelFactory(dataStore)
     )
     val workoutDay = homeScreenViewModel.workoutDayFlow.collectAsState(initial = "Rest Day")
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            context.startActivity(Intent(context, WorkoutActivity::class.java))
+        } else {
+            Toast.makeText(
+                context,
+                "Notifications are disabled. You can enable them from settings.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     if (isPortrait) {
         Surface(
             modifier = Modifier
@@ -436,12 +455,21 @@ fun AdaptiveUI(){
 
                             FloatingActionButton(
                                 onClick = {
-                                    context.startActivity(
-                                        Intent(
-                                            context,
-                                            WorkoutActivity::class.java
-                                        )
-                                    )
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                        if (ContextCompat.checkSelfPermission(
+                                                context,
+                                                android.Manifest.permission.POST_NOTIFICATIONS
+                                            ) != PackageManager.PERMISSION_GRANTED
+                                        ) {
+                                            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                                        } else {
+                                            val intent = Intent(context, WorkoutActivity::class.java)
+                                            context.startActivity(intent)
+                                        }
+                                    } else {
+                                        val intent = Intent(context, WorkoutActivity::class.java)
+                                        context.startActivity(intent)
+                                    }
                                 },
                                 modifier = Modifier.scale(fabScale.value),
                                 containerColor = MaterialTheme.colorScheme.primary,
