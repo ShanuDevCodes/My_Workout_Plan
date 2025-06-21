@@ -3,6 +3,7 @@ package com.example.myworkoutplan.features.workoutsession.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkoutplan.data.local.workout.WorkoutPlan
+import com.example.myworkoutplan.features.workoutsession.model.WorkoutSessionRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,10 +39,10 @@ class WorkoutSessionViewModel:ViewModel() {
     private val countLimit: MutableStateFlow<Int> = MutableStateFlow(3)
     val countLimitState: StateFlow<Int> = countLimit
 
-    private var isRunning: MutableStateFlow<Boolean> = MutableStateFlow(true)
+//    private var isRunning: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
-    private var timeInMillis: MutableStateFlow<Long> = MutableStateFlow(0)
-    val timeInMillisState: StateFlow<Long> = timeInMillis
+//    private var timeInMillis: MutableStateFlow<Long> = MutableStateFlow(0)
+    val timeInMillisState: StateFlow<Long> = WorkoutSessionRepository.timeInMillis
 
     private var restTimeInMillis: MutableStateFlow<Long> = MutableStateFlow(0)
     val restTimeInMillisState: StateFlow<Long> = restTimeInMillis
@@ -87,9 +88,13 @@ class WorkoutSessionViewModel:ViewModel() {
 
     init {
         viewModelScope.launch {
+            if (WorkoutSessionRepository.startTimeInMillis.value == 0L) {
+                WorkoutSessionRepository.startTimeInMillis.value = System.currentTimeMillis()
+            }
             while (true) {
-                if (isRunning.value) {
-                    timeInMillis.value += 10
+                if (WorkoutSessionRepository.isRunning.value) {
+                    val elapsed = System.currentTimeMillis() - WorkoutSessionRepository.startTimeInMillis.value
+                    WorkoutSessionRepository.timeInMillis.value = elapsed
                 }
                 delay(10L)
             }
@@ -142,7 +147,7 @@ class WorkoutSessionViewModel:ViewModel() {
             _upcomingWorkouts.value = _upcomingWorkouts.value.drop(1)
         } else {
             _currentWorkout.value = null
-            isRunning.value = false
+            WorkoutSessionRepository.isRunning.value = false
             _isCompleted.value = true
             count.value = 0
         }
@@ -177,7 +182,7 @@ class WorkoutSessionViewModel:ViewModel() {
             _upcomingWorkouts.value = _upcomingWorkouts.value.drop(1)
         } else {
             _currentWorkout.value = null
-            isRunning.value = false
+            WorkoutSessionRepository.isRunning.value = false
             _isCompleted.value = true
             count.value = 0
         }

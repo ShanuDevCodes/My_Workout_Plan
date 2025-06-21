@@ -12,6 +12,9 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.example.myworkoutplan.features.workoutsession.model.FormatTimeForNotification
+import com.example.myworkoutplan.features.workoutsession.model.WorkoutSessionRepository
+import com.example.myworkoutplan.features.workoutsession.ui.FormatTime
 
 class WorkoutForegroundService : Service() {
 
@@ -25,10 +28,13 @@ class WorkoutForegroundService : Service() {
         override fun run() {
             val manager = getSystemService(NotificationManager::class.java)
             val isActive = manager.activeNotifications.any { it.id == NOTIFICATION_ID }
-            if (!isActive) {
-                manager.notify(NOTIFICATION_ID, createNotification())
+
+            if (!isActive || WorkoutSessionRepository.isRunning.value) {
+                val notification = createNotification()
+                manager.notify(NOTIFICATION_ID, notification)
             }
-            handler.postDelayed(this, 1000) // 1 second delay
+
+            handler.postDelayed(this, 1000)
         }
     }
 
@@ -60,10 +66,18 @@ class WorkoutForegroundService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val isRunning = WorkoutSessionRepository.isRunning.value
+        val timeText = if (isRunning) {
+            val elapsedMillis = System.currentTimeMillis() - WorkoutSessionRepository.startTimeInMillis.value
+            "Workout Time: ${FormatTimeForNotification(elapsedMillis)}"
+        } else {
+            "Your session is running in the background."
+        }
+
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle("Workout In Progress")
-            .setContentText("Your session is running in the background.")
-            .setSmallIcon(R.drawable.weights)
+            .setContentText(timeText)
+            .setSmallIcon(R.drawable.weights_filled)
             .setOngoing(true)
             .setAutoCancel(false)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
@@ -72,6 +86,7 @@ class WorkoutForegroundService : Service() {
             .setContentIntent(pendingIntent)
             .build()
     }
+
 
     private fun ensureNotificationChannelExists() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
