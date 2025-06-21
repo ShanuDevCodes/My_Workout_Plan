@@ -14,7 +14,6 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.myworkoutplan.features.workoutsession.model.FormatTimeForNotification
 import com.example.myworkoutplan.features.workoutsession.model.WorkoutSessionRepository
-import com.example.myworkoutplan.features.workoutsession.ui.FormatTime
 
 class WorkoutForegroundService : Service() {
 
