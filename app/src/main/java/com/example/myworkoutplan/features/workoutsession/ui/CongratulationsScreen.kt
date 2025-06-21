@@ -63,7 +63,6 @@ fun CongratulationsScreen(
     onDismiss: () -> Unit,
     workoutSessionViewModel: WorkoutSessionViewModel
 ) {
-    val context = LocalContext.current
     val lazyListState = rememberLazyListState()
     var isScrollingDown by remember { mutableStateOf(false) }
     val timeInMillis = workoutSessionViewModel.timeInMillisState.collectAsState()
