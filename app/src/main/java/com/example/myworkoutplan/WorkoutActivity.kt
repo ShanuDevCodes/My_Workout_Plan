@@ -2,7 +2,6 @@ package com.example.myworkoutplan
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -48,6 +47,7 @@ class WorkoutActivity : ComponentActivity() {
         Log.d("WorkoutActivityLOG", "onDestroy - activityId=$activityId")
         stopForegroundService()
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val activityId = System.currentTimeMillis().toString()
