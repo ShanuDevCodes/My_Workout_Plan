@@ -90,6 +90,7 @@ class WorkoutSessionViewModel:ViewModel() {
         viewModelScope.launch {
             if (WorkoutSessionRepository.startTimeInMillis.value == 0L) {
                 WorkoutSessionRepository.startTimeInMillis.value = System.currentTimeMillis()
+                WorkoutSessionRepository.isRunning.value = true
             }
             while (true) {
                 if (WorkoutSessionRepository.isRunning.value) {
@@ -121,6 +122,9 @@ class WorkoutSessionViewModel:ViewModel() {
     fun startSession(workoutPlan: List<WorkoutPlan>,workoutSplit:String,workoutDay:String) {
         if (sessionStarted) return
         sessionStarted = true
+        WorkoutSessionRepository.startTimeInMillis.value = System.currentTimeMillis()
+        WorkoutSessionRepository.timeInMillis.value = 0L
+        WorkoutSessionRepository.isRunning.value = true
         _workoutSplit.value = workoutSplit
         _workoutDay.value = workoutDay
         allExercises = workoutPlan.map { it }

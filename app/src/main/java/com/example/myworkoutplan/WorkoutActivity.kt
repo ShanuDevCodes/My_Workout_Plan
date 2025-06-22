@@ -2,8 +2,10 @@ package com.example.myworkoutplan
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -33,29 +35,23 @@ import kotlinx.coroutines.flow.first
 
 @RequiresApi(Build.VERSION_CODES.O)
 class WorkoutActivity : ComponentActivity() {
-    private var isFinishingActivity = false
-    override fun finish() {
-        isFinishingActivity = true
-        super.finish()
-    }
     override fun onStart() {
         super.onStart()
-        isFinishingActivity = false // Reset
-        stopForegroundService() // App is in foreground again — remove persistent notification
-    }
-    override fun onStop() {
-        super.onStop()
-        if (!isFinishingActivity) {
-            startForegroundService() // User backgrounded app — show persistent notification
-        }
+        startForegroundService()
+        val activityId = System.currentTimeMillis().toString()
+        Log.d("WorkoutActivityLOG", "onStart - activityId=$activityId")
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        val activityId = System.currentTimeMillis().toString()
+        Log.d("WorkoutActivityLOG", "onDestroy - activityId=$activityId")
         stopForegroundService()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val activityId = System.currentTimeMillis().toString()
+        Log.d("WorkoutActivityLOG", "onCreate - activityId=$activityId")
         requestedOrientation = if (!isTablet()) {
             ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }else{

@@ -18,7 +18,7 @@ android {
         //noinspection EditedTargetSdkVersion
         targetSdk = 36
         versionCode = 3
-        versionName = "3.2.8-beta"
+        versionName = "3.2.9-beta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

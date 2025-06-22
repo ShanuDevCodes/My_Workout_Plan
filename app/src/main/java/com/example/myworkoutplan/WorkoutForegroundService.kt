@@ -26,12 +26,8 @@ class WorkoutForegroundService : Service() {
     private val notificationRunnable = object : Runnable {
         override fun run() {
             val manager = getSystemService(NotificationManager::class.java)
-            val isActive = manager.activeNotifications.any { it.id == NOTIFICATION_ID }
-
-            if (!isActive || WorkoutSessionRepository.isRunning.value) {
-                val notification = createNotification()
-                manager.notify(NOTIFICATION_ID, notification)
-            }
+            val notification = createNotification()
+            manager.notify(NOTIFICATION_ID, notification)
 
             handler.postDelayed(this, 1000)
         }
@@ -40,7 +36,7 @@ class WorkoutForegroundService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("WorkoutService", "onStartCommand triggered")
+        Log.d("WorkoutService", "onStartCommand received")
         val startTime = System.currentTimeMillis()
 
         ensureNotificationChannelExists()
@@ -107,12 +103,12 @@ class WorkoutForegroundService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("WorkoutService", "Service created")
+        Log.d("WorkoutService", "Service created: ${hashCode()}")
     }
 
     override fun onDestroy() {
         handler.removeCallbacks(notificationRunnable)
         super.onDestroy()
-        Log.d("WorkoutService", "Service destroyed")
+        Log.d("WorkoutService", "Service destroyed: ${hashCode()}")
     }
 }

@@ -3,6 +3,7 @@ package com.example.myworkoutplan.features.workoutsession.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
@@ -49,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkoutplan.WorkoutActivity
+import com.example.myworkoutplan.WorkoutForegroundService
 import com.example.myworkoutplan.data.local.workout.WorkoutPlan
 import com.example.myworkoutplan.features.workoutsession.viewmodel.WorkoutSessionViewModel
 import kotlinx.coroutines.launch
@@ -179,8 +181,13 @@ fun PortraitWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onCo
             SkippedWorkoutDialog(
                 onRetryWorkout = {
                     workoutSessionViewModel.hideSkippedWorkoutDialog()
-                    context.startActivity(Intent(context, WorkoutActivity::class.java))
-                    (context as? Activity)?.finish()
+                    val activity = context as? Activity
+                    val intent = Intent(context, WorkoutForegroundService::class.java)
+                    context.stopService(intent)
+                    activity?.finish()
+                    Handler(android.os.Looper.getMainLooper()).postDelayed({
+                        context.startActivity(Intent(context, WorkoutActivity::class.java))
+                    }, 600L)
                 },
                 onEndSession = {
                     workoutSessionViewModel.hideSkippedWorkoutDialog()
