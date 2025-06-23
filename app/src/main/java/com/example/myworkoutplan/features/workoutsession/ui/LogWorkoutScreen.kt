@@ -3,6 +3,7 @@ package com.example.myworkoutplan.features.workoutsession.ui
 import android.app.Activity
 import android.content.res.Configuration
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -58,6 +59,18 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
     val completedWorkouts by workoutSessionViewModel.completedWorkouts.collectAsState()
     val exitDialog by workoutSessionViewModel.exitDialog.collectAsState()
     val lazyListState = rememberLazyListState()
+    val workoutLogs by workoutSessionViewModel.workoutLog.collectAsState()
+    val allFieldsFilled by remember(completedWorkouts, workoutLogs) {
+        derivedStateOf {
+            completedWorkouts.all { (workout, setsRequired) ->
+                val logs = workoutLogs[workout]
+                logs != null &&
+                        logs.size == setsRequired &&
+                        logs.all { it.weight.isNotBlank() && it.reps.isNotBlank() }
+            }
+        }
+    }
+    var submitAttempted by remember { mutableStateOf(false) }
     var isScrollingDown by remember { mutableStateOf(false) }
 
     LaunchedEffect(lazyListState) {
@@ -99,9 +112,14 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
                     BottomAppBar {
                         Button(
                             onClick = {
+                                submitAttempted = true
                                 val currentLog = workoutSessionViewModel.workoutLog.value
                                 Log.d("WorkoutLog", "Current log on submit: $currentLog")
-                                onConfirm()
+                                if (allFieldsFilled) {
+                                    onConfirm()
+                                } else {
+                                    Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                                }
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -162,14 +180,14 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                         } else {
-                            val workoutLogs by workoutSessionViewModel.workoutLog.collectAsState()
                             val setLog =
                                 workoutLogs[workout]?.firstOrNull { it.setNumber == setNumber }
+                            val showError = submitAttempted && (setLog?.weight.isNullOrBlank() || setLog.reps.isBlank())
                             WorkoutSetCard(
                                 setNumber = setNumber,
                                 weight = setLog?.weight ?: "",
                                 reps = setLog?.reps ?: "",
-                                isBodyWeight = setLog?.isBodyWeight ?: false,
+                                isBodyWeight = setLog?.isBodyWeight == true,
                                 onWeightChange = { newWeight ->
                                     workoutSessionViewModel.updateSetLog(
                                         workout,
@@ -205,7 +223,8 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
                                                 isBodyWeight = isChecked
                                             )
                                     )
-                                }
+                                },
+                                showError = showError,
                             )
                         }
                     }
@@ -224,9 +243,14 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
                     if (!isPortrait) {
                         ExtendedFloatingActionButton(
                             onClick = {
+                                submitAttempted = true
                                 val currentLog = workoutSessionViewModel.workoutLog.value
                                 Log.d("WorkoutLog", "Current log on submit: $currentLog")
-                                onConfirm()
+                                if (allFieldsFilled) {
+                                    onConfirm()
+                                } else {
+                                    Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                                }
                             },
                             icon = {
                                 Icon(

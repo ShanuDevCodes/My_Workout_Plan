@@ -1,6 +1,7 @@
 package com.example.myworkoutplan.features.workoutsession.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,7 +34,8 @@ fun WorkoutSetCard(
     isBodyWeight: Boolean,
     onWeightChange: (String) -> Unit,
     onRepsChange: (String) -> Unit,
-    onBodyWeightToggle: (Boolean) -> Unit
+    onBodyWeightToggle: (Boolean) -> Unit,
+    showError: Boolean = false
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -42,123 +44,134 @@ fun WorkoutSetCard(
             .fillMaxWidth()
             .padding(bottom = 4.dp),
     ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Set $setNumber : ",
-                fontSize = 16.sp,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f) // Slightly more weight for the set number
-            )
-
-            Spacer(modifier = Modifier.width(8.dp)) // Reduced spacing
-
-            OutlinedTextField(
-                value = weight,
-                onValueChange = { newValue ->
-                    // Only allow numbers and decimal point
-                    if (newValue.matches(Regex("^\\d*\\.?\\d*$"))) {
-                        onWeightChange(newValue)
-                    }
-                },
+        Column {
+            Row(
                 modifier = Modifier
-                    .weight(1f),
-                shape = RoundedCornerShape(8.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                ),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true,
-                textStyle = LocalTextStyle.current.copy(
-                    color = MaterialTheme.colorScheme.secondary,
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Set $setNumber : ",
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Medium
-                ),
-                placeholder = {
-                    Text(
-                        text = "0",
+                    modifier = Modifier.weight(1f) // Slightly more weight for the set number
+                )
+
+                Spacer(modifier = Modifier.width(8.dp)) // Reduced spacing
+
+                OutlinedTextField(
+                    value = weight,
+                    onValueChange = { newValue ->
+                        // Only allow numbers and decimal point
+                        if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d*$"))) {
+                            onWeightChange(newValue)
+                        }
+                    },
+                    modifier = Modifier
+                        .weight(1f),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    ),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true,
+                    textStyle = LocalTextStyle.current.copy(
+                        color = MaterialTheme.colorScheme.secondary,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                }
-            )
-
-            Spacer(modifier = Modifier.width(4.dp)) // Reduced spacing
-
-            Text(
-                text = "Kg",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(0.8f) // Less weight for unit labels
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            OutlinedTextField(
-                value = reps,
-                onValueChange = { newValue ->
-                    // Only allow whole numbers
-                    if (newValue.matches(Regex("^\\d+$"))) {
-                        onRepsChange(newValue)
+                        fontWeight = FontWeight.Medium
+                    ),
+                    placeholder = {
+                        Text(
+                            text = "0",
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth(),
+                            color = MaterialTheme.colorScheme.secondary
+                        )
                     }
-                },
-                modifier = Modifier
-                    .weight(1f),
-                shape = RoundedCornerShape(8.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                ),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                singleLine = true,
-                textStyle = LocalTextStyle.current.copy(
-                    color = MaterialTheme.colorScheme.secondary,
+                )
+
+                Spacer(modifier = Modifier.width(4.dp)) // Reduced spacing
+
+                Text(
+                    text = "Kg",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Medium
-                ),
-                placeholder = {
-                    Text(
-                        text = "0",
+                    modifier = Modifier.weight(0.8f) // Less weight for unit labels
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                OutlinedTextField(
+                    value = reps,
+                    onValueChange = { newValue ->
+                        // Only allow whole numbers
+                        if (newValue.isEmpty() || newValue.matches(Regex("^\\d+$"))) {
+                            onRepsChange(newValue)
+                        }
+                    },
+                    modifier = Modifier
+                        .weight(1f),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    ),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                    textStyle = LocalTextStyle.current.copy(
+                        color = MaterialTheme.colorScheme.secondary,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                }
-            )
+                        fontWeight = FontWeight.Medium
+                    ),
+                    placeholder = {
+                        Text(
+                            text = "0",
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth(),
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                )
 
-            Spacer(modifier = Modifier.width(4.dp)) // Reduced spacing
+                Spacer(modifier = Modifier.width(4.dp)) // Reduced spacing
 
-            Text(
-                text = "Reps",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(0.8f) // Less weight for unit labels
-            )
+                Text(
+                    text = "Reps",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(0.8f) // Less weight for unit labels
+                )
 
 //            Checkbox(
 //                checked = isBodyWeight,
 //                onCheckedChange = { onBodyWeightToggle(it) }
 //            )
+            }
+        }
+        if (showError) {
+            Text(
+                text = "Please fill both weight and reps",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 4.dp, bottom = 8.dp)
+            )
         }
     }
 }
