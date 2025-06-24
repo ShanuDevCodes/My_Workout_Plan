@@ -208,15 +208,42 @@ class WorkoutSessionViewModel:ViewModel() {
     fun updateSetLog(workout: WorkoutPlan, setLog: WorkoutSetLog) {
         val currentLogs = _workoutLog.value.toMutableMap()
         val logsForWorkout = currentLogs[workout]?.toMutableList() ?: mutableListOf()
+
+        // 🆕 Ensure WorkoutSetLog uses the correct isBodyWeight from the WorkoutPlan
+        val updatedSetLog = setLog.copy(isBodyWeight = workout.isBodyWeight)
+
         // Replace or add the set log for the setNumber
-        val existingIndex = logsForWorkout.indexOfFirst { it.setNumber == setLog.setNumber }
+        val existingIndex = logsForWorkout.indexOfFirst { it.setNumber == updatedSetLog.setNumber }
         if (existingIndex >= 0) {
-            logsForWorkout[existingIndex] = setLog
+            logsForWorkout[existingIndex] = updatedSetLog
         } else {
-            logsForWorkout.add(setLog)
+            logsForWorkout.add(updatedSetLog)
         }
+
         currentLogs[workout] = logsForWorkout
         _workoutLog.value = currentLogs
     }
 
+
+    fun calculateTotalVolume(
+        log: Map<WorkoutPlan, List<WorkoutSetLog>>,
+        userWeight: Double? = null // will use this later from DataStore
+    ): Double {
+        return log.values.flatten()
+            .mapNotNull { set ->
+                val reps = set.reps.toDoubleOrNull() ?: return@mapNotNull null
+                val weight = if (set.isBodyWeight) {
+                    // 👇 FUTURE: Use user's weight from DataStore when available
+                     userWeight ?: return@mapNotNull null
+
+                    // For now, just use the `weight` string in the set (if manually entered)
+                    //set.weight.toDoubleOrNull() ?: return@mapNotNull null
+                } else {
+                    set.weight.toDoubleOrNull() ?: return@mapNotNull null
+                }
+
+                weight * reps
+            }
+            .sum()
+    }
 }

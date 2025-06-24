@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -69,6 +70,7 @@ fun CongratulationsScreen(
     val workoutSplit = workoutSessionViewModel.workoutSplit.collectAsState()
     val workoutDay = workoutSessionViewModel.workoutDay.collectAsState()
     val workoutLog = workoutSessionViewModel.workoutLog.collectAsState()
+    val workoutVolume = workoutSessionViewModel.calculateTotalVolume(workoutLog.value,60.0)
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     val showExtended by remember {
@@ -77,7 +79,6 @@ fun CongratulationsScreen(
             lazyListState.firstVisibleItemIndex == 0 || !isScrollingDown
         }
     }
-
 
     LaunchedEffect(lazyListState) {
         var previousIndex = 0
@@ -287,6 +288,11 @@ fun CongratulationsScreen(
                                                     string1 = "Today's Workout Day:",
                                                     string2 = workoutDay.value
                                                 )
+                                                Spacer(Modifier.height(8.dp))
+                                                WorkoutDetailItems(
+                                                    string1 = "Total Workout Volume:",
+                                                    string2 = workoutVolume.toString()
+                                                )
                                             }
                                         }
                                     }
@@ -363,14 +369,17 @@ fun CongratulationsScreen(
                                                     )
                                                 ) {
                                                     setLogs.forEachIndexed { index, it ->
-                                                        WorkoutDetailItems(
+                                                        WorkoutSetItems(
                                                             string1 = "Set ${index + 1}:",
-                                                            string2 = "${it.reps} x ${it.weight} Kg"
+                                                            reps = it.reps,
+                                                            weight = it.weight
                                                         )
+                                                        if (index < setLogs.size - 1){
+                                                        Spacer(Modifier.height(4.dp))
+                                                            }
                                                     }
                                                 }
                                             }
-                                            Spacer(Modifier.height(8.dp))
                                         }
                                     }
                                     if (!isPortrait) {
@@ -438,5 +447,64 @@ fun WorkoutDetailItems(
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), // smaller than headlineMedium
             color = MaterialTheme.colorScheme.primary
         )
+    }
+}
+@Composable
+fun WorkoutSetItems(
+    string1 : String,
+    reps: String,
+    weight: String,
+){
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = string1,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.weight(1f)
+        )
+        val rm = calculate1RM(weight, reps)
+        val currentPr = 0.0
+
+        if ((rm ?: 0.0) > currentPr && (reps.toIntOrNull() ?: 0) > 5) {
+            Card(
+                shape = RoundedCornerShape(50),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                ),
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 36.dp)
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = "PR",
+                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.padding(8.dp))
+        }
+        Text(
+            text = "$weight Kg x $reps",
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), // smaller than headlineMedium
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+fun calculate1RM(weightStr: String, repsStr: String): Double? {
+    val weight = weightStr.toDoubleOrNull()
+    val reps = repsStr.toIntOrNull()
+
+    return if (weight != null && reps != null && reps > 0) {
+        weight * (1 + reps / 30.0)
+    } else {
+        null // Invalid input
     }
 }
