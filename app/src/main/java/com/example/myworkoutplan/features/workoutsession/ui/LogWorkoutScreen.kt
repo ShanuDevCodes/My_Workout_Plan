@@ -5,7 +5,11 @@ import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,16 +25,22 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -72,6 +83,8 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
     }
     var submitAttempted by remember { mutableStateOf(false) }
     var isScrollingDown by remember { mutableStateOf(false) }
+    var isDropDownMenuEnabled by remember { mutableStateOf(false) }
+    var isExtra by remember { mutableStateOf(false) }
 
     LaunchedEffect(lazyListState) {
         var previousIndex = 0
@@ -173,11 +186,42 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
                         flattenedList,
                         key = { (workout, setNumber) -> "${workout.id}-${setNumber ?: "title"}" }) { (workout, setNumber) ->
                         if (setNumber == null) {
-                            Text(
-                                text = workout.exerciseName,
-                                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.secondary,
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = workout.exerciseName,
+                                    style = MaterialTheme.typography.headlineSmall.copy(
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                if (workout.isBodyWeight) {
+                                    Row {
+                                        BodyWeightDropDownMenu(
+                                            expanded = isDropDownMenuEnabled,
+                                            onDismiss = {
+                                                isDropDownMenuEnabled = false
+                                            },
+                                            isExtraWeightEnabled = isExtra,
+                                            onToggleExtraWeight = {isExtra = !isExtra},
+                                        )
+                                        IconButton(
+                                            onClick = {
+                                                isDropDownMenuEnabled = true
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.MoreVert,
+                                                contentDescription = "More options",
+                                                tint = MaterialTheme.colorScheme.secondary
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                             Spacer(modifier = Modifier.height(8.dp))
                         } else {
                             val setLog =
@@ -284,6 +328,39 @@ fun LogWorkoutScreen(workoutSessionViewModel: WorkoutSessionViewModel, onConfirm
                     workoutSessionViewModel.dismissExitDialog()
                     (context as? Activity)?.finish()
                 }
+            )
+        }
+    }
+}
+
+@Composable
+fun BodyWeightDropDownMenu(
+    expanded: Boolean,
+    isExtraWeightEnabled: Boolean,
+    onToggleExtraWeight: (Boolean) -> Unit,
+    onDismiss: () -> Unit
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismiss
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Weighted BodyWeight",
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.secondary
+            )
+            Switch(
+                checked = isExtraWeightEnabled,
+                onCheckedChange = { onToggleExtraWeight(!isExtraWeightEnabled) },
+                modifier = Modifier.scale(0.7f)
             )
         }
     }

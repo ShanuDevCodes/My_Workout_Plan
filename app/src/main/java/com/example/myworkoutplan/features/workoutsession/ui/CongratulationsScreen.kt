@@ -386,6 +386,10 @@ fun CongratulationsScreen(
                                         item {
                                             Spacer(modifier = Modifier.height(64.dp))
                                         }
+                                    }else{
+                                        item {
+                                            Spacer(modifier = Modifier.height(8 .dp))
+                                        }
                                     }
                                 }
                                 if (!isPortrait) {

@@ -205,12 +205,12 @@ class WorkoutSessionViewModel:ViewModel() {
         countLimit.value++
     }
 
-    fun updateSetLog(workout: WorkoutPlan, setLog: WorkoutSetLog) {
+    fun updateSetLog(workout: WorkoutPlan, setLog: WorkoutSetLog, isBodyWeight: Boolean = false) {
         val currentLogs = _workoutLog.value.toMutableMap()
         val logsForWorkout = currentLogs[workout]?.toMutableList() ?: mutableListOf()
 
         // 🆕 Ensure WorkoutSetLog uses the correct isBodyWeight from the WorkoutPlan
-        val updatedSetLog = setLog.copy(isBodyWeight = workout.isBodyWeight)
+        val updatedSetLog = setLog.copy(isBodyWeight = isBodyWeight)
 
         // Replace or add the set log for the setNumber
         val existingIndex = logsForWorkout.indexOfFirst { it.setNumber == updatedSetLog.setNumber }
